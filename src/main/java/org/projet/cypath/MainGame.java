@@ -1,55 +1,65 @@
 package org.projet.cypath;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.projet.cypath.jfx.EndScene;
-import org.projet.cypath.jfx.GameScene;
-import org.projet.cypath.jfx.SaveLoadScene;
-import org.projet.cypath.jfx.StartScene;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class MainGame extends Application {
-    private Game game; // Votre classe de logique de jeu
-    private GameScene gameScene; // Votre scèn;e de jeu
-    private StartScene startScene; // Votre scène de démarrage
-    private EndScene endScene; // Votre scène de fin de jeu
-    private SaveLoadScene saveLoadScene; // Votre scène de sauvegarde/chargement
+    private Stage primaryStage;
 
     @Override
-    public void start(Stage stage) {
-        // Instanciez votre jeu et vos scènes
-        game = new Game();
-        gameScene = new GameScene(game);
-        startScene = new StartScene(game);
-        endScene = new EndScene(game);
-        saveLoadScene = new SaveLoadScene(game);
+    public void start(Stage stage) throws IOException {
+        this.primaryStage = stage;
+        showStartScene();
+    }
 
-        // Commencez par la scène de démarrage
-        Scene scene = new Scene(startScene, 800, 600);
-        stage.setScene(scene);
-        stage.show();
+    public void showStartScene() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
+        Parent root = loader.load();
+        StartSceneController controller = loader.getController();
+        controller.setMainGame(this);
+        primaryStage.setTitle("Game Start");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
 
-        // Ajoutez des écouteurs d'événements pour passer à différentes scènes en fonction des actions de l'utilisateur
-        startScene.getStartButton().setOnAction(e -> {
-            stage.setScene(new Scene(gameScene, 800, 600));
-        });
 
-        gameScene.getEndButton().setOnAction(e -> {
-            stage.setScene(new Scene(endScene, 800, 600));
-        });
+    public void showGameScene() throws IOException {
+        FXMLLoader loader = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("game_scene.fxml")));
+        Parent root = loader.load();
+        StartSceneController controller = loader.getController();
+        controller.setMainGame(this);
+        primaryStage.setTitle("Game");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
 
-        gameScene.getSaveButton().setOnAction(e -> {
-            stage.setScene(new Scene(saveLoadScene, 800, 600));
-        });
+    public void showEndScene() throws IOException {
+        FXMLLoader loader = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("end_scene.fxml")));
+        Parent root = loader.load();
+        StartSceneController controller = loader.getController();
+        controller.setMainGame(this);
+        primaryStage.setTitle("Game Over");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
 
-        saveLoadScene.getLoadButton().setOnAction(e -> {
-            stage.setScene(new Scene(gameScene, 800, 600));
-        });
-
-        // Et ainsi de suite pour les autres boutons/scènes...
+    public void showSaveLoadScene() throws IOException {
+        FXMLLoader loader = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("save_load_scene.fxml")));
+        Parent root = loader.load();
+        StartSceneController controller = loader.getController();
+        controller.setMainGame(this);
+        primaryStage.setTitle("Save & Load");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

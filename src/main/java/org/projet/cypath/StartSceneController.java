@@ -6,9 +6,9 @@ import javafx.fxml.FXML;
 import java.io.IOException;
 
 public class StartSceneController {
-    private MainGameTest mainGame;
+    private MainGame mainGame;
 
-    public void setMainGame(MainGameTest mainGame) {
+    public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
 
