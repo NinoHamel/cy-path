@@ -11,36 +11,36 @@
         <URL value="@style.css"/>
     </stylesheets>
     <Pane fx:id="logoView">
-
     </Pane>
-    <Pane fx:id="playerSelectionView" visible="false">
 
-    </Pane>
-    <Pane fx:id="colorSelectionView" visible="false">
+    <StackPane fx:id="playerSelectionView" visible="false" minWidth="1720" minHeight="720">
+        <VBox spacing="20" alignment="CENTER">
+            <Text text="CY-PATH" style="-fx-font-size: 48;"/>
+            <Label text="Nombre de joueurs:"/>
+            <ComboBox fx:id="numPlayersComboBox" styleClass="combobox"/>
+            <VBox alignment="CENTER" spacing="20">
+                <HBox alignment="CENTER" spacing="10">
+                    <VBox fx:id="player1ColorBox" alignment="CENTER" spacing="10" visible="false">
+                        <Label text="Couleur du joueur 1:"/>
+                        <ComboBox fx:id="player1ColorComboBox" />
+                    </VBox>
+                    <VBox fx:id="player2ColorBox" alignment="CENTER" spacing="10" visible="false">
+                        <Label text="Couleur du joueur 2:"/>
+                        <ComboBox fx:id="player2ColorComboBox" />
+                    </VBox>
+                    <VBox fx:id="player3ColorBox" alignment="CENTER" spacing="10" visible="false">
+                        <Label text="Couleur du joueur 3:"/>
+                        <ComboBox fx:id="player3ColorComboBox" />
+                    </VBox>
+                    <VBox fx:id="player4ColorBox" alignment="CENTER" spacing="10" visible="false">
+                        <Label text="Couleur du joueur 4:"/>
+                        <ComboBox fx:id="player4ColorComboBox" />
+                    </VBox>
 
-    </Pane>
-    <VBox alignment="CENTER" spacing="20">
-        <Text text="CY-PATH" style="-fx-font-size: 48;"/>
-        <Label text="Nombre de joueurs:"/>
-        <ComboBox fx:id="numPlayersComboBox" styleClass="combobox"/>
-        <HBox alignment="CENTER" spacing="10">
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="Couleur du joueur 1:"/>
-                <ColorPicker fx:id="player1ColorPicker"/>
+                </HBox>
+                <Button text="Commencer" styleClass="button" onAction="#handleStartButtonAction"/>
             </VBox>
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="Couleur du joueur 2:"/>
-                <ColorPicker fx:id="player2ColorPicker"/>
-            </VBox>
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="Couleur du joueur 3:"/>
-                <ColorPicker fx:id="player3ColorPicker"/>
-            </VBox>
-            <VBox alignment="CENTER" spacing="10">
-                <Label text="Couleur du joueur 4:"/>
-                <ColorPicker fx:id="player4ColorPicker"/>
-            </VBox>
-        </HBox>
-        <Button text="Commencer" styleClass="button" onAction="#handleStartButtonAction"/>
-    </VBox>
+        </VBox>
+
+    </StackPane>
 </StackPane>
