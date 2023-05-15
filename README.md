@@ -7,7 +7,7 @@
 - Pas de crash (gestion des erreurs)
 
 ## Liste des choses à faire (logique) (Louis / Lucas / Côme)
-
+test
 - [ ] Créer un tableau pour le jeu
 - [ ] Gestion des pions
 - [ ] Gestion du nombre de joueur
