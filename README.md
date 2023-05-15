@@ -16,6 +16,7 @@
 - [ ] Gestion des sauvegardes
 - [ ] Gestion du tour par tour
 - [ ] Gestion de la victoire (test bon mur)
+- [ ] IA ?
 
 ## Liste des choses à faire (JFX) (Clément / Nino)
 - [ ] Affichage du plateau et des barrières
