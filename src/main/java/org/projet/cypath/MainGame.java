@@ -10,7 +10,7 @@ import org.projet.cypath.jfx.StartScene;
 
 public class MainGame extends Application {
     private Game game; // Votre classe de logique de jeu
-    private GameScene gameScene; // Votre scène de jeu
+    private GameScene gameScene; // Votre scèn;e de jeu
     private StartScene startScene; // Votre scène de démarrage
     private EndScene endScene; // Votre scène de fin de jeu
     private SaveLoadScene saveLoadScene; // Votre scène de sauvegarde/chargement
