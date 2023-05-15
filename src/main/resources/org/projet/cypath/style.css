@@ -1,21 +1,39 @@
+.root {
+    -fx-font-family: "Minecraft";
+}
+
 .button {
-    background-color: #4c9baf;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+    -fx-background-color: #7B9E89;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+}
+
+.button:hover {
+    -fx-background-color: #578F78;
+}
+
+.button:pressed {
+    -fx-background-color: #3D6655;
 }
 
 .combobox {
-    font-size: 16px;
-    padding: 10px;
+    -fx-background-color: #5C7E6E;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
 }
 
 .combobox .list-cell {
-    font-size: 16px;
+    -fx-background-color: #5C7E6E;
+    -fx-text-fill: #FFFFFF;
+}
+
+.combobox .list-cell:hover {
+    -fx-background-color: #3D6655;
+}
+
+.combobox .list-cell:filled:selected, .combobox .list-cell:filled:selected:hover {
+    -fx-background-color: #7B9E89;
+    -fx-text-fill: #FFFFFF;
 }
