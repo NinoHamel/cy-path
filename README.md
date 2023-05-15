@@ -19,6 +19,7 @@
 - [ ] IA ?
 
 ## Liste des choses à faire (JFX) (Clément / Nino)
+- [ ] Interface début jeu (choix nombre joueur) (choix couleur ?)
 - [ ] Affichage du plateau et des barrières
 - [ ] Affichage des pions avec leurs couleurs
 - [ ] Affichage d'une interface pour savoir qui joue,
