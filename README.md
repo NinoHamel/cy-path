@@ -11,11 +11,11 @@
 - [ ] Créer un tableau pour le jeu
 - [ ] Gestion des pions
 - [ ] Gestion du nombre de joueur
-- [ ] Gestion du déplacement du pion (Recherche de chemins)(saut)
 - [ ] Gestion des barrières
-- [ ] Gestion des sauvegardes
+- [ ] Gestion du déplacement du pion (Recherche de chemins)(saut)
 - [ ] Gestion du tour par tour
 - [ ] Gestion de la victoire (test bon mur)
+- [ ] Gestion des sauvegardes
 - [ ] IA ?
 
 ## Liste des choses à faire (JFX) (Clément / Nino)
