@@ -12,4 +12,6 @@ module org.projet.cypath {
 
     opens org.projet.cypath to javafx.fxml;
     exports org.projet.cypath;
+    exports org.projet.cypath.jfx;
+    opens org.projet.cypath.jfx to javafx.fxml;
 }
