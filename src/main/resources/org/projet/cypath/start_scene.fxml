@@ -10,9 +10,15 @@
     <stylesheets>
         <URL value="@style.css"/>
     </stylesheets>
-    <ImageView>
-        <Image url="@gradient.jpg"/>
-    </ImageView>
+    <Pane fx:id="logoView">
+
+    </Pane>
+    <Pane fx:id="playerSelectionView" visible="false">
+
+    </Pane>
+    <Pane fx:id="colorSelectionView" visible="false">
+
+    </Pane>
     <VBox alignment="CENTER" spacing="20">
         <Text text="CY-PATH" style="-fx-font-size: 48;"/>
         <Label text="Nombre de joueurs:"/>

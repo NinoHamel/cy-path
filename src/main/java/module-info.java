@@ -8,6 +8,7 @@ module org.projet.cypath {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
+    requires javafx.media;
 
     opens org.projet.cypath to javafx.fxml;
     exports org.projet.cypath;
