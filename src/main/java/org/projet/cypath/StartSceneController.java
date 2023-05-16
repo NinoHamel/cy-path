@@ -1,17 +1,27 @@
 package org.projet.cypath;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.effect.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
@@ -20,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -50,6 +61,28 @@ public class StartSceneController {
     private VBox player3ColorBox;
     @FXML
     private VBox player4ColorBox;
+    @FXML
+    private StackPane titleScreen;
+    @FXML
+    private ImageView logoImage;
+    @FXML
+    private ImageView newGameButton;
+    @FXML
+    private ImageView loadGameButton;
+    @FXML
+    private ImageView settingsButton;
+    @FXML
+    private ImageView quitButton;
+    @FXML
+    private ImageView startImageView;
+    @FXML
+    private ImageView loadImageView;
+    @FXML
+    private ImageView settingsImageView;
+    @FXML
+    private ImageView quitImageView;
+    @FXML
+    private Text logoText;
 
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
@@ -60,8 +93,39 @@ public class StartSceneController {
         mainGame.showGameScene();
     }
 
+    @FXML
+    private void handleButtonHover(MouseEvent event) {
+        ImageView imageView = (ImageView) event.getSource();
+        Glow glow = new Glow();
+        glow.setLevel(0.5); // Set between 0.0 and 1.0
+        imageView.setEffect(glow);
+    }
+
+    @FXML
+    private void handleButtonExit(MouseEvent event) {
+        ImageView imageView = (ImageView) event.getSource();
+        imageView.setEffect(null); // remove the glow effect
+    }
+
+    @FXML
+    private void handleLoadButtonAction(MouseEvent event) {     //Open saves menu
+        System.out.println("Load button clicked");
+    }
+
+    @FXML
+    private void handleSettingsButtonAction(MouseEvent event) { //Open settings
+        System.out.println("Settings button clicked");
+    }
+
+    @FXML
+    private void handleQuitButtonAction(MouseEvent event) {     //Quit the game
+        System.out.println("Quit button clicked");
+        Platform.exit();
+    }
+
+
     public void initialize() {
-        numPlayersComboBox.setItems(FXCollections.observableArrayList(2,3, 4));
+        //numPlayersComboBox.setItems(FXCollections.observableArrayList(2,3, 4));
 
         File file = new File("src/main/resources/org/projet/cypath/cypath.mp4");
         Media media = new Media(file.toURI().toString());
@@ -87,11 +151,65 @@ public class StartSceneController {
 
         fadeOut.setOnFinished(event -> {
             logoView.setVisible(false);
-            playerSelectionView.setVisible(true);
+            titleScreen.setVisible(true);
         });
 
         mediaPlayer.play();
 
+        startImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/start.png")))); //load the image
+        loadImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/load.png"))));
+        settingsImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/settings.png"))));
+        quitImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/quit.png"))));
+        startImageView.setFitHeight(100);           //set the height to 100 for all
+        loadImageView.setFitHeight(100);
+        settingsImageView.setFitHeight(100);
+        quitImageView.setFitHeight(100);
+        startImageView.setPreserveRatio(true);      //conserve aspect ratio
+        loadImageView.setPreserveRatio(true);
+        settingsImageView.setPreserveRatio(true);
+        quitImageView.setPreserveRatio(true);
+
+        logoText.setText("CY-PATH");
+
+        // Create a glow effect
+        Glow glow = new Glow();
+
+        // Create an inner shadow effect
+        InnerShadow innerShadow = new InnerShadow();
+        innerShadow.setOffsetY(0f);
+        innerShadow.setOffsetX(0f);
+        innerShadow.setColor(Color.WHITE);
+        innerShadow.setRadius(10);
+        innerShadow.setChoke(0.5);
+
+        // Combine the glow and inner shadow effects
+        Blend blend = new Blend(BlendMode.MULTIPLY, glow, innerShadow);
+
+        // Apply the combined effect to the text
+        logoText.setEffect(blend);
+
+        // set the color of the text to a neon color
+        logoText.setFill(Color.web("#feeb42"));
+
+        // Set the font size of the text
+        logoText.setFont(Font.font(160));
+
+        // Create an animation that periodically changes the glow and inner shadow level
+        KeyValue kv1 = new KeyValue(glow.levelProperty(), 0.0);
+        KeyValue kv2 = new KeyValue(glow.levelProperty(), 1.0);
+        KeyValue kv3 = new KeyValue(innerShadow.radiusProperty(), 0.0);
+        KeyValue kv4 = new KeyValue(innerShadow.radiusProperty(), 10.0);
+        KeyFrame kf1 = new KeyFrame(Duration.ZERO, kv1, kv3);
+        KeyFrame kf2 = new KeyFrame(Duration.seconds(1), kv2, kv4);
+        KeyFrame kf3 = new KeyFrame(Duration.seconds(2), kv1, kv3);
+
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().addAll(kf1, kf2, kf3);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+
+        /*
         numPlayersComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             player1ColorBox.setVisible(newValue >= 1);
             player2ColorBox.setVisible(newValue >= 2);
@@ -106,8 +224,10 @@ public class StartSceneController {
         initializeColorComboBox(player2ColorComboBox, allColorComboBoxes, availableColors);
         initializeColorComboBox(player3ColorComboBox, allColorComboBoxes, availableColors);
         initializeColorComboBox(player4ColorComboBox, allColorComboBoxes, availableColors);
+        */
     }
 
+    /*
     private void initializeColorComboBox(ComboBox<Color> colorComboBox, List<ComboBox<Color>> allColorComboBoxes, List<Color> availableColors) {
         colorComboBox.getItems().addAll(availableColors);
         colorComboBox.setCellFactory(new Callback<ListView<Color>, ListCell<Color>>() {
@@ -176,6 +296,6 @@ public class StartSceneController {
             return "Unknown";
         }
     }
-
+    */
 
 }
