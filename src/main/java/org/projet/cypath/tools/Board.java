@@ -205,7 +205,15 @@ public class Board {
      */
     public boolean canMove(Player player, Position position2) throws Exception {
         Position position1=player.getPosition();
-        return (position1.getY() == position2.getY() && Math.abs(position1.getX() - position2.getX()) <= 1) ||
-                (position1.getX() == position2.getX() && Math.abs(position1.getY() - position2.getY()) <= 1);
+        if (position1.getX() <= 0 || position1.getY() <= 0 || position2.getX() <= 0 || position2.getY() <= 0) {
+            throw new OutOfBoardException("The grid has only positive coordinates.");
+        }
+        else if (position1.getX() > 9 || position1.getY() > 9 || position2.getX() > 9 || position2.getY() > 9) {
+            throw new OutOfBoardException("The grid has only coordinates greater than 9.");
+        }
+        else {
+            return (position1.getY() == position2.getY() && Math.abs(position1.getX() - position2.getX()) <= 1) ||
+                    (position1.getX() == position2.getX() && Math.abs(position1.getY() - position2.getY()) <= 1);
+        }
     }
 }
