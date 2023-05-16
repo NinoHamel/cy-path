@@ -13,6 +13,18 @@
     <Pane fx:id="logoView">
     </Pane>
 
+    <StackPane fx:id="titleScreen" visible="false" minWidth="1720" minHeight="720">
+        <VBox alignment="CENTER" spacing="100">
+            <Text fx:id="logoText"/>
+            <HBox fx:id="buttonBox" alignment="CENTER" spacing="20">
+                <ImageView fx:id="startImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleStartButtonAction"/>
+                <ImageView fx:id="loadImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleLoadButtonAction"/>
+                <ImageView fx:id="settingsImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleSettingsButtonAction"/>
+                <ImageView fx:id="quitImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleQuitButtonAction"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+    <!--
     <StackPane fx:id="playerSelectionView" visible="false" minWidth="1720" minHeight="720">
         <VBox spacing="20" alignment="CENTER">
             <Text text="CY-PATH" style="-fx-font-size: 48;"/>
@@ -41,6 +53,6 @@
                 <Button text="Commencer" styleClass="button" onAction="#handleStartButtonAction"/>
             </VBox>
         </VBox>
-
     </StackPane>
+    -->
 </StackPane>
