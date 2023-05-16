@@ -37,3 +37,8 @@
     -fx-background-color: #7B9E89;
     -fx-text-fill: #FFFFFF;
 }
+
+#titleScreen {
+    -fx-background-color: black;
+}
+
