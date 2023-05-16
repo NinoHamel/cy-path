@@ -1,34 +1,24 @@
 package org.projet.cypath;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,6 +64,8 @@ public class StartSceneController {
     @FXML
     private ImageView quitButton;
     @FXML
+    private ImageView newgameImageView;
+    @FXML
     private ImageView startImageView;
     @FXML
     private ImageView loadImageView;
@@ -105,6 +97,25 @@ public class StartSceneController {
     private void handleButtonExit(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
         imageView.setEffect(null); // remove the glow effect
+    }
+
+    @FXML
+    private void handleNewGameButtonAction(MouseEvent event) {
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), titleScreen);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), playerSelectionView);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        fadeOut.setOnFinished(e -> {
+            titleScreen.setVisible(false);
+            playerSelectionView.setVisible(true);
+            fadeIn.play();
+        });
+
+        fadeOut.play();
     }
 
     @FXML
@@ -156,18 +167,25 @@ public class StartSceneController {
 
         mediaPlayer.play();
 
-        startImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/start.png")))); //load the image
+        newgameImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/newgame.png")))); //load the image
         loadImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/load.png"))));
         settingsImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/settings.png"))));
         quitImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/quit.png"))));
-        startImageView.setFitHeight(100);           //set the height to 100 for all
+        newgameImageView.setFitHeight(100);           //set the height to 100 for all
         loadImageView.setFitHeight(100);
         settingsImageView.setFitHeight(100);
         quitImageView.setFitHeight(100);
-        startImageView.setPreserveRatio(true);      //conserve aspect ratio
+        newgameImageView.setPreserveRatio(true);      //conserve aspect ratio
         loadImageView.setPreserveRatio(true);
         settingsImageView.setPreserveRatio(true);
         quitImageView.setPreserveRatio(true);
+
+        InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background.png");
+        assert is != null;
+        Image image = new Image(is);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background = new Background(backgroundImage);
+        titleScreen.setBackground(background);
 
         logoText.setText("CY-PATH");
 
@@ -178,9 +196,9 @@ public class StartSceneController {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setOffsetY(0f);
         innerShadow.setOffsetX(0f);
-        innerShadow.setColor(Color.WHITE);
+        innerShadow.setColor(Color.BLACK);
         innerShadow.setRadius(10);
-        innerShadow.setChoke(0.5);
+        innerShadow.setChoke(0.2);
 
         // Combine the glow and inner shadow effects
         Blend blend = new Blend(BlendMode.MULTIPLY, glow, innerShadow);
@@ -192,13 +210,13 @@ public class StartSceneController {
         logoText.setFill(Color.web("#feeb42"));
 
         // Set the font size of the text
-        logoText.setFont(Font.font(160));
+        logoText.setFont(Font.font(180));
 
         // Create an animation that periodically changes the glow and inner shadow level
-        KeyValue kv1 = new KeyValue(glow.levelProperty(), 0.0);
-        KeyValue kv2 = new KeyValue(glow.levelProperty(), 1.0);
-        KeyValue kv3 = new KeyValue(innerShadow.radiusProperty(), 0.0);
-        KeyValue kv4 = new KeyValue(innerShadow.radiusProperty(), 10.0);
+        KeyValue kv1 = new KeyValue(glow.levelProperty(), 0.0, Interpolator.EASE_BOTH);
+        KeyValue kv2 = new KeyValue(glow.levelProperty(), 1.0, Interpolator.EASE_BOTH);
+        KeyValue kv3 = new KeyValue(innerShadow.radiusProperty(), 0.0, Interpolator.EASE_BOTH);
+        KeyValue kv4 = new KeyValue(innerShadow.radiusProperty(), 5.0, Interpolator.EASE_BOTH);
         KeyFrame kf1 = new KeyFrame(Duration.ZERO, kv1, kv3);
         KeyFrame kf2 = new KeyFrame(Duration.seconds(1), kv2, kv4);
         KeyFrame kf3 = new KeyFrame(Duration.seconds(2), kv1, kv3);
@@ -207,6 +225,7 @@ public class StartSceneController {
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
 
 
         /*
