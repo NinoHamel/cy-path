@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 /**
- * PointTester is a class which creates a grid of 9 by 9 boxes and list of players.
+ * Board is a class which creates a grid of 9 by 9 boxes and list of players.
  * It shall be used to know how many players are still playing, who won and if a move is valid or not.
  *
  * @author Côme QUINTYN
@@ -91,8 +91,6 @@ public class Board {
         listOnGoing.add(player4);
     }
     //Getter
-
-
     /**
      * getter of the list of winners
      *
