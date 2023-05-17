@@ -15,6 +15,7 @@ public class Player {
     private final String name;
     private final String color;
     private Position position;
+    private int startOrientation;
 
     /**
      * Create a player
@@ -71,5 +72,10 @@ public class Player {
      */
     public void moveTo(Position newPosition) throws OutOfBoardException {
         this.position.move(newPosition.getX() - this.position.getX(), newPosition.getY() - this.position.getY());
+    }
+
+    public void setWall(Position position, boolean orientation){
+        // TODO verifier que le mur peut être poser
+        // TODO poser le mur (attente des classes Board et Box)
     }
 }

@@ -1,12 +1,13 @@
 package org.projet.cypath.tools;
+import javafx.geometry.Pos;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Position;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
+
 /**
  * Board is a class which creates a grid of 9 by 9 boxes and list of players.
  * It shall be used to know how many players are still playing, who won and if a move is valid or not.
@@ -16,6 +17,7 @@ import java.util.List;
  * @see Box
  */
 public class Board {
+
     private List<Player> listWinners;
     private List<Player> listOnGoing;
     private Box[][] box;
@@ -61,6 +63,7 @@ public class Board {
      * @param player3 is for player 3
      */
     public Board(Player player1, Player player2, Player player3) {
+        /*
         box = new Box[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -69,6 +72,10 @@ public class Board {
         }
         listOnGoing.add(player1);
         listOnGoing.add(player2);
+        listOnGoing.add(player3);
+         */
+
+        this(player1, player2);
         listOnGoing.add(player3);
     }
     /**
@@ -215,5 +222,53 @@ public class Board {
             return (position1.getY() == position2.getY() && Math.abs(position1.getX() - position2.getX()) <= 1) ||
                     (position1.getX() == position2.getX() && Math.abs(position1.getY() - position2.getY()) <= 1);
         }
+    }
+
+    public boolean hasPath(Position start, Position end) throws OutOfBoardException{
+        int directions[][] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
+        int saveVisitedBoxArray[][] = new int[9][9];
+        Queue<Position> queue = new LinkedList<>();
+        queue.add(start);
+        boolean hasWall = false;
+
+        while(queue.size() > 0){
+            Position treatedPosition = queue.peek();
+            queue.remove();
+            saveVisitedBoxArray[treatedPosition.getX()][treatedPosition.getY()] = -1;
+            if(treatedPosition.getX() == end.getX() && treatedPosition.getY() == end.getY()){
+                return true;
+            }
+            for(int i=0; i < 4; i++){
+                int newPositionRow = treatedPosition.getX() + directions[i][0];
+                int newPositionColumn = treatedPosition.getY() + directions[i][1];
+
+                if(newPositionRow >= 0 && newPositionColumn >= 0 && newPositionRow < 9 && newPositionColumn < 9 && saveVisitedBoxArray[newPositionRow][newPositionColumn] != -1){
+                    switch (i){
+                        case 0:
+                            hasWall = box[newPositionRow][newPositionColumn].hasRightWall();
+                            break;
+                        case 1:
+                            hasWall = box[newPositionRow][newPositionColumn].hasLeftWall();
+                            break;
+                        case 2:
+                            hasWall = box[newPositionRow][newPositionColumn].hasBottomWall();
+                            break;
+                        case 3:
+                            hasWall = box[newPositionRow][newPositionColumn].hasTopWall();
+                            break;
+                        default:
+                            throw new RuntimeException("Loop error");
+                    }
+                    if(!hasWall){
+                        if(treatedPosition.getX() == end.getX() && treatedPosition.getY() == end.getY()){
+                            return true;
+                        }
+                        queue.add(new Position(newPositionRow, newPositionColumn));
+                    }
+                }
+
+            }
+        }
+        return false;
     }
 }

@@ -1,8 +1,8 @@
 package org.projet.cypath.tools;
 
 public class Box {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     @Override
     public String toString() {
