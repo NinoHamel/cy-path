@@ -106,14 +106,18 @@ public class StartSceneController {
     private ImageView rulesImageView;
     @FXML
     private Text rulesText;
+    @FXML
+    private ImageView void1ImageView;
+    @FXML
+    private ImageView void2ImageView;
+
 
     /* IMAGES REGLES
     private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));*/
 
     private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));
-
     private Image soundImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/sound.png"));
-
+    private Image voidImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/void.png"));
     private static boolean musicState = false;
     private static int rulesTextState = 0;
 
@@ -370,6 +374,8 @@ public class StartSceneController {
         createImageView(previousButtonImageView,"/org/projet/cypath/back_settings.png",70,true);
         createImageView(nextButtonImageView,"/org/projet/cypath/next_settings.png",70,true);
         createImageView(rulesImageView, "/org/projet/cypath/rules1.png", 300, true);
+        createImageView(void1ImageView,"/org/projet/cypath/void.png",50,true);
+        createImageView(void2ImageView,"/org/projet/cypath/void.png",50,true);
         setRulesText(rulesText);
 
 
