@@ -168,7 +168,12 @@ public class Board {
             throw new InvalidWallException("A wall is already here");
         }
     }
-
+    /**
+     * Set a wall if possible
+     *
+     * @param box is for the first part of the wall
+     * @throws InvalidWallException if putting a wall on box1 and box2 isn't possible after verifying with {@link #canSetWall(Box)}
+     */
     public void setRightWall(Box box) throws InvalidWallException {
         if (canSetWall(box)) {
             int x=box.getX();
@@ -182,23 +187,103 @@ public class Board {
             throw new InvalidWallException("A wall is already here");
         }
     }
+    public boolean onBoard(Position position){
+        return (position.getX()>=0 && position.getX()<=8 && position.getY()>=0 && position.getY()<=8);
+    }
+    public boolean onBoard(int x,int y){
+        return (x>=0 && x<=8 && y>=0 && y<=8);
+    }
+    /**
+     *Give a list of box, with every possible move for a player
+     * @param player is the player who wants to move
+     * @return possibleMove a list of box where the player can move to
+     * @throws OutOfBoardException
+     */
+    public List<Box> possibleMove(Player player) throws OutOfBoardException {
+        List<Box> possibleMove;
+        possibleMove = new ArrayList<>();
+        Position positionPlayer=player.getPosition();
+        Box boxPlayer=box[positionPlayer.getX()-1][positionPlayer.getY()-1];
+        //Déplacement bas
+        Position positionBottom=new Position(positionPlayer.getX()+1,positionPlayer.getY());
+        Box boxBottom=new Box(positionPlayer.getX()+1,positionPlayer.getY());
+        //Déplacement haut
+        Position positionTop=new Position(positionPlayer.getX()-1,positionPlayer.getY());
+        Box boxTop=new Box(positionPlayer.getX()-1,positionPlayer.getY());
+        //Déplacement droite
+        Position positionRight=new Position(positionPlayer.getX(),positionPlayer.getY()+1);
+        Box boxRight=new Box(positionPlayer.getX(),positionPlayer.getY()+1);
+        //Déplacement gauche
+        Position positionLeft=new Position(positionPlayer.getX(),positionPlayer.getY()-1);
+        Box boxLeft=new Box(positionPlayer.getX(),positionPlayer.getY()-1);
+        if (onBoard(positionRight) && !boxPlayer.hasRightWall()){
+            if (!boxRight.hasPlayer()){
+                possibleMove.add(boxRight);
+            }
+            else{
+                possibleMoveJump(player,boxRight,possibleMove);
+            }
+        }
+        if (onBoard(positionLeft) && !boxPlayer.hasLeftWall()){
+            if (!boxLeft.hasPlayer()){
+                possibleMove.add(boxLeft);
+            }
+            else{
+                possibleMoveJump(player,boxLeft,possibleMove);
+            }
+        }
+        if (onBoard(positionTop) && !boxPlayer.hasTopWall()){
+            if (!boxTop.hasPlayer()){
+                possibleMove.add(boxTop);
+            }
+            else{
+                possibleMoveJump(player,boxTop,possibleMove);
+            }
+        }
+        if (onBoard(positionBottom) && !boxPlayer.hasBottomWall()){
+            if (!boxBottom.hasPlayer()){
+                possibleMove.add(boxBottom);
+            }
+            else{
+                possibleMoveJump(player,boxBottom,possibleMove);
+            }
+        }
+        return possibleMove;
+    }
 
     /**
-     * Validate if a  move from a position  to another is possible or not
-     * @param position1 is for the player who wants to move
-     * @param position2 is for the end position
-     * @return boolean True or False depending on the 2 positions or OutOfBoardException if positions are not valid
+     *
+     * @param player is the player who wants to move
+     * @param newBox is the box where another player is
+     * @param possibleMove is
+     * @throws OutOfBoardException
      */
-    public boolean canMove(Position position1, Position position2) throws Exception {
-        if (position1.getX() <= 0 || position1.getY() <= 0 || position2.getX() <= 0 || position2.getY() <= 0) {
-            throw new OutOfBoardException("The grid has only positive coordinates.");
+    public void possibleMoveJump(Player player,Box newBox,List<Box> possibleMove) throws OutOfBoardException {
+        Position positionPlayer=player.getPosition();
+        Position newPosition=new Position(newBox.getX()+1,newBox.getY());
+        //Déplacement bas
+        Box newBoxBottom=new Box(newPosition.getX()+1,newPosition.getY());
+        Position newPositionBottom=new Position(newPosition.getX()+1,newPosition.getY());
+        //Déplacement haut
+        Box newBoxTop=new Box(newPosition.getX()-1,newPosition.getY());
+        Position newPositionTop=new Position(newPosition.getX()-1,newPosition.getY());
+        //Déplacement droite
+        Box newBoxRight=new Box(newPosition.getX(),newPosition.getY()+1);
+        Position newPositionRight=new Position(newPosition.getX(),newPosition.getY()+1);
+        //Déplacement gauche
+        Box newBoxLeft=new Box(newPosition.getX(),newPosition.getY()-1);
+        Position newPositionLeft=new Position(newPosition.getX(),newPosition.getY()-1);
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxRight);
         }
-        else if (position1.getX() > 9 || position1.getY() > 9 || position2.getX() > 9 || position2.getY() > 9) {
-            throw new OutOfBoardException("The grid has only coordinates greater than 9.");
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxLeft);
         }
-        else {
-            return (position1.getY() == position2.getY() && Math.abs(position1.getX() - position2.getX()) <= 1) ||
-                    (position1.getX() == position2.getX() && Math.abs(position1.getY() - position2.getY()) <= 1);
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxTop);
+        }
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxBottom);
         }
     }
     /**
