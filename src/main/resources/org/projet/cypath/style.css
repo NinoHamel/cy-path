@@ -16,27 +16,3 @@
 .button:pressed {
     -fx-background-color: #3D6655;
 }
-
-.combobox {
-    -fx-background-color: #5C7E6E;
-    -fx-text-fill: #FFFFFF;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-}
-
-.combobox .list-cell {
-    -fx-background-color: #5C7E6E;
-    -fx-text-fill: #FFFFFF;
-}
-
-.combobox .list-cell:hover {
-    -fx-background-color: #3D6655;
-}
-
-.combobox .list-cell:filled:selected, .combobox .list-cell:filled:selected:hover {
-    -fx-background-color: #7B9E89;
-    -fx-text-fill: #FFFFFF;
-}
-
-
-

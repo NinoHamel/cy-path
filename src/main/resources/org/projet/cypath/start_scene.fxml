@@ -28,30 +28,20 @@
 
     <StackPane fx:id="playerSelectionView" visible="false" minWidth="1720" minHeight="720">
         <VBox spacing="20" alignment="CENTER">
-            <Text text="CY-PATH" style="-fx-font-size: 48;"/>
-            <Label text="Nombre de joueurs:"/>
-            <ComboBox fx:id="numPlayersComboBox" styleClass="combobox"/>
+            <Text text="CY-PATH" style="-fx-font-size: 100;"/>
+            <Label text="Choose the number of players:" style="-fx-font-size: 50; -fx-font-weight: bold; -fx-text-fill: black;"/>
+            <Label fx:id="numPlayersLabel" text="2" style="-fx-font-size: 40; -fx-border-color: black; -fx-border-width: 5; -fx-padding: 30; -fx-text-fill: black;"/>
             <VBox alignment="CENTER" spacing="20">
                 <HBox alignment="CENTER" spacing="10">
-                    <VBox fx:id="player1ColorBox" alignment="CENTER" spacing="10" visible="false">
-                        <Label text="Couleur du joueur 1:"/>
-                        <ComboBox fx:id="player1ColorComboBox" />
-                    </VBox>
-                    <VBox fx:id="player2ColorBox" alignment="CENTER" spacing="10" visible="false">
-                        <Label text="Couleur du joueur 2:"/>
-                        <ComboBox fx:id="player2ColorComboBox" />
-                    </VBox>
-                    <VBox fx:id="player3ColorBox" alignment="CENTER" spacing="10" visible="false">
-                        <Label text="Couleur du joueur 3:"/>
-                        <ComboBox fx:id="player3ColorComboBox" />
-                    </VBox>
-                    <VBox fx:id="player4ColorBox" alignment="CENTER" spacing="10" visible="false">
-                        <Label text="Couleur du joueur 4:"/>
-                        <ComboBox fx:id="player4ColorComboBox" />
-                    </VBox>
-
+                    <ImageView fx:id="minusButtonImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleMinusButtonAction"/>
+                    <ImageView fx:id="plusButtonImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handlePlusButtonAction"/>
                 </HBox>
-                <Button text="Commencer" styleClass="button" onAction="#handleStartButtonAction"/>
+
+                <HBox alignment="CENTER" spacing="20">
+                    <ImageView fx:id="backButtonImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleButtonBack"/>
+                    <ImageView fx:id="startgameImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleStartButtonAction"/>
+                </HBox>
+
             </VBox>
         </VBox>
     </StackPane>
