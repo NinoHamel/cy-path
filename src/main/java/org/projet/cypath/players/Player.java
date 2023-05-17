@@ -15,6 +15,7 @@ public class Player {
     private final String name;
     private final String color;
     private Position position;
+  	private Position positionInitial;
 
     /**
      * Create a player
@@ -29,6 +30,7 @@ public class Player {
         this.name = name;
         this.color = color;
         this.position = position;
+      	this.positionInitial = position;
     }
 
     /**
