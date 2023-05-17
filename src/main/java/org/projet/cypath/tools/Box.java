@@ -1,14 +1,20 @@
 package org.projet.cypath.tools;
 
+import javafx.geometry.Pos;
+import org.projet.cypath.exceptions.OutOfBoardException;
+
 public class Box {
-    private int x;
-    private int y;
+
+    Position position;
+    int x= position.getX();
+    int y= position.getY();
 
     @Override
     public String toString() {
         return "Box{" +
-                "x=" + x +
-                ", y=" + y +
+                "position=" + position +
+                ", x="+ x +
+                ", y="+ y +
                 ", leftWall=" + leftWall +
                 ", rightWall=" + rightWall +
                 ", topWall=" + topWall +
@@ -22,9 +28,11 @@ public class Box {
     private boolean bottomWall;
     private boolean player;
 
-    public Box(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Box(Position position) {
+        this.position = position;
+    }
+    public Box(int x, int y) throws OutOfBoardException {
+        this.position=new Position(x,y);
     }
 
     public boolean hasLeftWall() {
@@ -67,7 +75,11 @@ public class Box {
         return y;
     }
 
-    public boolean isHasPlayer() {
+    public Position getPosition() {
+        return position;
+    }
+
+    public boolean hasPlayer() {
         return player;
     }
 
