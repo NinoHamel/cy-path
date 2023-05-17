@@ -20,6 +20,7 @@ public class Box {
     private boolean rightWall;
     private boolean topWall;
     private boolean bottomWall;
+    private boolean player;
 
     public Box(int x, int y) {
         this.x = x;
@@ -64,5 +65,13 @@ public class Box {
 
     public int getY() {
         return y;
+    }
+
+    public boolean isHasPlayer() {
+        return player;
+    }
+
+    public void setHasPlayer(boolean hasPlayer) {
+        this.player = hasPlayer;
     }
 }
