@@ -42,7 +42,14 @@ public class Position{
     public int getY(){
         return this.ordinate;
     }
-
+    /**
+     * Return a boolean if 2 positions are equal or not
+     * @param position
+     * @return true or false depending on the result
+     */
+    public boolean equal(Position position){
+        return (this.getX()==position.getX() && this.getY()==position.getY());
+    }
     /**
      * Move the position by changing its abscissa and its ordinate
      *

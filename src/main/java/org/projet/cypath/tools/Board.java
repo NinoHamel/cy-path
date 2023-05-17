@@ -1,7 +1,9 @@
 package org.projet.cypath.tools;
+import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
+import org.projet.cypath.tools.Position;
 
 import java.util.*;
 
@@ -14,172 +16,73 @@ import java.util.*;
  * @see Box
  */
 public class Board {
-
-    private List<Player> listWinners;
-    private List<Player> listOnGoing;
     private Box[][] box;
-    //toString
-    /**
-     * Display the elements of Board
-     * @return String with listWinners,listOnGoing and box
-     */
-    public String toString() {
-        return "Board{" +
-                "listWinners=" + listWinners +
-                ", listOnGoing=" + listOnGoing +
-                ", box=" + Arrays.deepToString(box) +
-                '}';
-    }
     //Constructor
 
     /**
-     * Creates a 9 by 9 array to represent a grid and a list for 2 players
-     *
-     * @param player1 is for player 1
-     * @param player2 is for player 2
+     * Creates a 9 by 9 array to represent a grid
      */
-    public Board(Player player1, Player player2) {
+    public Board() {
         box = new Box[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 box[i][j] = new Box(i, j);
             }
         }
-        listOnGoing = new ArrayList<>();
-        listOnGoing.add(player1);
-        listOnGoing.add(player2);
-
-        listWinners = new ArrayList<>();
     }
 
-    /**
-     * Creates a 9 by 9 array to represent a grid and a list for 3 players
-     *
-     * @param player1 is for player 1
-     * @param player2 is for player 2
-     * @param player3 is for player 3
-     */
-    public Board(Player player1, Player player2, Player player3) {
-        /*
-        box = new Box[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                box[i][j] = new Box(i, j);
-            }
-        }
-        listOnGoing.add(player1);
-        listOnGoing.add(player2);
-        listOnGoing.add(player3);
-         */
-
-        this(player1, player2);
-        listOnGoing.add(player3);
-    }
-    /**
-     * Creates a 9 by 9 array to represent a grid and a list for 4 player
-     * @param player1 is for player 1
-     * @param player2 is for player 2
-     * @param player3 is for player 3
-     * @param player4 is for player 4
-     */
-    public Board(Player player1, Player player2, Player player3, Player player4) {
-        box = new Box[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                box[i][j] = new Box(i, j);
-            }
-        }
-        listOnGoing.add(player1);
-        listOnGoing.add(player2);
-        listOnGoing.add(player3);
-        listOnGoing.add(player4);
-    }
-    //Getter
-    /**
-     * getter of the list of winners
-     *
-     * @return list of winners from first to last
-     */
-    public List<Player> getListWinners() {
-        return listWinners;
-    }
-    /**
-     * getter of the list of players
-     *
-     * @return list of players who are still playing
-     */
-    public List<Player> getListOnGoing() {
-        return listOnGoing;
-    }
-    /**
-     * getter of the box
-     *
-     * @return box
-     */
     public Box[][] getBox() {
         return box;
     }
     //Setter
-    /**
-     *add the winner in listWinners and remove the player from listOnGoing
-     * @param player is for the player who won
-     */
-    public void addPlayerListWinners(Player player) {
-        listWinners.add(player);
-        removePlayerListOnGoing(player);
-    }
-    /**
-     * remove the player from listOnGoing
-     * @param player
-     */
-    public void removePlayerListOnGoing(Player player) {
-        listOnGoing.remove(player);
-    }
-    //Function
+
 
     /**
      * Validate if a wall can be set
      *
-     * @param box1 is for first position of the wall
-     * @param box2 is for the second position of the wall
+     * @param box is for first position of the wall
      * @return boolean True or False depending on the 2 positions or an error
      */
-    public Boolean canSetWall(Box box1, Box box2) throws InvalidWallException {
-        if (box1!=box2) {
-            if (((box1.getY() == box2.getY() && Math.abs(box1.getX() - box2.getX()) <= 1) && (!box1.hasTopWall() && !box2.hasTopWall())) ||
-                    ((box1.getX() == box2.getX() && Math.abs(box1.getY() - box2.getY()) <= 1) && (!box1.hasRightWall() && !box2.hasRightWall()))) {
-                return true;
-            }
-            if (((box1.getY() == box2.getY() && Math.abs(box1.getX() - box2.getX()) > 1) && (!box1.hasTopWall() && !box2.hasTopWall())) ||
-                    ((box1.getX() == box2.getX() && Math.abs(box1.getY() - box2.getY()) > 1) && (!box1.hasRightWall() && !box2.hasRightWall()))) {
-                throw new InvalidWallException("This wall is not continuous");
-            }
+
+    public Boolean canSetWall(Box box) throws InvalidWallException {
+        if (box.getX() < 0 || box.getY() < 0){
+            throw new InvalidWallException("The wall can only be put in positive coordinates.");
         }
-        if (box1==box2){
-            throw new InvalidWallException("There is only one box selected");
+        else if (box.getX() > 7 || box.getY() >7){
+            throw new InvalidWallException("The wall coordinates can only be lesser than 8");
         }
-        return false;
+        else return true;
     }
     /**
-     * Set a wall if possible
+     * Set a wall on the bottom or in the right if possible
      *
-     * @param box1 is for the first part of the wall
-     * @param box2 is for the second part of the wall
-     * @throws InvalidWallException if putting a wall on box1 and box2 isn't possible after verifying with {@link #canSetWall(Box, Box)}
+     * @param box is for the 1st box
+     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box)}
      */
-    public void setWall(Box box1, Box box2) throws InvalidWallException {
-        if (canSetWall(box1, box2)) {
-            //Right wall
-            if (box1.getY() == box2.getY()) {
-                box1.setRightWall(true);
-                box2.setRightWall(true);
-            }
-            //Left wall
-            if (box1.getX() == box2.getX()) {
-                box1.setTopWall(true);
-                box2.setTopWall(true);
-            }
-        } else {
+    public void setBottomWall(Box box) throws InvalidWallException {
+        if (canSetWall(box)) {
+            int x=box.getX();
+            int y=box.getY();
+            this.box[x][y].setBottomWall(true);
+            this.box[x][y+1].setBottomWall(true);
+            this.box[x+1][y].setTopWall(true);
+            this.box[x+1][y+1].setTopWall(true);
+        }
+         else {
+            throw new InvalidWallException("A wall is already here");
+        }
+    }
+
+    public void setRightWall(Box box) throws InvalidWallException {
+        if (canSetWall(box)) {
+            int x=box.getX();
+            int y=box.getY();
+            this.box[x][y].setRightWall(true);
+            this.box[x+1][y].setRightWall(true);
+            this.box[x][y+1].setLeftWall(true);
+            this.box[x+1][y+1].setLeftWall(true);
+        }
+        else {
             throw new InvalidWallException("A wall is already here");
         }
     }
