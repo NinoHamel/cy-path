@@ -153,7 +153,7 @@ public class Board {
      * Set a wall if possible
      *
      * @param box is for the first part of the wall
-     * @throws InvalidWallException if putting a wall on box1 and box2 isn't possible after verifying with {@link #canSetWall(Box, Box)}
+     * @throws InvalidWallException if putting a wall on box1 and box2 isn't possible after verifying with {@link #canSetWall(Box)}
      */
     public void setBottomWall(Box box) throws InvalidWallException {
         if (canSetWall(box)) {
