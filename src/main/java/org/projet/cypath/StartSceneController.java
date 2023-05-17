@@ -2,23 +2,29 @@ package org.projet.cypath;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +34,8 @@ import javafx.scene.media.MediaView;
 
 public class StartSceneController {
     private MainGame mainGame;
-    private List<Color> selectedColors = new ArrayList<>();
+    private int numPlayers = 2;
+    private final List<Color> selectedColors = new ArrayList<>();
     @FXML
     private ComboBox<Integer> numPlayersComboBox;
     @FXML
@@ -75,13 +82,23 @@ public class StartSceneController {
     private ImageView quitImageView;
     @FXML
     private Text logoText;
+    @FXML
+    private ImageView backButtonImageView;
+    @FXML
+    private ImageView startgameImageView;
+    @FXML
+    private ImageView minusButtonImageView;
+    @FXML
+    private ImageView plusButtonImageView;
+    @FXML
+    private Label numPlayersLabel;
 
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
 
     @FXML
-    private void handleStartButtonAction(ActionEvent event) throws IOException {
+    private void handleStartButtonAction(MouseEvent event) throws IOException {
         mainGame.showGameScene();
     }
 
@@ -101,6 +118,8 @@ public class StartSceneController {
 
     @FXML
     private void handleNewGameButtonAction(MouseEvent event) {
+        System.out.println("New Game button clicked");
+
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), titleScreen);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
@@ -116,6 +135,13 @@ public class StartSceneController {
         });
 
         fadeOut.play();
+
+        InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");
+        assert is != null;
+        Image image = new Image(is);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background = new Background(backgroundImage);
+        playerSelectionView.setBackground(background);
     }
 
     @FXML
@@ -134,10 +160,45 @@ public class StartSceneController {
         Platform.exit();
     }
 
+    @FXML
+    public void handleButtonBack(MouseEvent mouseEvent) {
+        System.out.println("Back button clicked");
+
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), playerSelectionView);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), titleScreen);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        fadeOut.setOnFinished(e -> {
+            playerSelectionView.setVisible(false);
+            titleScreen.setVisible(true);
+            fadeIn.play();
+        });
+
+        fadeOut.play();
+    }
+
+    @FXML
+    private void handlePlusButtonAction(MouseEvent event) {
+        if (numPlayers < 4) {
+            numPlayers++;
+            numPlayersLabel.setText(String.valueOf(numPlayers));
+        }
+    }
+
+    @FXML
+    private void handleMinusButtonAction(MouseEvent event) {
+        if (numPlayers > 2) {
+            numPlayers--;
+            numPlayersLabel.setText(String.valueOf(numPlayers));
+        }
+    }
+
 
     public void initialize() {
-        //numPlayersComboBox.setItems(FXCollections.observableArrayList(2,3, 4));
-
         File file = new File("src/main/resources/org/projet/cypath/cypath.mp4");
         Media media = new Media(file.toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -179,6 +240,22 @@ public class StartSceneController {
         loadImageView.setPreserveRatio(true);
         settingsImageView.setPreserveRatio(true);
         quitImageView.setPreserveRatio(true);
+
+        backButtonImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/back.png"))));
+        backButtonImageView.setFitHeight(70);
+        backButtonImageView.setPreserveRatio(true);
+
+        startgameImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/start.png"))));
+        startgameImageView.setFitHeight(80);
+        startgameImageView.setPreserveRatio(true);
+
+        minusButtonImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/minus.png"))));
+        minusButtonImageView.setFitHeight(50);
+        minusButtonImageView.setPreserveRatio(true);
+
+        plusButtonImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/plus.png"))));
+        plusButtonImageView.setFitHeight(50);
+        plusButtonImageView.setPreserveRatio(true);
 
         InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background.png");
         assert is != null;
@@ -225,81 +302,6 @@ public class StartSceneController {
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-
-
-
-        /*
-        numPlayersComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            player1ColorBox.setVisible(newValue >= 1);
-            player2ColorBox.setVisible(newValue >= 2);
-            player3ColorBox.setVisible(newValue >= 3);
-            player4ColorBox.setVisible(newValue >= 4);
-        });
-
-
-        List<Color> availableColors = Arrays.asList(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
-        List<ComboBox<Color>> allColorComboBoxes = Arrays.asList(player1ColorComboBox, player2ColorComboBox, player3ColorComboBox, player4ColorComboBox);
-        initializeColorComboBox(player1ColorComboBox, allColorComboBoxes, availableColors);
-        initializeColorComboBox(player2ColorComboBox, allColorComboBoxes, availableColors);
-        initializeColorComboBox(player3ColorComboBox, allColorComboBoxes, availableColors);
-        initializeColorComboBox(player4ColorComboBox, allColorComboBoxes, availableColors);
-        */
-    }
-
-    /*
-    private void initializeColorComboBox(ComboBox<Color> colorComboBox, List<ComboBox<Color>> allColorComboBoxes, List<Color> availableColors) {
-        colorComboBox.getItems().addAll(availableColors);
-        colorComboBox.setCellFactory(new Callback<ListView<Color>, ListCell<Color>>() {
-            @Override
-            public ListCell<Color> call(ListView<Color> param) {
-                return new ListCell<Color>() {
-                    @Override
-                    protected void updateItem(Color item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null || empty) {
-                            setGraphic(null);
-                        } else {
-                            Rectangle colorRectangle = new Rectangle(20, 20, item);
-                            setGraphic(colorRectangle);
-                            setText(getColorName(item));
-                        }
-                    }
-                };
-            }
-        });
-        colorComboBox.setButtonCell(new ListCell<Color>() {
-            @Override
-            protected void updateItem(Color item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setGraphic(null);
-                } else {
-                    Rectangle colorRectangle = new Rectangle(20, 20, item);
-                    setGraphic(colorRectangle);
-                    setText(getColorName(item));
-                }
-            }
-        });
-        colorComboBox.setValue(Color.RED);
-
-        colorComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                selectedColors.add(newValue);
-                for (ComboBox<Color> otherComboBox : allColorComboBoxes) {
-                    if (otherComboBox != colorComboBox) {
-                        otherComboBox.getItems().remove(newValue);
-                        if (oldValue != null) {
-                            if (!selectedColors.contains(oldValue)) {
-                                otherComboBox.getItems().add(oldValue);
-                            }
-                        }
-                    }
-                }
-                if (oldValue != null) {
-                    selectedColors.remove(oldValue);
-                }
-            }
-        });
     }
 
     private String getColorName(Color color) {
@@ -315,6 +317,4 @@ public class StartSceneController {
             return "Unknown";
         }
     }
-    */
-
 }

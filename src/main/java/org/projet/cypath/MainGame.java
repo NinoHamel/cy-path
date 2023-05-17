@@ -12,12 +12,21 @@ import java.util.Objects;
 public class MainGame extends Application {
     private Stage primaryStage;
 
+    /**
+     * Start the game on the StartScene
+     * @param stage
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         this.primaryStage = stage;
         showStartScene();
     }
 
+    /**
+     * Get the fxml, launch the controller, and set properties to the stage (name / size)
+     * @throws IOException
+     */
     public void showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
         Parent root = loader.load();
@@ -30,7 +39,10 @@ public class MainGame extends Application {
         primaryStage.show();
     }
 
-
+    /**
+     * Get the fxml, and launch the GameScene, with its controller
+     * @throws IOException
+     */
     public void showGameScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("game_scene.fxml"));
         Parent root = loader.load();
@@ -41,6 +53,10 @@ public class MainGame extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Get the fxml, and launch the EndScene, with its controller
+     * @throws IOException
+     */
     public void showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
         Parent root = loader.load();
@@ -61,6 +77,10 @@ public class MainGame extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Start the game.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
