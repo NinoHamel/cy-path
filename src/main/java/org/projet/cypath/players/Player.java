@@ -15,7 +15,7 @@ public class Player {
     private final String name;
     private final String color;
     private Position position;
-  	private Position positionInitial;
+    private final Position positionInitial;
 
     /**
      * Create a player
@@ -66,6 +66,13 @@ public class Player {
         return new Position(this.position.getX(), this.position.getY());
     }
 
+    /**
+     * Getter of the intial position of the player
+     * @return the position of the player
+     */
+    public Position getPositionInitial() {
+        return positionInitial;
+    }
     /**
      * Move the player by changing his position
      * @param newPosition the new position of the player
