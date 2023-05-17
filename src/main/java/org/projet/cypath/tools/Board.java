@@ -136,49 +136,53 @@ public class Board {
     /**
      * Validate if a wall can be set
      *
-     * @param box1 is for first position of the wall
-     * @param box2 is for the second position of the wall
+     * @param box is for first position of the wall
      * @return boolean True or False depending on the 2 positions or an error
      */
-    public Boolean canSetWall(Box box1, Box box2) throws InvalidWallException {
-        if (box1!=box2) {
-            if (((box1.getY() == box2.getY() && Math.abs(box1.getX() - box2.getX()) <= 1) && (!box1.hasTopWall() && !box2.hasTopWall())) ||
-                    ((box1.getX() == box2.getX() && Math.abs(box1.getY() - box2.getY()) <= 1) && (!box1.hasRightWall() && !box2.hasRightWall()))) {
-                return true;
-            }
-            if (((box1.getY() == box2.getY() && Math.abs(box1.getX() - box2.getX()) > 1) && (!box1.hasTopWall() && !box2.hasTopWall())) ||
-                    ((box1.getX() == box2.getX() && Math.abs(box1.getY() - box2.getY()) > 1) && (!box1.hasRightWall() && !box2.hasRightWall()))) {
-                throw new InvalidWallException("This wall is not continuous");
-            }
+
+    public Boolean canSetWall(Box box) throws InvalidWallException {
+        if (box.getX() < 0 || box.getY() < 0){
+            throw new InvalidWallException("The wall can only be put in positive coordinates.");
         }
-        if (box1==box2){
-            throw new InvalidWallException("There is only one box selected");
+        else if (box.getX() > 7 || box.getY() >7){
+            throw new InvalidWallException("The wall coordinates can only be lesser than 8");
         }
-        return false;
+        else return true;
     }
     /**
      * Set a wall if possible
      *
-     * @param box1 is for the first part of the wall
-     * @param box2 is for the second part of the wall
+     * @param box is for the first part of the wall
      * @throws InvalidWallException if putting a wall on box1 and box2 isn't possible after verifying with {@link #canSetWall(Box, Box)}
      */
-    public void setWall(Box box1, Box box2) throws InvalidWallException {
-        if (canSetWall(box1, box2)) {
-            //Right wall
-            if (box1.getY() == box2.getY()) {
-                box1.setRightWall(true);
-                box2.setRightWall(true);
-            }
-            //Left wall
-            if (box1.getX() == box2.getX()) {
-                box1.setTopWall(true);
-                box2.setTopWall(true);
-            }
-        } else {
+    public void setBottomWall(Box box) throws InvalidWallException {
+        if (canSetWall(box)) {
+            int x=box.getX();
+            int y=box.getY();
+            this.box[x][y].setBottomWall(true);
+            this.box[x][y+1].setBottomWall(true);
+            this.box[x+1][y].setTopWall(true);
+            this.box[x+1][y+1].setTopWall(true);
+        }
+         else {
             throw new InvalidWallException("A wall is already here");
         }
     }
+
+    public void setRightWall(Box box) throws InvalidWallException {
+        if (canSetWall(box)) {
+            int x=box.getX();
+            int y=box.getY();
+            this.box[x][y].setRightWall(true);
+            this.box[x+1][y].setRightWall(true);
+            this.box[x][y+1].setLeftWall(true);
+            this.box[x+1][y+1].setLeftWall(true);
+        }
+        else {
+            throw new InvalidWallException("A wall is already here");
+        }
+    }
+
     /**
      * Validate if a  move from a position  to another is possible or not
      * @param position1 is for the player who wants to move
