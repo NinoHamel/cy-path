@@ -36,6 +36,12 @@ public class Board {
         return box;
     }
     //Setter
+    public Box getBox(int x,int y) throws OutOfBoardException {
+        if (onBoard(x,y)) {
+            return box[x][y];
+        }
+        throw new OutOfBoardException("donnes pas dans le tableau");
+    }
 
 
     /**
@@ -104,49 +110,64 @@ public class Board {
         List<Box> possibleMove;
         possibleMove = new ArrayList<>();
         Position positionPlayer=player.getPosition();
-        Box boxPlayer=box[positionPlayer.getX()-1][positionPlayer.getY()-1];
+        Box boxPlayer=box[positionPlayer.getX()][positionPlayer.getY()];
         //Déplacement bas
-        Position positionBottom=new Position(positionPlayer.getX()+1,positionPlayer.getY());
-        Box boxBottom=new Box(positionBottom);
+        if (onBoard(positionPlayer.getX()+1,positionPlayer.getY())) {
+            Position positionBottom = new Position(positionPlayer.getX() + 1, positionPlayer.getY());
+            Box boxBottom = box[positionPlayer.getX() + 1][positionPlayer.getY()];
+            if (onBoard(positionBottom) && !boxPlayer.hasBottomWall()){
+                if (!boxBottom.hasPlayer()){
+                    //System.out.println("bas");
+                    //System.out.println(boxBottom);
+                    possibleMove.add(boxBottom);
+                }
+                else{
+                    possibleMoveJump(player,boxBottom,possibleMove);
+                }
+            }
+        }
         //Déplacement haut
-        Position positionTop=new Position(positionPlayer.getX()-1,positionPlayer.getY());
-        Box boxTop=new Box(positionTop);
+        if (onBoard(positionPlayer.getX()-1,positionPlayer.getY())) {
+            Position positionTop = new Position(positionPlayer.getX() - 1, positionPlayer.getY());
+            Box boxTop = box[positionPlayer.getX() - 1][positionPlayer.getY()];
+            if (onBoard(positionTop) && !boxPlayer.hasTopWall()) {
+                if (!boxTop.hasPlayer()) {
+                    //System.out.println("haut");
+                    //System.out.println(boxTop);
+                    possibleMove.add(boxTop);
+                } else {
+                    possibleMoveJump(player,boxTop,possibleMove);
+                }
+            }
+        }
         //Déplacement droite
-        Position positionRight=new Position(positionPlayer.getX(),positionPlayer.getY()+1);
-        Box boxRight=new Box(positionRight);
+        if (onBoard(positionPlayer.getX(),positionPlayer.getY()+1)) {
+            Position positionRight = new Position(positionPlayer.getX(), positionPlayer.getY() + 1);
+            Box boxRight = box[positionPlayer.getX()][positionPlayer.getY() + 1];
+            if (onBoard(positionRight) && !boxPlayer.hasRightWall()){
+                if (!boxRight.hasPlayer()){
+                    //System.out.println("droite");
+                    //System.out.println(boxRight);
+                    possibleMove.add(boxRight);
+                }
+                else{
+                    possibleMoveJump(player,boxRight,possibleMove);
+                }
+            }
+        }
         //Déplacement gauche
-        Position positionLeft=new Position(positionPlayer.getX(),positionPlayer.getY()-1);
-        Box boxLeft=new Box(positionLeft);
-        if (onBoard(positionRight) && !boxPlayer.hasRightWall()){
-            if (!boxRight.hasPlayer()){
-                possibleMove.add(boxRight);
-            }
-            else{
-                possibleMoveJump(player,boxRight,possibleMove);
-            }
-        }
-        if (onBoard(positionLeft) && !boxPlayer.hasLeftWall()){
-            if (!boxLeft.hasPlayer()){
-                possibleMove.add(boxLeft);
-            }
-            else{
-                possibleMoveJump(player,boxLeft,possibleMove);
-            }
-        }
-        if (onBoard(positionTop) && !boxPlayer.hasTopWall()){
-            if (!boxTop.hasPlayer()){
-                possibleMove.add(boxTop);
-            }
-            else{
-                possibleMoveJump(player,boxTop,possibleMove);
-            }
-        }
-        if (onBoard(positionBottom) && !boxPlayer.hasBottomWall()){
-            if (!boxBottom.hasPlayer()){
-                possibleMove.add(boxBottom);
-            }
-            else{
-                possibleMoveJump(player,boxBottom,possibleMove);
+        if (onBoard(positionPlayer.getX(),positionPlayer.getY()-1)) {
+            Position positionLeft = new Position(positionPlayer.getX(), positionPlayer.getY() - 1);
+            Box boxLeft = box[positionPlayer.getX()][positionPlayer.getY() - 1];
+            if (onBoard(positionLeft) && !boxPlayer.hasLeftWall()){
+                if (!boxLeft.hasPlayer()){
+                    //System.out.println("gauche");
+                    //System.out.println(boxLeft);
+                    possibleMove.add(boxLeft);
+                }
+                else{
+                    possibleMoveJump(player,boxLeft,possibleMove);
+                }
             }
         }
         return possibleMove;
@@ -160,29 +181,47 @@ public class Board {
      */
     public void possibleMoveJump(Player player,Box newBox,List<Box> possibleMove) throws OutOfBoardException {
         Position positionPlayer=player.getPosition();
+        //System.out.println(newBox);
+        //System.out.println(newBox);
         //Déplacement bas
-        Position newPositionBottom=new Position(newBox.getX()+1,newBox.getY());
-        Box newBoxBottom=new Box(newPositionBottom);
+        if (onBoard(newBox.getX()+1,newBox.getY())) {
+            Position newPositionBottom = new Position(newBox.getX() + 1, newBox.getY());
+            Box newBoxBottom = new Box(newPositionBottom);
+            if (onBoard(newPositionBottom) && !newBox.hasBottomWall() && !newPositionBottom.equal(positionPlayer)){
+                possibleMove.add(newBoxBottom);
+                //System.out.println("player bas");
+                //System.out.println(newBoxBottom);
+            }
+        }
         //Déplacement haut
-        Position newPositionTop=new Position(newBox.getX()-1,newBox.getY());
-        Box newBoxTop=new Box(newPositionTop);
+        if (onBoard(newBox.getX()-1,newBox.getY())) {
+            Position newPositionTop = new Position(newBox.getX() - 1, newBox.getY());
+            Box newBoxTop = new Box(newPositionTop);
+            if (onBoard(newPositionTop) && !newBox.hasRightWall() && !newPositionTop.equal(positionPlayer)){
+                possibleMove.add(newBoxTop);
+                //System.out.println("player haut");
+                //System.out.println(newBoxTop);
+            }
+        }
         //Déplacement droite
-        Position newPositionRight=new Position(newBox.getX(),newBox.getY()+1);
-        Box newBoxRight=new Box(newPositionRight);
+        if (onBoard(newBox.getX(),newBox.getY()+1)) {
+            Position newPositionRight = new Position(newBox.getX(), newBox.getY() + 1);
+            Box newBoxRight = new Box(newPositionRight);
+            if (onBoard(newPositionRight) && !newBox.hasRightWall() && !newPositionRight.equal(positionPlayer)){
+                possibleMove.add(newBoxRight);
+                //System.out.println("player droite");
+                //System.out.println(newBoxRight);
+            }
+        }
         //Déplacement gauche
-        Position newPositionLeft=new Position(newBox.getX(),newBox.getY()-1);
-        Box newBoxLeft=new Box(newPositionLeft);
-        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
-            possibleMove.add(newBoxRight);
-        }
-        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
-            possibleMove.add(newBoxLeft);
-        }
-        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
-            possibleMove.add(newBoxTop);
-        }
-        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
-            possibleMove.add(newBoxBottom);
+        if (onBoard(newBox.getX(),newBox.getY()-1)) {
+            Position newPositionLeft = new Position(newBox.getX(), newBox.getY() - 1);
+            Box newBoxLeft = new Box(newPositionLeft);
+            if (onBoard(newPositionLeft) && !newBox.hasRightWall() && !newPositionLeft.equal(positionPlayer)){
+                possibleMove.add(newBoxLeft);
+                //System.out.println("player gauche");
+                //System.out.println(newBoxLeft);
+            }
         }
     }
     /**
