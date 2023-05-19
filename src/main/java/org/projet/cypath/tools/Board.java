@@ -1,4 +1,5 @@
 package org.projet.cypath.tools;
+import javafx.geometry.Pos;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
@@ -22,11 +23,12 @@ public class Board {
     /**
      * Creates a 9 by 9 array to represent a grid
      */
-    public Board() {
+    public Board() throws OutOfBoardException {
         box = new Box[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                box[i][j] = new Box(i, j);
+                Position position=new Position(i,j);
+                box[i][j] = new Box(position);
             }
         }
     }
@@ -86,6 +88,104 @@ public class Board {
             throw new InvalidWallException("A wall is already here");
         }
     }
+    public boolean onBoard(Position position){
+        return (position.getX()>=0 && position.getX()<=8 && position.getY()>=0 && position.getY()<=8);
+    }
+    public boolean onBoard(int x,int y){
+        return (x>=0 && x<=8 && y>=0 && y<=8);
+    }
+
+    /**
+     *Give a list of box, with every possible move for a player
+     * @param player is the player who wants to move
+     * @return possibleMove a list of box where the player can move to
+     * @throws OutOfBoardException
+     */
+    public List<Box> possibleMove(Player player) throws OutOfBoardException {
+        List<Box> possibleMove;
+        possibleMove = new ArrayList<>();
+        Position positionPlayer=player.getPosition();
+        Box boxPlayer=box[positionPlayer.getX()-1][positionPlayer.getY()-1];
+        //Déplacement bas
+        Position positionBottom=new Position(positionPlayer.getX()+1,positionPlayer.getY());
+        Box boxBottom=new Box(positionBottom);
+        //Déplacement haut
+        Position positionTop=new Position(positionPlayer.getX()-1,positionPlayer.getY());
+        Box boxTop=new Box(positionTop);
+        //Déplacement droite
+        Position positionRight=new Position(positionPlayer.getX(),positionPlayer.getY()+1);
+        Box boxRight=new Box(positionRight);
+        //Déplacement gauche
+        Position positionLeft=new Position(positionPlayer.getX(),positionPlayer.getY()-1);
+        Box boxLeft=new Box(positionLeft);
+        if (onBoard(positionRight) && !boxPlayer.hasRightWall()){
+            if (!boxRight.hasPlayer()){
+                possibleMove.add(boxRight);
+            }
+            else{
+                possibleMoveJump(player,boxRight,possibleMove);
+            }
+        }
+        if (onBoard(positionLeft) && !boxPlayer.hasLeftWall()){
+            if (!boxLeft.hasPlayer()){
+                possibleMove.add(boxLeft);
+            }
+            else{
+                possibleMoveJump(player,boxLeft,possibleMove);
+            }
+        }
+        if (onBoard(positionTop) && !boxPlayer.hasTopWall()){
+            if (!boxTop.hasPlayer()){
+                possibleMove.add(boxTop);
+            }
+            else{
+                possibleMoveJump(player,boxTop,possibleMove);
+            }
+        }
+        if (onBoard(positionBottom) && !boxPlayer.hasBottomWall()){
+            if (!boxBottom.hasPlayer()){
+                possibleMove.add(boxBottom);
+            }
+            else{
+                possibleMoveJump(player,boxBottom,possibleMove);
+            }
+        }
+        return possibleMove;
+    }
+    /**
+     * This method is used in {@link #possibleMove(Player)} to give differents move possible if there is 2 players next to each other.
+     * @param player is the player who wants to move
+     * @param newBox is the box where another player is
+     * @param possibleMove is
+     * @throws OutOfBoardException
+     */
+    public void possibleMoveJump(Player player,Box newBox,List<Box> possibleMove) throws OutOfBoardException {
+        Position positionPlayer=player.getPosition();
+        //Déplacement bas
+        Position newPositionBottom=new Position(newBox.getX()+1,newBox.getY());
+        Box newBoxBottom=new Box(newPositionBottom);
+        //Déplacement haut
+        Position newPositionTop=new Position(newBox.getX()-1,newBox.getY());
+        Box newBoxTop=new Box(newPositionTop);
+        //Déplacement droite
+        Position newPositionRight=new Position(newBox.getX(),newBox.getY()+1);
+        Box newBoxRight=new Box(newPositionRight);
+        //Déplacement gauche
+        Position newPositionLeft=new Position(newBox.getX(),newBox.getY()-1);
+        Box newBoxLeft=new Box(newPositionLeft);
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxRight);
+        }
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxLeft);
+        }
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxTop);
+        }
+        if (onBoard(newPositionRight) && !newBox.hasRightWall() && newPositionRight.equal(positionPlayer)){
+            possibleMove.add(newBoxBottom);
+        }
+    }
     /**
      * Validate if a  move from a position  to another is possible or not
      * @param position1 is for the player who wants to move
@@ -124,11 +224,19 @@ public class Board {
         }
     }
 
-    public boolean hasPath(Position start, Position end) throws OutOfBoardException{
+    /**
+     * Check if there is a path between two positions
+     * @param player the player
+     * @return boolean True or False depending on the 2 positions
+     */
+    /*
+    public boolean hasPath(Player player) throws OutOfBoardException{
+        Position winPositionArray[] = new Position[9];
+        //if(player.get)
         int directions[][] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
         int saveVisitedBoxArray[][] = new int[9][9];
         Queue<Position> queue = new LinkedList<>();
-        queue.add(start);
+        queue.add(player.getPosition());
         boolean hasWall = false;
 
         while(queue.size() > 0){
@@ -171,4 +279,5 @@ public class Board {
         }
         return false;
     }
+     */
 }
