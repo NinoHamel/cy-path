@@ -117,6 +117,24 @@ public class Board {
             throw new InvalidWallException("A wall is already here");
         }
     }
+    /**
+     * Set a wall on the bottom or in the right if possible
+     *
+     * @param row is for the row of the board
+     * @param column is for the column of the board
+     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box)}
+     */
+    public void setBottomWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setBottomWall(this.getBox(row,column));
+        }
+    }
+
+    public void setRightWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setRightWall(this.getBox(row,column));
+        }
+    }
 
     /**
      * Check if there is a path between two positions
