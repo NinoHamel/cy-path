@@ -198,7 +198,6 @@ public class Player {
     public void possibleMoveJump(Board board, Box newBox, List<Box> possibleMove, String Orientation) throws OutOfBoardException {
         int rowPlayer = this.getCurrentBox().getRow();
         int columnPlayer = this.getCurrentBox().getColumn();
-
         if(Orientation=="Right"&& newBox.hasRightWall()||Orientation=="Left"&& newBox.hasLeftWall()||Orientation=="Top"&& newBox.hasTopWall()||Orientation=="Bottom"&& newBox.hasBottomWall()) {
             // Déplacement bas
             if (board.onBoard(newBox.getRow() + 1, newBox.getColumn())) {
@@ -214,7 +213,7 @@ public class Player {
                 int newRowTop = newBox.getRow() - 1;
                 int newColumnTop = newBox.getColumn();
                 Box newBoxTop = board.getBox(newRowTop, newColumnTop);
-                if (board.onBoard(newRowTop, newColumnTop) && !newBox.hasRightWall() && !newBoxTop.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowTop, newColumnTop) && !newBox.hasTopWall() && !newBoxTop.equals(this.getCurrentBox())) {
                     possibleMove.add(newBoxTop);
                 }
             }
@@ -233,7 +232,7 @@ public class Player {
                 int newRowLeft = newBox.getRow();
                 int newColumnLeft = newBox.getColumn() - 1;
                 Box newBoxLeft = board.getBox(newRowLeft, newColumnLeft);
-                if (board.onBoard(newRowLeft, newColumnLeft) && !newBox.hasRightWall() && !newBoxLeft.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowLeft, newColumnLeft) && !newBox.hasLeftWall() && !newBoxLeft.equals(this.getCurrentBox())) {
                     possibleMove.add(newBoxLeft);
                 }
             }
@@ -277,6 +276,7 @@ public class Player {
             }
         }
     }
+
 
 
 }
