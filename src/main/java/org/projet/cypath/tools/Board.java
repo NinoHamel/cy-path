@@ -120,26 +120,29 @@ public class Board {
 
     /**
      * Check if there is a path between two positions
-     * @param player the player
+     * @param players the list of the in game players
      * @return True or False depending on the 2 positions
      */
     public boolean hasPath(List<Player> players) throws OutOfBoardException{
         //List<Integer[]> winPositionArray = new ArrayList<>(Arrays.asList(this.victoriesPosition[getVictoryPositionIndex(player)]));
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
+        boolean hasPath = true;
         for(Player player : players){
+            if(!hasPath) break;
             List<Box> winBoxList = new ArrayList<>(Arrays.asList(player.getVictoryBoxes()));
             int[][] saveVisitedBoxArray = new int[9][9];
             Queue<Box> queue = new LinkedList<>();
             queue.add(player.getCurrentBox());
             boolean hasWall = false;
 
-            while(queue.size() > 0){
+            outer : while(queue.size() > 0){
                 Box treatedBox = queue.peek();
                 queue.remove();
-                System.out.println(treatedBox);
+                //System.out.println(treatedBox);
                 saveVisitedBoxArray[treatedBox.getRow()][treatedBox.getColumn()] = -1;
                 if(winBoxList.contains(treatedBox)){
-                    return true;
+                    //hasPath = true;
+                    break;
                 }
                 for(int i=0; i < 4; i++){
                     int newPositionRow = treatedBox.getRow() + directions[i][0];
@@ -165,16 +168,18 @@ public class Board {
                         if(!hasWall){
                             Box newBox = this.box[newPositionRow][newPositionColumn];
                             if(winBoxList.contains(newBox)){
-                                return true;
+                                //x²hasPath = true;
+                                break outer;
                             }
                             queue.add(newBox);
                         }
                     }
-
                 }
             }
+            if(queue.size() == 0) hasPath = false;
+            System.out.println(hasPath);
         }
-        return false;
+        return hasPath;
     }
 
     public String displayBoard(){
