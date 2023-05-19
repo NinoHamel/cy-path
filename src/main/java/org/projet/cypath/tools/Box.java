@@ -12,38 +12,66 @@ import org.projet.cypath.exceptions.OutOfBoardException;
  */
 public class Box {
 
-    private Position position;
-    private int x;
-    private int y;
+    private int row;
+    private int column;
+    private boolean OriginVerticalWall;
+    private boolean OriginHorizontalWall;
     private boolean leftWall;
     private boolean rightWall;
     private boolean topWall;
     private boolean bottomWall;
     private boolean player;
-
-    /**
-     * Constructs a Box object with the specified position.
-     *
-     * @param position the position of the box
-     */
-    public Box(Position position) {
-        this.position = position;
-        this.x = position.getX();
-        this.y = position.getY();
-    }
-
     /**
      * Constructs a Box object with the specified coordinates.
      *
-     * @param x the x-coordinate of the box
-     * @param y the y-coordinate of the box
+     * @param row the x-coordinate of the box
+     * @param column the y-coordinate of the box
      * @throws OutOfBoardException if the coordinates are not valid
      */
-    public Box(int x, int y) throws OutOfBoardException {
-        this.position = new Position(x, y);
-        this.x = x;
-        this.y = y;
+    public Box(int row, int column) throws OutOfBoardException {
+        this.row = row;
+        this.column = column;
     }
+
+    /**
+     * Checks if the box has a vertical origin wall.
+     *
+     * @return true if the box has a vertical origin wall, false otherwise
+     */
+    public boolean hasOriginVerticalWall() {
+        return OriginVerticalWall;
+    }
+
+    /**
+     * Sets the presence of a vertical origin wall in the box.
+     *
+     * @param OriginVerticalWall true to set a vertical origin wall, false otherwise
+     */
+    public void setOriginVerticalWall(boolean OriginVerticalWall) {
+        this.OriginVerticalWall = OriginVerticalWall;
+    }
+
+
+
+    /**
+     * Checks if the box has a horizontal origin wall.
+     *
+     * @return true if the box has a horizontal origin wall, false otherwise
+     */
+    public boolean hasOriginHorizontalWall() {
+        return OriginHorizontalWall;
+    }
+
+    /**
+     * Sets the presence of a vertical origin wall in the box.
+     *
+     * @param OriginHorizontalWall true to set a vertical origin wall, false otherwise
+     */
+    public void setOriginHorizontalWall(boolean OriginHorizontalWall) {
+        this.OriginHorizontalWall = OriginHorizontalWall;
+    }
+
+
 
     /**
      * Checks if the box has a left wall.
@@ -118,31 +146,23 @@ public class Box {
     }
 
     /**
-     * Gets the x-coordinate of the box.
+     * Gets the row-coordinate of the box.
      *
-     * @return the x-coordinate
+     * @return the row-coordinate
      */
-    public int getX() {
-        return x;
+    public int getRow() {
+        return row;
     }
 
     /**
-     * Gets the y-coordinate of the box.
+     * Gets the column-coordinate of the box.
      *
-     * @return the y-coordinate
+     * @return the column-coordinate
      */
-    public int getY() {
-        return y;
+    public int getColumn() {
+        return column;
     }
 
-    /**
-     * Gets the position of the box.
-     *
-     * @return the position of the box
-     */
-    public Position getPosition() {
-        return position;
-    }
 
     /**
      * Checks if the box has a player.
@@ -170,9 +190,10 @@ public class Box {
     @Override
     public String toString() {
         return "Box{" +
-                "position=" + position +
-                ", x=" + x +
-                ", y=" + y +
+                ", row=" + row +
+                ", column=" + column +
+                ", OriginHorizontalWall=" + OriginHorizontalWall +
+                ", OriginVerticalWall=" + OriginVerticalWall +
                 ", leftWall=" + leftWall +
                 ", rightWall=" + rightWall +
                 ", topWall=" + topWall +
