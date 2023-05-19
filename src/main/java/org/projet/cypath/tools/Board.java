@@ -41,7 +41,7 @@ public class Board {
      * Return a box from board using 2 int
      * @param x
      * @param y
-     * @return
+     * @return box of the 2 int
      * @throws OutOfBoardException
      */
     //Setter
@@ -54,7 +54,7 @@ public class Board {
     /**
      * Return a box from board using Position
      * @param position
-     * @return
+     * @return box of the position
      * @throws OutOfBoardException
      */
     public Box getBox(Position position) throws OutOfBoardException {
@@ -63,8 +63,16 @@ public class Board {
         }
         throw new OutOfBoardException("donnes pas dans le tableau");
     }
-
-
+    /**
+     * Return a box from board using Player
+     * @param player
+     * @return box where the player is
+     * @throws OutOfBoardException
+     */
+    public Box getBox(Player player) throws OutOfBoardException {
+        Position position=player.getPosition();
+        return getBox(position);
+    }
 
 
     /**
