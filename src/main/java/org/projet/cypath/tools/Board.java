@@ -36,12 +36,35 @@ public class Board {
         return box;
     }
     //Setter
+
+    /**
+     * Return a box from board using 2 int
+     * @param x
+     * @param y
+     * @return
+     * @throws OutOfBoardException
+     */
+    //Setter
     public Box getBox(int x,int y) throws OutOfBoardException {
         if (onBoard(x,y)) {
             return box[x][y];
         }
         throw new OutOfBoardException("donnes pas dans le tableau");
     }
+    /**
+     * Return a box from board using Position
+     * @param position
+     * @return
+     * @throws OutOfBoardException
+     */
+    public Box getBox(Position position) throws OutOfBoardException {
+        if (onBoard(position)) {
+            return box[position.getX()][position.getY()];
+        }
+        throw new OutOfBoardException("donnes pas dans le tableau");
+    }
+
+
 
 
     /**
@@ -75,7 +98,7 @@ public class Board {
             this.box[x+1][y].setTopWall(true);
             this.box[x+1][y+1].setTopWall(true);
         }
-         else {
+        else {
             throw new InvalidWallException("A wall is already here");
         }
     }
