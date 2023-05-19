@@ -1,6 +1,13 @@
 package org.projet.cypath.tools;
+import javafx.geometry.Pos;
+import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
+import org.projet.cypath.players.Player;
+import org.projet.cypath.tools.Position;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Board is a class which creates a grid of 9 by 9 boxes and list of players.
@@ -11,19 +18,24 @@ import org.projet.cypath.exceptions.OutOfBoardException;
  * @see Box
  */
 public class Board {
+
     private Box[][] box;
+
     //Constructor
 
     /**
      * Creates a 9 by 9 array to represent a grid
+     * @param playerNumber the number of player of the game
      */
-    public Board() throws OutOfBoardException {
+    public Board(int playerNumber) throws OutOfBoardException, IOException {
+        if(playerNumber < 2 || playerNumber > 4) throw new IOException("The player number must be between 2 and 4.");
         box = new Box[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                box[i][j] = new Box(i,j);
+                box[i][j] = new Box(i, j);
             }
         }
+
     }
 
     public Box[][] getBox() {
@@ -32,33 +44,37 @@ public class Board {
     //Setter
     /**
      * Return if a coordinate is in the board or not
-     * @param x coordinate
-     * @param y coordinate
-     * @return
+     * @param row coordinate
+     * @param column coordinate
+     * @return if the coordinates are on the board
      */
-    public boolean onBoard(int x,int y){
-        return (x>=0 && x<=8 && y>=0 && y<=8);
+    public boolean onBoard(int row,int column){
+        return (row>=0 && row<=8 && column>=0 && column<=8);
     }
+
     /**
      * Return a box from board using 2 int
-     * @param x
-     * @param y
+     * @param row coordinate
+     * @param column coordinate
      * @return box of the 2 int
      * @throws OutOfBoardException
      */
     //Setter
-    public Box getBox(int x,int y) throws OutOfBoardException {
-        if (onBoard(x,y)) {
-            return box[x][y];
+    public Box getBox(int row,int column) throws OutOfBoardException {
+        if (onBoard(row,column)) {
+            return box[row][column];
         }
         throw new OutOfBoardException("donnes pas dans le tableau");
     }
+
+
     /**
      * Validate if a wall can be set
      *
      * @param box is for first position of the wall
      * @return boolean True or False depending on the 2 positions or an error
      */
+
     public Boolean canSetWall(Box box) throws InvalidWallException {
         if (box.getRow() < 0 || box.getColumn() < 0){
             throw new InvalidWallException("The wall can only be put in positive coordinates.");
@@ -87,6 +103,7 @@ public class Board {
             throw new InvalidWallException("A wall is already here");
         }
     }
+
     public void setRightWall(Box box) throws InvalidWallException {
         if (canSetWall(box)) {
             int x=box.getRow();
@@ -99,5 +116,118 @@ public class Board {
         else {
             throw new InvalidWallException("A wall is already here");
         }
+    }
+
+    /**
+     * Check if there is a path between two positions
+     * @param player the player
+     * @return True or False depending on the 2 positions
+     */
+    public boolean hasPath(List<Player> players) throws OutOfBoardException{
+        //List<Integer[]> winPositionArray = new ArrayList<>(Arrays.asList(this.victoriesPosition[getVictoryPositionIndex(player)]));
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
+        for(Player player : players){
+            List<Box> winBoxList = new ArrayList<>(Arrays.asList(player.getVictoryBoxes()));
+            int[][] saveVisitedBoxArray = new int[9][9];
+            Queue<Box> queue = new LinkedList<>();
+            queue.add(player.getCurrentBox());
+            boolean hasWall = false;
+
+            while(queue.size() > 0){
+                Box treatedBox = queue.peek();
+                queue.remove();
+                System.out.println(treatedBox);
+                saveVisitedBoxArray[treatedBox.getRow()][treatedBox.getColumn()] = -1;
+                if(winBoxList.contains(treatedBox)){
+                    return true;
+                }
+                for(int i=0; i < 4; i++){
+                    int newPositionRow = treatedBox.getRow() + directions[i][0];
+                    int newPositionColumn = treatedBox.getColumn() + directions[i][1];
+
+                    if(newPositionRow >= 0 && newPositionColumn >= 0 && newPositionRow < 9 && newPositionColumn < 9 && saveVisitedBoxArray[newPositionRow][newPositionColumn] != -1){
+                        switch (i){
+                            case 0:
+                                hasWall = this.box[newPositionRow][newPositionColumn].hasLeftWall();
+                                break;
+                            case 1:
+                                hasWall = this.box[newPositionRow][newPositionColumn].hasRightWall();
+                                break;
+                            case 2:
+                                hasWall = this.box[newPositionRow][newPositionColumn].hasTopWall();
+                                break;
+                            case 3:
+                                hasWall = this.box[newPositionRow][newPositionColumn].hasBottomWall();
+                                break;
+                            default:
+                                throw new RuntimeException("Loop error");
+                        }
+                        if(!hasWall){
+                            Box newBox = this.box[newPositionRow][newPositionColumn];
+                            if(winBoxList.contains(newBox)){
+                                return true;
+                            }
+                            queue.add(newBox);
+                        }
+                    }
+
+                }
+            }
+        }
+        return false;
+    }
+
+    public String displayBoard(){
+        String displayedBoard = "";
+        for(int i=0; i < 9; i++){
+            displayedBoard += "++---";
+        }
+        displayedBoard += "++\n";
+        for(int i=0; i < 9; i++){
+            for (int j=0; j < 9; j++){
+                if(this.box[i][j].hasTopWall()){
+                    displayedBoard += "++---";
+                }
+                else{
+                    displayedBoard += "++   ";
+                }
+            }
+            displayedBoard += "++\n|";
+            for (int j=0; j < 9; j++){
+                if(this.box[i][j].hasLeftWall()){
+                    displayedBoard += "|";
+                }
+                else{
+                    displayedBoard += " ";
+                }
+                if(this.box[i][j].hasPlayer()){
+                    displayedBoard += " P ";
+                }
+                else{
+                    displayedBoard += "   ";
+                }
+                if(this.box[i][j].hasRightWall()){
+                    displayedBoard += "|";
+                }
+                else{
+                    displayedBoard += " ";
+                }
+            }
+            displayedBoard += "|\n";
+            for (int j=0; j < 9; j++){
+                if(this.box[i][j].hasBottomWall()){
+                    displayedBoard += "++---";
+                }
+                else{
+                    displayedBoard += "++   ";
+                }
+            }
+            displayedBoard += "++\n";
+        }
+        for(int i=0; i < 9; i++){
+            displayedBoard += "++---";
+        }
+        displayedBoard += "++\n";
+        return displayedBoard;
     }
 }
