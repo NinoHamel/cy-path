@@ -1,6 +1,8 @@
 package org.projet.cypath.players;
 
 import org.projet.cypath.exceptions.OutOfBoardException;
+import org.projet.cypath.tools.Board;
+import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Position;
 
 /**
@@ -76,9 +78,28 @@ public class Player {
     /**
      * Move the player by changing his position
      * @param newPosition the new position of the player
+     * @param board is the board of the game
      * @throws OutOfBoardException the exception when a position is out of the board
      */
-    public void moveTo(Position newPosition) throws OutOfBoardException {
+    public void moveTo(Position newPosition, Board board) throws OutOfBoardException {
+        Box oldBox=board.getBox(this.getPosition());
+        oldBox.setHasPlayer(false);
+        Box newBox=board.getBox(newPosition);
+        newBox.setHasPlayer(true);
         this.position.move(newPosition.getX() - this.position.getX(), newPosition.getY() - this.position.getY());
+    }
+    /**
+     *
+     * Move the player by changing his position
+     * @param newBox the new box of the player
+     * @param board is the board of the game
+     * @throws OutOfBoardException the exception when a position is out of the board
+     */
+    public void moveTo(Box newBox, Board board) throws OutOfBoardException {
+        Box oldBox=board.getBox(this.getPosition());
+        oldBox.setHasPlayer(false);
+        newBox.setHasPlayer(true);
+        this.position.move(newBox.getX() - this.position.getX(), newBox.getY() - this.position.getY());
+
     }
 }
