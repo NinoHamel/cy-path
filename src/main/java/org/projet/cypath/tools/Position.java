@@ -22,7 +22,7 @@ public class Position{
      */
     public Position(int abscissa, int ordinate) throws OutOfBoardException{
         if(abscissa < 0 || ordinate < 0 ) throw new OutOfBoardException("The grid has only positive coordinates.");
-        if(abscissa >= 9 || ordinate >= 9 ) throw new OutOfBoardException("The grid has only coordinates greater than 9.");
+        if(abscissa >= 9 || ordinate >= 9 ) throw new OutOfBoardException("The grid has only coordinates smaller than 9.");
         this.abscissa = abscissa;
         this.ordinate = ordinate;
     }

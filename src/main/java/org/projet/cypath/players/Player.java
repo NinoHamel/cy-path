@@ -1,6 +1,8 @@
 package org.projet.cypath.players;
 
 import org.projet.cypath.exceptions.OutOfBoardException;
+import org.projet.cypath.tools.Board;
+import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Position;
 
 /**
@@ -15,7 +17,7 @@ public class Player {
     private final String name;
     private final String color;
     private Position position;
-    private int startOrientation;
+    private final Position positionInitial;
 
     /**
      * Create a player
@@ -30,6 +32,7 @@ public class Player {
         this.name = name;
         this.color = color;
         this.position = position;
+      	this.positionInitial = position;
     }
 
     /**
@@ -66,16 +69,37 @@ public class Player {
     }
 
     /**
+     * Getter of the intial position of the player
+     * @return the position of the player
+     */
+    public Position getPositionInitial() {
+        return positionInitial;
+    }
+    /**
      * Move the player by changing his position
      * @param newPosition the new position of the player
+     * @param board is the board of the game
      * @throws OutOfBoardException the exception when a position is out of the board
      */
-    public void moveTo(Position newPosition) throws OutOfBoardException {
+    public void moveTo(Position newPosition, Board board) throws OutOfBoardException {
+        Box oldBox=board.getBox(this.getPosition());
+        oldBox.setHasPlayer(false);
+        Box newBox=board.getBox(newPosition);
+        newBox.setHasPlayer(true);
         this.position.move(newPosition.getX() - this.position.getX(), newPosition.getY() - this.position.getY());
     }
+    /**
+     *
+     * Move the player by changing his position
+     * @param newBox the new box of the player
+     * @param board is the board of the game
+     * @throws OutOfBoardException the exception when a position is out of the board
+     */
+    public void moveTo(Box newBox, Board board) throws OutOfBoardException {
+        Box oldBox=board.getBox(this.getPosition());
+        oldBox.setHasPlayer(false);
+        newBox.setHasPlayer(true);
+        this.position.move(newBox.getX() - this.position.getX(), newBox.getY() - this.position.getY());
 
-    public void setWall(Position position, boolean orientation){
-        // TODO verifier que le mur peut être poser
-        // TODO poser le mur (attente des classes Board et Box)
     }
 }
