@@ -100,20 +100,18 @@ public class Game {
     /**
      * Use the method to save your game in the files src/main/save/save.player and src/main/save/save.board
      * @param board is the board of the game
-     * @param listWinners is the list of winners
-     * @param listOnGoing is the list of players who are still playing
      * @throws IOException
      */
-    public void save(Board board,List<Player> listWinners,List<Player> listOnGoing) throws IOException {
+    public void save(Board board) throws IOException {
         ObjectOutputStream oOSboard = null;
         ObjectOutputStream oOSplayer = null;
         try {
             new File("src/main/save").mkdir();
             oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.player"))));
-            for(Player player:listWinners){
+            for(Player player:this.listWinners){
                 oOSplayer.writeObject(player);
             }
-            for(Player player:listOnGoing){
+            for(Player player:this.listOnGoing){
                 oOSplayer.writeObject(player);
             }
             oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.board"))));
