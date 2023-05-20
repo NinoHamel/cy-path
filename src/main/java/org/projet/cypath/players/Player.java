@@ -4,6 +4,7 @@ import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +14,15 @@ import java.util.List;
  * @author Lucas Velay
  * @version 1.0
  */
-public class Player {
+public class Player implements Serializable {
 
     private final int id;
     private final String name;
     private final String color;
     private Box currentBox;
     private final Box[] victoryBoxes;
-
+    private static final long SerialVersionUID=1L;
+    private boolean victory;
     /**
      * Create a player
      *
@@ -58,6 +60,20 @@ public class Player {
         }
     }
 
+    /**
+     * Setter of victory
+     * @param victory
+     */
+    public void setVictory(boolean victory){
+        this.victory=victory;
+    }
+    /**
+     * Getter of victory
+     * @return
+     */
+    public boolean isVictory(){
+        return this.victory;
+    }
     /**
      * Getter of the id
      * @return the id of the player
