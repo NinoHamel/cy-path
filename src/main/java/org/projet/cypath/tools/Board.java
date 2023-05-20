@@ -5,7 +5,7 @@ import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Position;
-
+import java.io.Serializable;
 import java.io.IOException;
 import java.util.*;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * @version 1.0
  * @see Box
  */
-public class Board {
+public class Board implements Serializable {
 
     private Box[][] box;
 
