@@ -1,5 +1,6 @@
 package org.projet.cypath.tools;
 
+import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 
 import java.io.*;
@@ -10,24 +11,64 @@ public class Game {
     private List<Player> listWinners;
     private List<Player> listOnGoing;
 
-    public Game(Player player1, Player player2){
-        listOnGoing = new ArrayList<>();
-        listOnGoing.add(player1);
-        listOnGoing.add(player2);
-        listWinners = new ArrayList<>();
-    }
 
-    public Game(Player player1, Player player2, Player player3){
-        this(player1,player2);
-        listOnGoing.add(player3);
-    }
 
-    public Game(Player player1, Player player2, Player player3, Player player4){
-        this(player1,player2,player3);
-        listOnGoing.add(player4);
-    }
+    private Board board;
 
+    public Game(int numberOfPlayers) throws IOException, OutOfBoardException {
+        this.board=new Board(numberOfPlayers);
+        if (numberOfPlayers==2){
+            Box boxPlayer1 = board.getBox(0, 4);
+            Player player1 = new Player(1, "1", "#FF0000", boxPlayer1, board);
+            Box boxPlayer2 = board.getBox(8, 4);
+            Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
+            listOnGoing = new ArrayList<>();
+            listOnGoing.add(player1);
+            listOnGoing.add(player2);
+            listWinners = new ArrayList<>();
+        }
+        if (numberOfPlayers==3){
+            Box boxPlayer1 = board.getBox(0, 4);
+            Player player1 = new Player(1, "1", "#FF0000", boxPlayer1, board);
+            Box boxPlayer2 = board.getBox(8, 4);
+            Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
+            Box boxPlayer3= board.getBox(4, 0);
+            Player player3 = new Player(3, "3", "##FFFF00", boxPlayer3, board);
+            listOnGoing = new ArrayList<>();
+            listOnGoing.add(player1);
+            listOnGoing.add(player2);
+            listOnGoing.add(player3);
+            listWinners = new ArrayList<>();
+        }
+        if (numberOfPlayers==4){
+            Box boxPlayer1 = board.getBox(0, 4);
+            Player player1 = new Player(1, "1", "#FF0000", boxPlayer1, board);
+            Box boxPlayer2 = board.getBox(8, 4);
+            Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
+            Box boxPlayer3= board.getBox(4, 0);
+            Player player3 = new Player(3, "3", "#FFFF00", boxPlayer3, board);
+            Box boxPlayer4= board.getBox(4, 8);
+            Player player4 = new Player(4, "4", "#008000", boxPlayer4, board);
+            listOnGoing = new ArrayList<>();
+            listOnGoing.add(player1);
+            listOnGoing.add(player2);
+            listOnGoing.add(player3);
+            listOnGoing.add(player4);
+            listWinners = new ArrayList<>();
+        }
+        else {
+            throw new OutOfBoardException("The player number must be between 2 and 4.");
+        }
+    }
     //Getter
+
+    /**
+     * getter of board
+     * @return the board of the game
+     */
+    public Board getBoard() {
+        return board;
+    }
     /**
      * getter of the list of winners
      *
@@ -36,7 +77,6 @@ public class Game {
     public List<Player> getListWinners() {
         return listWinners;
     }
-
     /**
      * getter of the list of players
      *
@@ -130,7 +170,7 @@ public class Game {
         }
     }
     /**
-     * Get yhe save of your game using this method
+     * Get the save of your game using this method
      * @throws IOException
      */
     public void getSave() throws IOException {
@@ -156,7 +196,7 @@ public class Game {
             while (true) {
                 try {
                     Board boardSave=(Board) oISboard.readObject();
-                    System.out.println(boardSave.displayBoard());
+                    this.board=boardSave;
                 } catch (EOFException e) {
                     // La fin du fichier a été atteinte
                     break;
