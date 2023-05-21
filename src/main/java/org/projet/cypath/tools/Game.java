@@ -33,11 +33,10 @@ public class Game {
      *
      * @return list of winners from first to last
      */
-    public void addPlayerListWinners(Player player) {
-        player.setVictory(true);
-        listWinners.add(player);
-        removePlayerListOnGoing(player);
+    public List<Player> getListWinners() {
+        return listWinners;
     }
+
     /**
      * getter of the list of players
      *
@@ -53,6 +52,7 @@ public class Game {
      * @param player is for the player who won
      */
     public void addPlayerListWinners(Player player) {
+        player.setVictory(true);
         listWinners.add(player);
         removePlayerListOnGoing(player);
     }
