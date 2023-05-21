@@ -1,9 +1,8 @@
 package org.projet.cypath.tools;
-import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
-import org.projet.cypath.tools.Position;
+
 import java.io.Serializable;
 import java.io.IOException;
 import java.util.*;
@@ -157,7 +156,7 @@ public class Board implements Serializable {
      */
     public boolean hasPath(Player player){
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
-        List<Box> winBoxList = new ArrayList<>(Arrays.asList(player.getVictoryBoxes()));
+        //List<Box> winBoxList = new ArrayList<>(Arrays.asList(player.getVictoryBoxes()));
         int[][] saveVisitedBoxArray = new int[9][9];
         Queue<Box> queue = new LinkedList<>();
         queue.add(player.getCurrentBox());
@@ -191,7 +190,7 @@ public class Board implements Serializable {
                     }
                     if(!hasWall){
                         Box newBox = this.box[newPositionRow][newPositionColumn];
-                        if(winBoxList.contains(newBox)){
+                        if(player.getVictoryBoxes().contains(newBox)){
                             return true;
                         }
                         queue.add(newBox);

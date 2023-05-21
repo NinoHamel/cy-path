@@ -20,7 +20,7 @@ public class Player implements Serializable {
     private final String name;
     private final String color;
     private Box currentBox;
-    private final Box[] victoryBoxes;
+    private final List<Box> victoryBoxes;
     private static final long SerialVersionUID=1L;
     private boolean victory;
     /**
@@ -37,25 +37,25 @@ public class Player implements Serializable {
         this.color = color;
         this.currentBox = Box;
         this.currentBox.setHasPlayer(true);
-        this.victoryBoxes = new Box[9];
+        this.victoryBoxes = new ArrayList<>();
         if(Box.getRow() == 0 && Box.getColumn() == 4){
             for(int i=0; i< 9; i++){
-                victoryBoxes[i] = board.getBox(8, i);
+                victoryBoxes.add(board.getBox(8, i));
             }
         }
         if(Box.getRow() == 8 && Box.getColumn() == 4){
             for(int i=0; i< 9; i++){
-                victoryBoxes[i] = board.getBox(0, i);
+                victoryBoxes.add(board.getBox(0, i));
             }
         }
         if(Box.getRow() == 4 && Box.getColumn() == 0){
             for(int i=0; i< 9; i++){
-                victoryBoxes[i] = board.getBox(i, 8);
+                victoryBoxes.add(board.getBox(i, 8));
             }
         }
         if(Box.getRow() == 4 && Box.getColumn() == 8){
             for(int i=0; i< 9; i++){
-                victoryBoxes[i] = board.getBox(i, 0);
+                victoryBoxes.add(board.getBox(i, 0));
             }
         }
     }
@@ -106,7 +106,7 @@ public class Player implements Serializable {
         return this.currentBox;
     }
 
-    public Box[] getVictoryBoxes(){
+    public List<Box> getVictoryBoxes(){
         return this.victoryBoxes;
     }
 
