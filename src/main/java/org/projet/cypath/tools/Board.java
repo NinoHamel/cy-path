@@ -1,13 +1,13 @@
 package org.projet.cypath.tools;
-import javafx.geometry.Pos;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Position;
-
+import java.io.Serializable;
 import java.io.IOException;
 import java.util.*;
+
 
 /**
  * Board is a class which creates a grid of 9 by 9 boxes and list of players.
@@ -17,7 +17,7 @@ import java.util.*;
  * @version 1.0
  * @see Box
  */
-public class Board {
+public class Board implements Serializable {
 
     private Box[][] box;
 
@@ -35,7 +35,6 @@ public class Board {
                 box[i][j] = new Box(i, j);
             }
         }
-
     }
 
     public Box[][] getBox() {
@@ -75,12 +74,25 @@ public class Board {
      * @return boolean True or False depending on the 2 positions or an error
      */
 
-    public Boolean canSetWall(Box box) throws InvalidWallException {
-        if (box.getRow() < 0 || box.getColumn() < 0){
+    public Boolean canSetWall(Box box, int orientation) throws InvalidWallException {
+        int row=box.getRow();
+        int column=box.getColumn();
+        if (row < 0 || column < 0){
             throw new InvalidWallException("The wall can only be put in positive coordinates.");
         }
-        else if (box.getRow() > 7 || box.getColumn() >7){
+        else if (row > 7 || column >7){
             throw new InvalidWallException("The wall coordinates can only be lesser than 8");
+        }
+        else if (box.hasOriginHorizontalWall() || box.hasOriginVerticalWall()){
+            throw new InvalidWallException("There is a conflict with a wall already here");
+        }
+        //Orientation 0 pour setBottomWall()
+        else if (orientation == 0 && (this.box[row][column-1].hasOriginHorizontalWall() || this.box[row][column+1].hasOriginHorizontalWall())){
+            throw new InvalidWallException("There is a conflict with the adjacent walls");
+        }
+        //Orientation 1 pour setRightWall()
+        else if (orientation == 1 && (this.box[row-1][column].hasOriginVerticalWall() || this.box[row+1][column].hasOriginVerticalWall())){
+            throw new InvalidWallException("There is a conflict with the adjacent walls");
         }
         else return true;
     }
@@ -88,16 +100,17 @@ public class Board {
      * Set a wall on the bottom or in the right if possible
      *
      * @param box is for the 1st box
-     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box)}
+     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box,int)}
      */
     public void setBottomWall(Box box) throws InvalidWallException {
-        if (canSetWall(box)) {
+        if (canSetWall(box,0)) {
             int x=box.getRow();
             int y=box.getColumn();
             this.box[x][y].setBottomWall(true);
             this.box[x][y+1].setBottomWall(true);
             this.box[x+1][y].setTopWall(true);
             this.box[x+1][y+1].setTopWall(true);
+            this.box[x][y].setOriginHorizontalWall(true);
         }
         else {
             throw new InvalidWallException("A wall is already here");
@@ -105,16 +118,35 @@ public class Board {
     }
 
     public void setRightWall(Box box) throws InvalidWallException {
-        if (canSetWall(box)) {
+        if (canSetWall(box,1)) {
             int x=box.getRow();
             int y=box.getColumn();
             this.box[x][y].setRightWall(true);
             this.box[x+1][y].setRightWall(true);
             this.box[x][y+1].setLeftWall(true);
             this.box[x+1][y+1].setLeftWall(true);
+            this.box[x][y].setOriginVerticalWall(true);
         }
         else {
             throw new InvalidWallException("A wall is already here");
+        }
+    }
+    /**
+     * Set a wall on the bottom or in the right if possible
+     *
+     * @param row is for the row of the board
+     * @param column is for the column of the board
+     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box, int)}
+     */
+    public void setBottomWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setBottomWall(this.getBox(row,column));
+        }
+    }
+
+    public void setRightWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setRightWall(this.getBox(row,column));
         }
     }
 
@@ -178,6 +210,7 @@ public class Board {
         }
         return true;
     }
+
 
     public String displayBoard(){
         String displayedBoard = "";

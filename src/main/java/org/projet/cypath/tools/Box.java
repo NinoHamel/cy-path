@@ -1,5 +1,5 @@
 package org.projet.cypath.tools;
-
+import java.io.Serializable;
 import org.projet.cypath.exceptions.OutOfBoardException;
 
 /**
@@ -10,7 +10,7 @@ import org.projet.cypath.exceptions.OutOfBoardException;
  * @version 1.0
  * @see Board
  */
-public class Box {
+public class Box implements Serializable {
 
     private int row;
     private int column;
