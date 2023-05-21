@@ -2,6 +2,8 @@ package org.projet.cypath.tools;
 
 import org.projet.cypath.exceptions.OutOfBoardException;
 
+import java.util.Objects;
+
 /**
  * Class which represent a position
  *
@@ -50,6 +52,7 @@ public class Position{
     public boolean equal(Position position){
         return (this.getX()==position.getX() && this.getY()==position.getY());
     }
+
     /**
      * Move the position by changing its abscissa and its ordinate
      *
@@ -65,4 +68,24 @@ public class Position{
         this.ordinate += ordinateShift;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return this.abscissa == position.abscissa && this.ordinate == position.ordinate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.abscissa, this.ordinate);
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "abscissa=" + abscissa +
+                ", ordinate=" + ordinate +
+                '}';
+    }
 }

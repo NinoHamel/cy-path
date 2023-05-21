@@ -3,7 +3,6 @@ package org.projet.cypath.players;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
-import org.projet.cypath.tools.Position;
 
 /**
  * Class which represent a player
@@ -16,8 +15,8 @@ public class Player {
     private final int id;
     private final String name;
     private final String color;
-    private Position position;
-    private final Position positionInitial;
+    private Box currentBox;
+    private final Box[] victoryBoxes;
 
     /**
      * Create a player
@@ -25,14 +24,35 @@ public class Player {
      * @param id the identifier
      * @param name the name of the player
      * @param color the color witch represent the player on the board
-     * @param position the position of the player on the board
+     * @param currentBox the box where the player is on the board
      */
-    public Player(int id, String name, String color, Position position) {
+    public Player(int id, String name, String color, Box currentBox, Board board) throws OutOfBoardException {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.position = position;
-      	this.positionInitial = position;
+        this.currentBox = currentBox;
+        this.currentBox.setHasPlayer(true);
+      	this.victoryBoxes = new Box[9];
+        if(currentBox.getRow() == 0 && currentBox.getColumn() == 4){
+            for(int i=0; i< 9; i++){
+                victoryBoxes[i] = board.getBox(8, i);
+            }
+        }
+        if(currentBox.getRow() == 8 && currentBox.getColumn() == 4){
+            for(int i=0; i< 9; i++){
+                victoryBoxes[i] = board.getBox(0, i);
+            }
+        }
+        if(currentBox.getRow() == 4 && currentBox.getColumn() == 0){
+            for(int i=0; i< 9; i++){
+                victoryBoxes[i] = board.getBox(i, 8);
+            }
+        }
+        if(currentBox.getRow() == 4 && currentBox.getColumn() == 8){
+            for(int i=0; i< 9; i++){
+                victoryBoxes[i] = board.getBox(i, 0);
+            }
+        }
     }
 
     /**
@@ -62,44 +82,48 @@ public class Player {
     /**
      * Getter of the position by creating and returning a new position with the same values
      * @return the position of the player
-     * @throws OutOfBoardException the exception when a position is out of the board
      */
-    public Position getPosition() throws OutOfBoardException{
-        return new Position(this.position.getX(), this.position.getY());
+    public Box getCurrentBox(){
+        return this.currentBox;
+    }
+
+    public Box[] getVictoryBoxes(){
+        return this.victoryBoxes;
     }
 
     /**
-     * Getter of the intial position of the player
-     * @return the position of the player
-     */
-    public Position getPositionInitial() {
-        return positionInitial;
-    }
-    /**
      * Move the player by changing his position
-     * @param newPosition the new position of the player
+     * @param newRow the new row of the player
+     * @param newColumn the new column of the player
      * @param board is the board of the game
      * @throws OutOfBoardException the exception when a position is out of the board
      */
-    public void moveTo(Position newPosition, Board board) throws OutOfBoardException {
+    public void moveTo(int newRow, int newColumn, Board board) throws OutOfBoardException {
+        /*
         Box oldBox=board.getBox(this.getPosition());
         oldBox.setHasPlayer(false);
         Box newBox=board.getBox(newPosition);
         newBox.setHasPlayer(true);
         this.position.move(newPosition.getX() - this.position.getX(), newPosition.getY() - this.position.getY());
+         */
+        this.currentBox.setHasPlayer(false);
+        this.currentBox = board.getBox(newRow, newColumn);
+        this.currentBox.setHasPlayer(true);
     }
     /**
      *
      * Move the player by changing his position
      * @param newBox the new box of the player
-     * @param board is the board of the game
-     * @throws OutOfBoardException the exception when a position is out of the board
      */
-    public void moveTo(Box newBox, Board board) throws OutOfBoardException {
+    public void moveTo(Box newBox){
+        /*
         Box oldBox=board.getBox(this.getPosition());
         oldBox.setHasPlayer(false);
         newBox.setHasPlayer(true);
         this.position.move(newBox.getX() - this.position.getX(), newBox.getY() - this.position.getY());
-
+        */
+        this.currentBox.setHasPlayer(false);
+        newBox.setHasPlayer(true);
+        this.currentBox = newBox;
     }
 }
