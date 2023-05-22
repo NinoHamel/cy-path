@@ -64,7 +64,7 @@ public class Damier extends Application {
                         Player currentPlayer = listOnGoing.get(index.get());
                         int fromRow = currentPlayer.getCurrentBox().getRow();
                         int fromCol = currentPlayer.getCurrentBox().getColumn();
-
+                        List<Box> victoryBox=currentPlayer.getVictoryBoxes();
                         String color = currentPlayer.getColor();
 
                         // Mise à jour des mouvements possibles pour le joueur en cours
@@ -90,17 +90,27 @@ public class Damier extends Application {
                                 Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                                 moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
                             }
-                            // Modifier la couleur de la case d'origine de l'ancien joueur
+                            // Modifier la couleur de la case d'origine de l'ancienne position
                             StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
                             Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
                             fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
                             currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
                             int toRow = currentPlayer.getCurrentBox().getRow();
                             int toCol = currentPlayer.getCurrentBox().getColumn();
-                            // Modifier la couleur de la nouvelle case du nouveau joueur
+                            // Modifier la couleur de la nouvelle case de la nouvelle position
                             StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
                             Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
                             toRect.setFill(Color.web(color));
+                            //Vérifier si le joueur a gagné
+                            for (Box boxVictory:victoryBox){
+                                int victoryRow=boxVictory.getRow();
+                                int victoryCol=boxVictory.getColumn();
+                                if (victoryCol==toCol && victoryRow==toRow){
+                                    currentPlayer.setVictory(true);
+                                    listWinners.add(currentPlayer);
+                                    listOnGoing.remove(currentPlayer);
+                                }
+                            }
                             // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
                             index.getAndIncrement();
                             if (index.get() >= listOnGoing.size()) {
