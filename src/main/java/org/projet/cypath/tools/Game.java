@@ -27,7 +27,7 @@ public class Game {
             listOnGoing.add(player2);
             listWinners = new ArrayList<>();
         }
-        if (numberOfPlayers==3){
+        else if (numberOfPlayers==3){
             Box boxPlayer1 = board.getBox(0, 4);
             Player player1 = new Player(1, "1", "#FF0000", boxPlayer1, board);
             Box boxPlayer2 = board.getBox(8, 4);
@@ -40,7 +40,7 @@ public class Game {
             listOnGoing.add(player3);
             listWinners = new ArrayList<>();
         }
-        if (numberOfPlayers==4){
+        else if (numberOfPlayers==4){
             Box boxPlayer1 = board.getBox(0, 4);
             Player player1 = new Player(1, "1", "#FF0000", boxPlayer1, board);
             Box boxPlayer2 = board.getBox(8, 4);
