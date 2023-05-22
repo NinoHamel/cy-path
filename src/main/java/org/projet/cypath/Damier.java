@@ -109,6 +109,10 @@ public class Damier extends Application {
                                     currentPlayer.setVictory(true);
                                     listWinners.add(currentPlayer);
                                     listOnGoing.remove(currentPlayer);
+                                    index.set(index.get() - 1);
+                                    if (index.get() < 0) {
+                                        index.set(listOnGoing.size() - 1);
+                                    }
                                 }
                             }
                             // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
