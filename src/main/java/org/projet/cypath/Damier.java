@@ -440,7 +440,6 @@ public class Damier extends Application {
         List<Player> listOnGoing = game.getListOnGoing();
         if (orientation == 0) {
             game.getBoard().setBottomWall(currentRow,currentCol,true);
-            game.getBoard().setBottomWall(currentRow,currentCol,false);
             for (Player player : listOnGoing) {
                 if (!game.getBoard().hasPath(player)) {
                     game.getBoard().setBottomWall(currentRow,currentCol,false);
