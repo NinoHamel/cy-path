@@ -124,6 +124,7 @@ public class Board implements Serializable {
             this.box[x+1][y].setTopWall(true);
             this.box[x+1][y+1].setTopWall(true);
             this.box[x][y].setOriginHorizontalWall(true);
+            remainingWalls--;
        /* }
         else {
             throw new InvalidWallException("A wall is already here");
@@ -138,6 +139,12 @@ public class Board implements Serializable {
             this.box[x+1][y].setTopWall(boulean);
             this.box[x+1][y+1].setTopWall(boulean);
             this.box[x][y].setOriginHorizontalWall(boulean);
+            if (boulean) {
+                remainingWalls--;
+            }
+            else {
+                remainingWalls++;
+            }
         /*}
         else {
             throw new InvalidWallException("A wall is already here");
@@ -154,20 +161,26 @@ public class Board implements Serializable {
             this.box[x][y+1].setLeftWall(true);
             this.box[x+1][y+1].setLeftWall(true);
             this.box[x][y].setOriginVerticalWall(true);
+            remainingWalls--;
     /*    }
         else {
             throw new InvalidWallException("A wall is already here");
         }*/
     }
-    public void setRightWall(Box box,Boolean Boulean) throws InvalidWallException {
-      //  if (canSetWall(box,1)) {
+    public void setRightWall(Box box,Boolean boulean) throws InvalidWallException {
             int x=box.getRow();
             int y=box.getColumn();
-            this.box[x][y].setRightWall(Boulean);
-            this.box[x+1][y].setRightWall(Boulean);
-            this.box[x][y+1].setLeftWall(Boulean);
-            this.box[x+1][y+1].setLeftWall(Boulean);
-            this.box[x][y].setOriginVerticalWall(Boulean);
+            this.box[x][y].setRightWall(boulean);
+            this.box[x+1][y].setRightWall(boulean);
+            this.box[x][y+1].setLeftWall(boulean);
+            this.box[x+1][y+1].setLeftWall(boulean);
+            this.box[x][y].setOriginVerticalWall(boulean);
+            if (boulean) {
+                remainingWalls--;
+            }
+            else {
+                remainingWalls++;
+            }
       /*  }
         else {
             throw new InvalidWallException("A wall is already here");
