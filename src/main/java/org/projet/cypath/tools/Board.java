@@ -109,7 +109,7 @@ public class Board implements Serializable {
         }
         else return true;
     }
-    /**
+      /**
      * Set a wall on the bottom or in the right if possible
      *
      * @param box is for the 1st box
@@ -124,12 +124,26 @@ public class Board implements Serializable {
             this.box[x+1][y].setTopWall(true);
             this.box[x+1][y+1].setTopWall(true);
             this.box[x][y].setOriginHorizontalWall(true);
-            this.remainingWalls=this.remainingWalls-1;
         }
         else {
             throw new InvalidWallException("A wall is already here");
         }
     }
+    public void setBottomWall(Box box,Boolean boulean) throws InvalidWallException {
+        if (canSetWall(box,0)) {
+            int x=box.getRow();
+            int y=box.getColumn();
+            this.box[x][y].setBottomWall(boulean);
+            this.box[x][y+1].setBottomWall(boulean);
+            this.box[x+1][y].setTopWall(boulean);
+            this.box[x+1][y+1].setTopWall(boulean);
+            this.box[x][y].setOriginHorizontalWall(boulean);
+        }
+        else {
+            throw new InvalidWallException("A wall is already here");
+        }
+    }
+
 
     public void setRightWall(Box box) throws InvalidWallException {
         if (canSetWall(box,1)) {
@@ -140,12 +154,26 @@ public class Board implements Serializable {
             this.box[x][y+1].setLeftWall(true);
             this.box[x+1][y+1].setLeftWall(true);
             this.box[x][y].setOriginVerticalWall(true);
-            this.remainingWalls=this.remainingWalls-1;
         }
         else {
             throw new InvalidWallException("A wall is already here");
         }
     }
+    public void setRightWall(Box box,Boolean Boulean) throws InvalidWallException {
+        if (canSetWall(box,1)) {
+            int x=box.getRow();
+            int y=box.getColumn();
+            this.box[x][y].setRightWall(Boulean);
+            this.box[x+1][y].setRightWall(Boulean);
+            this.box[x][y+1].setLeftWall(Boulean);
+            this.box[x+1][y+1].setLeftWall(Boulean);
+            this.box[x][y].setOriginVerticalWall(Boulean);
+        }
+        else {
+            throw new InvalidWallException("A wall is already here");
+        }
+    }
+
     /**
      * Set a wall on the bottom or in the right if possible
      *
@@ -158,13 +186,22 @@ public class Board implements Serializable {
             setBottomWall(this.getBox(row,column));
         }
     }
+    public void setBottomWall(int row,int column,Boolean boulean) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setBottomWall(this.getBox(row,column),boulean);
+        }
+    }
 
     public void setRightWall(int row,int column) throws InvalidWallException, OutOfBoardException {
         if (onBoard(row,column)){
             setRightWall(this.getBox(row,column));
         }
     }
-
+    public void setRightWall(int row,int column,Boolean boulean) throws InvalidWallException, OutOfBoardException {
+        if (onBoard(row,column)){
+            setRightWall(this.getBox(row,column),boulean);
+        }
+    }
     public int getRemainingWalls() {
         return remainingWalls;
     }
