@@ -212,7 +212,7 @@ public class Game {
     }
 
     /**
-     * Mathod to ass a remove a player from listOnGoing and add him to listWinners
+     * Method to remove a player from listOnGoing and add him to listWinners
      * @param player
      */
     public void ifWinner(Player player){
