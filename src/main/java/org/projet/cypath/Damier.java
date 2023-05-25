@@ -28,7 +28,7 @@ public class Damier extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            game = new Game(4);
+            game = new Game(3);
         } catch (Exception e) {
             System.out.println(e);
             return; // Quitte la méthode si une exception se produit lors de l'initialisation de game
@@ -54,12 +54,11 @@ public class Damier extends Application {
         columnConstraints.setHalignment(HPos.CENTER);
 
 
-        AtomicReference<Boolean> actionBouger = new AtomicReference<>(true);
+        AtomicReference<Boolean> actionBouger = new AtomicReference<>(false);
         AtomicReference<Boolean> actionMur = new AtomicReference<>(false);
         AtomicReference<Boolean> murHorizontal = new AtomicReference<>(false);
         AtomicReference<Boolean> murVertical = new AtomicReference<>(false);
 
-        //AtomicReference<Boolean> poseMur= new AtomicReference<>(false);
 
         for (int row = 0; row < DAMIER_SIZE; row++) {
             for (int col = 0; col < DAMIER_SIZE; col++) {
@@ -72,6 +71,7 @@ public class Damier extends Application {
                 cellPane.getChildren().add(rect);
                 gridPane.add(cellPane, col, row);
                 // Créer des bordures blanches
+                //Création de bordures avec des tailles nuls car si l'on fait uniquement avec des bordures bottom et right, si les 2 ont la même taille et la même couleur, les 2 parties des murs forment un carré
                 BorderStroke whiteRightBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 2, 0, 0));
                 BorderStroke whiteTopBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 0));
                 BorderStroke whiteLeftBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 0));
@@ -92,7 +92,6 @@ public class Damier extends Application {
                 AtomicReference<Border> savedBottomCellBorder = new AtomicReference<>(whiteBorder);
                 AtomicReference<Border> savedRightCellBorder = new AtomicReference<>(whiteBorder);
 
-
                 cellPane.setOnMouseClicked(event -> {
                     if (actionBouger.get() == true) {
                         try {
@@ -104,111 +103,87 @@ public class Damier extends Application {
 
                             // Mise à jour des mouvements possibles pour le joueur en cours
                             List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
-                            // Vérifier si la case sélectionnée est une case de mouvement possible
-                            boolean isValidMove = false;
+
+                            // Enlever les couleurs des cases de mouvement possible de l'ancienne position
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                if (currentRow == moveRow && currentCol == moveCol) {
-                                    isValidMove = true;
-                                    break;
-                                }
+                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                                moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
                             }
-                            if (isValidMove) {
-                                System.out.println(currentPlayer.getColor());
-                                System.out.println(currentPlayer.getCurrentBox());
-                                // Enlever les couleurs des cases de mouvement possible de l'ancien joueur
-                                for (Box box : possibleMove) {
-                                    int moveRow = box.getRow();
-                                    int moveCol = box.getColumn();
-                                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
-                                    Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                    moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
-                                }
-                                // Modifier la couleur de la case d'origine de l'ancienne position
-                                StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
-                                Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
-                                fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
-                                currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
-                                int toRow = currentPlayer.getCurrentBox().getRow();
-                                int toCol = currentPlayer.getCurrentBox().getColumn();
-                                // Modifier la couleur de la nouvelle case de la nouvelle position
-                                StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
-                                Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
-                                toRect.setFill(Color.web(color));
-                                //Vérifier si le joueur a gagné
-                                for (Box boxVictory : victoryBox) {
-                                    int victoryRow = boxVictory.getRow();
-                                    int victoryCol = boxVictory.getColumn();
-                                    if (victoryCol == toCol && victoryRow == toRow) {
-                                        currentPlayer.setVictory(true);
-                                        listWinners.add(currentPlayer);
-                                        listOnGoing.remove(currentPlayer);
-                                        index.set(index.get() - 1);
-                                        if (index.get() < 0) {
-                                            index.set(listOnGoing.size() - 1);
-                                        }
+                            // Modifier la couleur de la case d'origine de l'ancienne position
+                            StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
+                            Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
+                            fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
+                            currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
+                            int toRow = currentPlayer.getCurrentBox().getRow();
+                            int toCol = currentPlayer.getCurrentBox().getColumn();
+                            // Modifier la couleur de la nouvelle case de la nouvelle position
+                            StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
+                            Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
+                            toRect.setFill(Color.web(color));
+                            //Vérifier si le joueur a gagné
+                            for (Box boxVictory : victoryBox) {
+                                int victoryRow = boxVictory.getRow();
+                                int victoryCol = boxVictory.getColumn();
+                                if (victoryCol == toCol && victoryRow == toRow) {
+                                    currentPlayer.setVictory(true);
+                                    listWinners.add(currentPlayer);
+                                    listOnGoing.remove(currentPlayer);
+                                    index.set(index.get() - 1);
+                                    if (index.get() < 0) {
+                                        index.set(listOnGoing.size() - 1);
                                     }
                                 }
-                                // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
-                                index.getAndIncrement();
-                                if (index.get() >= listOnGoing.size()) {
-                                    index.set(0);
-                                }
-                                // Afficher les nouveaux déplacements possible
-                                currentPlayer = listOnGoing.get(index.get());
-                                possibleMove = currentPlayer.possibleMove(game.getBoard());
-                                for (Box box : possibleMove) {
-                                    int moveRow = box.getRow();
-                                    int moveCol = box.getColumn();
-                                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
-                                    Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                    moveRect.setFill(Color.PURPLE);
-                                }
-                               // System.out.println(game.getBoard().displayBoard());
                             }
+                            // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
+                            index.getAndIncrement();
+                            if (index.get() >= listOnGoing.size()) {
+                                    index.set(0);
+                            }
+                            // Afficher les nouveaux déplacements possible
+                            currentPlayer = listOnGoing.get(index.get());
+                            possibleMove = currentPlayer.possibleMove(game.getBoard());
+                            for (Box box : possibleMove) {
+                                int moveRow = box.getRow();
+                                int moveCol = box.getColumn();
+                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                                moveRect.setFill(Color.PURPLE);
+                            }
+
                         } catch (Exception e) {
                             System.out.println(e);
                         }
                     }
                     if (actionMur.get() == true) {
-                       // System.out.println("actionMur.get()");
                         try {
                             Box currentBox = game.getBoard().getBox(currentRow, currentCol);
-                           // System.out.println("try");
                             if (murHorizontal.get() == true && game.getBoard().canSetWall(currentBox, 0)) {
-                                //System.out.println("Avant HasPath");
-                                if (HasPath(game, currentRow, currentCol, 0)) {
-                                    System.out.println("Avant setBottomWall");
+                                if (game.hasPath(currentRow, currentCol, 0)) {
                                     game.getBoard().setBottomWall(currentRow, currentCol);
-                                    System.out.println("Après setBottomWall Avant Index:"+index);
                                     index.getAndIncrement();
                                     if (index.get() >= listOnGoing.size()) {
                                         index.set(0);
                                     }
-                                    System.out.println("Après Index:"+index);
                                 }
                             }
                             if (murVertical.get() == true && game.getBoard().canSetWall(currentBox, 1)) {
-                                if (HasPath(game, currentRow, currentCol, 1)) {
-                                    System.out.println("Avant setRightWall");
+                                if (game.hasPath(currentRow, currentCol, 1)){
                                     game.getBoard().setRightWall(currentRow, currentCol);
-                                    System.out.println("Après setRightWall Avant Index:"+index);
                                     index.getAndIncrement();
                                     if (index.get() >= listOnGoing.size()) {
                                         index.set(0);
                                     }
-                                    System.out.println("Après Index:"+index);
                                 }
                             }
-                            System.out.println(game.getBoard().displayBoard());
                         } catch (Exception e) {
                             System.out.println(e);
                         }
                       //  System.out.println("index:"+index);
                     }
                 });
-
                 cellPane.setOnMouseEntered(event -> {
                     try {
                         //System.out.println("mouseEntered CurrentRow:" + currentRow + ";" + currentCol);
@@ -221,10 +196,8 @@ public class Damier extends Application {
                                 savedRightCellBorder.set(rightCell.getBorder());
                                 Border currentBorder = cellPane.getBorder();
                                 Border rightBorder = ((StackPane) gridPane.getChildren().get(DAMIER_SIZE * currentRow + (currentCol + 1))).getBorder();
-                                //System.out.println("currentBorder:" + currentBorder);
                                 Border newBorder = addBottomBorder(currentBorder);
                                 cellPane.setBorder(newBorder);
-                                //System.out.println("right:" + newBorder);
                                 Border newRightBorder = addBottomBorder(rightBorder);
                                 rightCell.setBorder(newRightBorder);
                             }
@@ -292,14 +265,16 @@ public class Damier extends Application {
         gridPane.add(placeMursButton, DAMIER_SIZE, 1);
         Button murHorizontalButton = new Button("murHorizontal");
         Button murVerticalButton = new Button("murVertical");
+
         placeMursButton.setOnAction(event -> {
+            if(!actionMur.get()) {
+                gridPane.add(murHorizontalButton, DAMIER_SIZE, 2);
+                gridPane.add(murVerticalButton, DAMIER_SIZE, 3);
+            }
             actionBouger.set(false);
             actionMur.set(true);
-            gridPane.add(murHorizontalButton, DAMIER_SIZE, 2);
-            gridPane.add(murVerticalButton, DAMIER_SIZE, 3);
             murHorizontal.set(false);
             murVertical.set(false);
-            if (!actionBouger.get()) {
                 try {
                     Player currentPlayer = listOnGoing.get(index.get());
                     List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
@@ -315,7 +290,6 @@ public class Damier extends Application {
                     }
                 } catch (OutOfBoardException e) {
                     throw new RuntimeException(e);
-                }
             }
         });
         bougerButton.setOnAction(event -> {
@@ -353,20 +327,6 @@ public class Damier extends Application {
 
 
         return gridPane;
-    }
-
-    private void votreFonctionJava(int row, int col) throws OutOfBoardException {
-        // Utilisez votre instance de jeu pour gérer les actions de l'utilisateur
-        System.out.println(row + ";" + col);
-        if (game != null) {
-            try {
-                System.out.println(game.getBoard().getBox(row, col));
-            } catch (OutOfBoardException e) {
-                throw e;
-            }
-        } else {
-            System.out.println("Erreur : l'instance de jeu n'a pas été initialisée correctement.");
-        }
     }
 
     public static void main(String[] args) {
@@ -425,41 +385,5 @@ public class Damier extends Application {
                 borderStrokeLeft
         );
         return newBorder;
-    }
-    /**
-     *
-     * @param game
-     * @param currentRow
-     * @param currentCol
-     * @param  orientation is the orientation of the box, 0 for bottom and 1 for right
-     * @return
-     * @throws InvalidWallException
-     * @throws OutOfBoardException
-     */
-    public Boolean HasPath(Game game,int currentRow,int currentCol,int orientation) throws InvalidWallException, OutOfBoardException {
-        List<Player> listOnGoing = game.getListOnGoing();
-        if (orientation == 0) {
-            game.getBoard().setBottomWall(currentRow,currentCol,true);
-            for (Player player : listOnGoing) {
-                if (!game.getBoard().hasPath(player)) {
-                    game.getBoard().setBottomWall(currentRow,currentCol,false);
-                    return false;
-                }
-            };
-            game.getBoard().setBottomWall(currentRow,currentCol,false);
-            return true;
-        }
-        else {
-            game.getBoard().setRightWall(currentRow, currentCol,true);
-            System.out.println(game.getBoard());
-            for (Player player : listOnGoing) {
-                if (!game.getBoard().hasPath(player)) {
-                    game.getBoard().setRightWall(currentRow,currentCol,false);
-                    return false;
-                }
-            }
-            game.getBoard().setRightWall(currentRow,currentCol,false);
-            return true;
-        }
     }
 }
