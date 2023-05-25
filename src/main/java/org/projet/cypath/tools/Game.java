@@ -174,15 +174,15 @@ public class Game {
 
     public void ifWinner(Player player){
         if(player.getVictoryBoxes().contains(player.getCurrentBox())){
-            listOnGoing.remove(player);
-            listWinners.add(player);
+            this.listOnGoing.remove(player);
+            this.listWinners.add(player);
         }
     }
 
     public boolean isGameOver(){
-        if(listOnGoing.size() == 1){
-            listWinners.add(listOnGoing.get(0));
-            listOnGoing.remove(0);
+        if(this.listOnGoing.size() == 1){
+            this.listWinners.add(this.listOnGoing.get(0));
+            this.listOnGoing.remove(0);
             return true;
         }
         return false;
