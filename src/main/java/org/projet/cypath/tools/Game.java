@@ -105,11 +105,6 @@ public class Game {
         listOnGoing.remove(player);
     }
 
-    public static void combat(List<Player> listOnGoing){
-        while (listOnGoing.size()>1){
-            //TODO
-        }
-    }
 
     /**
      * Save your game using this method
