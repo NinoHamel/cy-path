@@ -220,7 +220,7 @@ public class Player implements Serializable {
                 int newRowBottom = newBox.getRow() + 1;
                 int newColumnBottom = newBox.getColumn();
                 Box newBoxBottom = board.getBox(newRowBottom, newColumnBottom);
-                if (board.onBoard(newRowBottom, newColumnBottom) && !newBox.hasBottomWall() && !newBoxBottom.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowBottom, newColumnBottom) && !newBox.hasBottomWall() && !newBoxBottom.equals(this.getCurrentBox()) && newBoxBottom.hasPlayer()==false) {
                     possibleMove.add(newBoxBottom);
                 }
             }
@@ -229,7 +229,7 @@ public class Player implements Serializable {
                 int newRowTop = newBox.getRow() - 1;
                 int newColumnTop = newBox.getColumn();
                 Box newBoxTop = board.getBox(newRowTop, newColumnTop);
-                if (board.onBoard(newRowTop, newColumnTop) && !newBox.hasTopWall() && !newBoxTop.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowTop, newColumnTop) && !newBox.hasTopWall() && !newBoxTop.equals(this.getCurrentBox()) && newBoxTop.hasPlayer()==false) {
                     possibleMove.add(newBoxTop);
                 }
             }
@@ -238,7 +238,7 @@ public class Player implements Serializable {
                 int newRowRight = newBox.getRow();
                 int newColumnRight = newBox.getColumn() + 1;
                 Box newBoxRight = board.getBox(newRowRight, newColumnRight);
-                if (board.onBoard(newRowRight, newColumnRight) && !newBox.hasRightWall() && !newBoxRight.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowRight, newColumnRight) && !newBox.hasRightWall() && !newBoxRight.equals(this.getCurrentBox()) && newBoxRight.hasPlayer()==false) {
                     possibleMove.add(newBoxRight);
                 }
             }
@@ -248,7 +248,7 @@ public class Player implements Serializable {
                 int newRowLeft = newBox.getRow();
                 int newColumnLeft = newBox.getColumn() - 1;
                 Box newBoxLeft = board.getBox(newRowLeft, newColumnLeft);
-                if (board.onBoard(newRowLeft, newColumnLeft) && !newBox.hasLeftWall() && !newBoxLeft.equals(this.getCurrentBox())) {
+                if (board.onBoard(newRowLeft, newColumnLeft) && !newBox.hasLeftWall() && !newBoxLeft.equals(this.getCurrentBox()) && newBoxLeft.hasPlayer()==false) {
                     possibleMove.add(newBoxLeft);
                 }
             }
@@ -258,18 +258,18 @@ public class Player implements Serializable {
             if(Orientation == "Bottom"){
                 int newRowBottom = newBox.getRow()+1;
                 int newColumnBottom = newBox.getColumn();
-                Box newBoxRight = board.getBox(newRowBottom, newColumnBottom);
-                if (board.onBoard(newRowBottom, newColumnBottom)) {
-                    possibleMove.add(newBoxRight);
+                Box newBoxBottom = board.getBox(newRowBottom, newColumnBottom);
+                if (board.onBoard(newRowBottom, newColumnBottom) && newBoxBottom.hasPlayer()==false) {
+                    possibleMove.add(newBoxBottom);
                 }
             }
             //Déplacement Haut
             if(Orientation == "Top"){
                 int newRowTop = newBox.getRow()-1;
                 int newColumnTop = newBox.getColumn();
-                Box newBoxRight = board.getBox(newRowTop, newColumnTop);
-                if (board.onBoard(newRowTop, newColumnTop)) {
-                    possibleMove.add(newBoxRight);
+                Box newBoxTop = board.getBox(newRowTop, newColumnTop);
+                if (board.onBoard(newRowTop, newColumnTop) && newBoxTop.hasPlayer()==false) {
+                    possibleMove.add(newBoxTop);
                 }
             }
             //Déplacement Droit
@@ -277,7 +277,7 @@ public class Player implements Serializable {
                 int newRowRight = newBox.getRow();
                 int newColumnRight = newBox.getColumn() + 1;
                 Box newBoxRight = board.getBox(newRowRight, newColumnRight);
-                if (board.onBoard(newRowRight, newColumnRight)) {
+                if (board.onBoard(newRowRight, newColumnRight) && newBoxRight.hasPlayer()==false) {
                     possibleMove.add(newBoxRight);
                 }
             }
@@ -285,14 +285,11 @@ public class Player implements Serializable {
             if(Orientation == "Left"){
                 int newRowLeft = newBox.getRow();
                 int newColumnLeft = newBox.getColumn() - 1;
-                Box newBoxRight = board.getBox(newRowLeft, newColumnLeft);
-                if (board.onBoard(newRowLeft, newColumnLeft)) {
-                    possibleMove.add(newBoxRight);
+                Box newBoxLeft = board.getBox(newRowLeft, newColumnLeft);
+                if (board.onBoard(newRowLeft, newColumnLeft) && newBoxLeft.hasPlayer()==false) {
+                    possibleMove.add(newBoxLeft);
                 }
             }
         }
     }
-
-
-
 }

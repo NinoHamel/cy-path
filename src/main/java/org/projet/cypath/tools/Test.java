@@ -10,8 +10,7 @@ public class Test {
 
     public static void main(String[] args) {
         try {
-
-            Board board = new Board(2);
+            /*Board board = new Board(2);
             Player player1 = new Player(1, "Test1", "Red", board.getBox(0,4), board);
             Player player2 = new Player(2, "Test2", "Blue", board.getBox(8,4), board);
             List<Player> players = new ArrayList<>();
@@ -22,7 +21,9 @@ public class Test {
             board.setRightWall(board.getBox(0, 3));
             System.out.println(board.displayBoard());
             System.out.println(board.hasPathAll(players));
-            //board.setBottomWall();
+            //board.setBottomWall();*/
+            Game game=new Game(4);
+            System.out.println(game.getBoard().displayBoard());
         }catch (Exception e){
             System.out.println(e);
         }

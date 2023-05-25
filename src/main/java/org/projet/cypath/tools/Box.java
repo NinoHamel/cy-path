@@ -142,7 +142,9 @@ public class Box implements Serializable {
      * @param bottomWall true to set a bottom wall, false otherwise
      */
     public void setBottomWall(boolean bottomWall) {
+        //System.out.println("avant setBottomWall:"+this.bottomWall);
         this.bottomWall = bottomWall;
+        //System.out.println("après setBottomWall:"+this.bottomWall);
     }
 
     /**
@@ -190,7 +192,7 @@ public class Box implements Serializable {
     @Override
     public String toString() {
         return "Box{" +
-                ", row=" + row +
+                "row=" + row +
                 ", column=" + column +
                 ", OriginHorizontalWall=" + OriginHorizontalWall +
                 ", OriginVerticalWall=" + OriginVerticalWall +
@@ -198,6 +200,7 @@ public class Box implements Serializable {
                 ", rightWall=" + rightWall +
                 ", topWall=" + topWall +
                 ", bottomWall=" + bottomWall +
+                ", player=" + player +
                 '}';
     }
 }
