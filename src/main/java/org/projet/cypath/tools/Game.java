@@ -33,7 +33,7 @@ public class Game {
             Box boxPlayer2 = board.getBox(8, 4);
             Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
             Box boxPlayer3= board.getBox(4, 0);
-            Player player3 = new Player(3, "3", "#FFFF00", boxPlayer3, board);
+            Player player3 = new Player(3, "3", "##FFFF00", boxPlayer3, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);
