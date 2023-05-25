@@ -133,6 +133,7 @@ public class StartSceneController {
 
     @FXML
     private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
+        mainGame.setNumPlayers(numPlayers);
         mainGame.showGameScene();
     }
 

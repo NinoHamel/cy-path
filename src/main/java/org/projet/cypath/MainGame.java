@@ -45,18 +45,9 @@ public class MainGame extends Application {
      * @throws IOException
      */
     public void showGameScene() throws InvalidSceneException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        StartSceneController startController = loader.getController();
-        int numPlayers = startController.getNumPlayers();
-        GameSceneController controller = new GameSceneController(numPlayers);
-        controller.setMainGame(this);
-        Scene scene = controller.start();
+        GameSceneController gameController = new GameSceneController(numPlayers);
+        gameController.setMainGame(this);
+        Scene scene = gameController.start();
         if (scene != null) {
             primaryStage.setTitle("Game");
             primaryStage.setScene(scene);
@@ -89,6 +80,11 @@ public class MainGame extends Application {
         primaryStage.setTitle("Save & Load");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+    }
+
+    private int numPlayers;
+    public void setNumPlayers(int numPlayers) {
+        this.numPlayers = numPlayers;
     }
 
     /**
