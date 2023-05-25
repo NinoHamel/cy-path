@@ -104,56 +104,66 @@ public class GameSceneController {
 
                             // Mise à jour des mouvements possibles pour le joueur en cours
                             List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
-
-                            // Enlever les couleurs des cases de mouvement possible de l'ancienne position
+                            // Vérifier si la case sélectionnée est une case de mouvement possible
+                            boolean isValidMove = false;
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
-                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
-                            }
-                            // Modifier la couleur de la case d'origine de l'ancienne position
-                            StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
-                            Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
-                            fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
-                            currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
-                            int toRow = currentPlayer.getCurrentBox().getRow();
-                            int toCol = currentPlayer.getCurrentBox().getColumn();
-                            // Modifier la couleur de la nouvelle case de la nouvelle position
-                            StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
-                            Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
-                            toRect.setFill(Color.web(color));
-                            //Vérifier si le joueur a gagné
-                            for (Box boxVictory : victoryBox) {
-                                int victoryRow = boxVictory.getRow();
-                                int victoryCol = boxVictory.getColumn();
-                                if (victoryCol == toCol && victoryRow == toRow) {
-                                    currentPlayer.setVictory(true);
-                                    listWinners.add(currentPlayer);
-                                    listOnGoing.remove(currentPlayer);
-                                    index.set(index.get() - 1);
-                                    if (index.get() < 0) {
-                                        index.set(listOnGoing.size() - 1);
-                                    }
+                                if (currentRow == moveRow && currentCol == moveCol) {
+                                    isValidMove = true;
+                                    break;
                                 }
                             }
-                            // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
-                            index.getAndIncrement();
-                            if (index.get() >= listOnGoing.size()) {
-                                index.set(0);
+                            // Enlever les couleurs des cases de mouvement possible de l'ancienne position
+                            if (isValidMove) {
+                                for (Box box : possibleMove) {
+                                    int moveRow = box.getRow();
+                                    int moveCol = box.getColumn();
+                                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                    Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                                    moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
+                                }
+                                // Modifier la couleur de la case d'origine de l'ancienne position
+                                StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
+                                Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
+                                fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.BLACK);
+                                currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
+                                int toRow = currentPlayer.getCurrentBox().getRow();
+                                int toCol = currentPlayer.getCurrentBox().getColumn();
+                                // Modifier la couleur de la nouvelle case de la nouvelle position
+                                StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
+                                Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
+                                toRect.setFill(Color.web(color));
+                                //Vérifier si le joueur a gagné
+                                for (Box boxVictory : victoryBox) {
+                                    int victoryRow = boxVictory.getRow();
+                                    int victoryCol = boxVictory.getColumn();
+                                    if (victoryCol == toCol && victoryRow == toRow) {
+                                        currentPlayer.setVictory(true);
+                                        listWinners.add(currentPlayer);
+                                        listOnGoing.remove(currentPlayer);
+                                        index.set(index.get() - 1);
+                                        if (index.get() < 0) {
+                                            index.set(listOnGoing.size() - 1);
+                                        }
+                                    }
+                                }
+                                // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
+                                index.getAndIncrement();
+                                if (index.get() >= listOnGoing.size()) {
+                                    index.set(0);
+                                }
+                                // Afficher les nouveaux déplacements possible
+                                currentPlayer = listOnGoing.get(index.get());
+                                possibleMove = currentPlayer.possibleMove(game.getBoard());
+                                for (Box box : possibleMove) {
+                                    int moveRow = box.getRow();
+                                    int moveCol = box.getColumn();
+                                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                    Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                                    moveRect.setFill(Color.PURPLE);
+                                }
                             }
-                            // Afficher les nouveaux déplacements possible
-                            currentPlayer = listOnGoing.get(index.get());
-                            possibleMove = currentPlayer.possibleMove(game.getBoard());
-                            for (Box box : possibleMove) {
-                                int moveRow = box.getRow();
-                                int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
-                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                moveRect.setFill(Color.PURPLE);
-                            }
-
                         } catch (Exception e) {
                             System.out.println(e);
                         }
@@ -179,6 +189,7 @@ public class GameSceneController {
                                     }
                                 }
                             }
+
                         } catch (Exception e) {
                             System.out.println(e);
                         }
