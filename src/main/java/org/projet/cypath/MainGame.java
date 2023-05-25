@@ -35,8 +35,10 @@ public class MainGame extends Application {
         controller.setMainGame(this);
         primaryStage.setTitle("Game Start");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setMinWidth(1720);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(720);
+        primaryStage.setWidth(1720);
+        primaryStage.setHeight(720);
         primaryStage.show();
     }
 
@@ -50,6 +52,10 @@ public class MainGame extends Application {
         Scene scene = gameController.start();
         if (scene != null) {
             primaryStage.setTitle("Game");
+            primaryStage.setMinWidth(1200);
+            primaryStage.setMinHeight(800);
+            primaryStage.setWidth(1200);
+            primaryStage.setHeight(800);
             primaryStage.setScene(scene);
             primaryStage.show();
         } else {

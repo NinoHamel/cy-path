@@ -2,6 +2,7 @@ package org.projet.cypath;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
@@ -38,8 +39,13 @@ public class GameSceneController {
             throw new RuntimeException(e);
         }
 
-        GridPane gridPane = createDamier();
-        return new Scene(gridPane, 600, 600);
+        GridPane damier = createDamier();
+        Scene scene = new Scene(damier, 1200, 800);
+
+        damier.prefWidthProperty().bind(scene.widthProperty());
+        damier.prefHeightProperty().bind(scene.heightProperty());
+
+        return scene;
     }
 
     private GridPane createDamier() {
@@ -54,7 +60,6 @@ public class GameSceneController {
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHalignment(HPos.CENTER);
 
-
         AtomicReference<Boolean> actionBouger = new AtomicReference<>(false);
         AtomicReference<Boolean> actionMur = new AtomicReference<>(false);
         AtomicReference<Boolean> murHorizontal = new AtomicReference<>(false);
@@ -67,7 +72,7 @@ public class GameSceneController {
                 cellPane.setPrefSize(50, 50);
 
                 Rectangle rect = new Rectangle(46, 46);
-                rect.setFill((row + col) % 2 == 0 ? Color.WHITE : Color.BLACK);
+                rect.setFill((row + col) % 2 == 0 ? Color.WHITE : Color.GREY);
 
                 cellPane.getChildren().add(rect);
                 gridPane.add(cellPane, col, row);
@@ -352,7 +357,7 @@ public class GameSceneController {
         BorderStrokeStyle borderLineStyle = BorderStrokeStyle.SOLID;
         //Bottom
         BorderStroke newBorderStrokeBottom = new BorderStroke(
-                Color.GRAY,
+                Color.BLACK,
                 borderLineStyle,
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 0, 4, 0)
