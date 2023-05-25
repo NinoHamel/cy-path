@@ -23,7 +23,6 @@ public class Board implements Serializable {
     private int remainingWalls;
 
     //Constructor
-
     /**
      * Creates a 9 by 9 array to represent a grid
      * @param playerNumber the number of player of the game
@@ -67,15 +66,13 @@ public class Board implements Serializable {
         }
         throw new OutOfBoardException("donnes pas dans le tableau");
     }
-
-
     /**
-     * Validate if a wall can be set
-     *
-     * @param box is for first position of the wall
+     * Validate if a wall can be set or not
+     * @param box is the first position of the wall
+     * @param orientation is to determine the orientation of the wall, 0 for horizontal and 1 for vertical
      * @return boolean True or False depending on the 2 positions or an error
+     * @throws InvalidWallException
      */
-
     public Boolean canSetWall(Box box, int orientation) throws InvalidWallException {
         int row=box.getRow();
         int column=box.getColumn();
@@ -110,13 +107,11 @@ public class Board implements Serializable {
         else return true;
     }
     /**
-     * Set a wall on the bottom or in the right if possible
+     * Set a bottom wall by using the first position of the wall
      *
      * @param box is for the 1st box
-     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box,int)}
      */
-    public void setBottomWall(Box box) throws InvalidWallException {
-       // if (canSetWall(box,0)) {
+    public void setBottomWall(Box box){
             int x=box.getRow();
             int y=box.getColumn();
             this.box[x][y].setBottomWall(true);
@@ -124,13 +119,14 @@ public class Board implements Serializable {
             this.box[x+1][y].setTopWall(true);
             this.box[x+1][y+1].setTopWall(true);
             this.box[x][y].setOriginHorizontalWall(true);
-       /* }
-        else {
-            throw new InvalidWallException("A wall is already here");
-        }*/
+            remainingWalls--;
     }
-    public void setBottomWall(Box box,Boolean boulean) throws InvalidWallException {
-        //if (canSetWall(box,0)) {
+    /**
+     * Set or Destroy a bottom wall by using the first position
+     * @param box is for the 1st box
+     * @param boulean true or false to add or delete a wall
+     */
+    public void setBottomWall(Box box,Boolean boulean){
             int x=box.getRow();
             int y=box.getColumn();
             this.box[x][y].setBottomWall(boulean);
@@ -138,15 +134,19 @@ public class Board implements Serializable {
             this.box[x+1][y].setTopWall(boulean);
             this.box[x+1][y+1].setTopWall(boulean);
             this.box[x][y].setOriginHorizontalWall(boulean);
-        /*}
-        else {
-            throw new InvalidWallException("A wall is already here");
-        }*/
+            if (boulean) {
+                remainingWalls--;
+            }
+            else {
+                remainingWalls++;
+            }
     }
-
-
-    public void setRightWall(Box box) throws InvalidWallException {
-      //  if (canSetWall(box,1)) {
+    /**
+     * Set a right wall by using the first position of the wall
+     *
+     * @param box is for the 1st box
+     */
+    public void setRightWall(Box box){
             int x=box.getRow();
             int y=box.getColumn();
             this.box[x][y].setRightWall(true);
@@ -154,54 +154,78 @@ public class Board implements Serializable {
             this.box[x][y+1].setLeftWall(true);
             this.box[x+1][y+1].setLeftWall(true);
             this.box[x][y].setOriginVerticalWall(true);
-    /*    }
-        else {
-            throw new InvalidWallException("A wall is already here");
-        }*/
+            remainingWalls--;
     }
-    public void setRightWall(Box box,Boolean Boulean) throws InvalidWallException {
-      //  if (canSetWall(box,1)) {
+    /**
+     * Set or Destroy a right wall by using the first position
+     * @param box is for the 1st box
+     * @param boulean true or false to add or delete a wall
+     */
+    public void setRightWall(Box box,Boolean boulean){
             int x=box.getRow();
             int y=box.getColumn();
-            this.box[x][y].setRightWall(Boulean);
-            this.box[x+1][y].setRightWall(Boulean);
-            this.box[x][y+1].setLeftWall(Boulean);
-            this.box[x+1][y+1].setLeftWall(Boulean);
-            this.box[x][y].setOriginVerticalWall(Boulean);
-      /*  }
-        else {
-            throw new InvalidWallException("A wall is already here");
-        }*/
+            this.box[x][y].setRightWall(boulean);
+            this.box[x+1][y].setRightWall(boulean);
+            this.box[x][y+1].setLeftWall(boulean);
+            this.box[x+1][y+1].setLeftWall(boulean);
+            this.box[x][y].setOriginVerticalWall(boulean);
+            if (boulean) {
+                remainingWalls--;
+            }
+            else {
+                remainingWalls++;
+            }
     }
 
     /**
-     * Set a wall on the bottom or in the right if possible
-     *
-     * @param row is for the row of the board
-     * @param column is for the column of the board
-     * @throws InvalidWallException if putting a wall on box isn't possible after verifying with {@link #canSetWall(Box, int)}
+     * Set a bottom wall by using the first position by getting the box and the using {@link #setBottomWall(Box)}
+     * @param row is the row of the wall
+     * @param column is the column of the wall
+     * @throws OutOfBoardException if the row or column aren't on the board
      */
-    public void setBottomWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+    public void setBottomWall(int row,int column) throws OutOfBoardException {
         if (onBoard(row,column)){
             setBottomWall(this.getBox(row,column));
         }
     }
-    public void setBottomWall(int row,int column,Boolean boulean) throws InvalidWallException, OutOfBoardException {
+    /**
+     * Set or Destroy a bottom wall by using the first position by getting the box and the using {@link #setBottomWall(Box,Boolean)}
+     * @param row is the row of the wall
+     * @param column is the column of the wall
+     * @throws OutOfBoardException if the row or column aren't on the board
+     */
+    public void setBottomWall(int row,int column,Boolean boulean) throws OutOfBoardException {
         if (onBoard(row,column)){
             setBottomWall(this.getBox(row,column),boulean);
         }
     }
-
-    public void setRightWall(int row,int column) throws InvalidWallException, OutOfBoardException {
+    /**
+     * Set or Destroy a right wall by using the first position by getting the box and the using {@link #setBottomWall(Box)}
+     * @param row is the row of the wall
+     * @param column is the column of the wall
+     * @throws OutOfBoardException if the row or column aren't on the board
+     */
+    public void setRightWall(int row,int column) throws OutOfBoardException {
         if (onBoard(row,column)){
             setRightWall(this.getBox(row,column));
         }
     }
-    public void setRightWall(int row,int column,Boolean boulean) throws InvalidWallException, OutOfBoardException {
+    /**
+     * Set or Destroy a right wall by using the first position by getting the box and the using {@link #setBottomWall(Box,Boolean)}
+     * @param row is the row of the wall
+     * @param column is the column of the wall
+     * @throws OutOfBoardException if the row or column aren't on the board
+     */
+    public void setRightWall(int row,int column,Boolean boulean) throws OutOfBoardException {
         if (onBoard(row,column)){
             setRightWall(this.getBox(row,column),boulean);
         }
     }
+
+    /**
+     * Getter of the attribute remaining walls
+     * @return int of the remaining walls
+     */
     public int getRemainingWalls() {
         return remainingWalls;
     }
@@ -259,6 +283,11 @@ public class Board implements Serializable {
         return false;
     }
 
+    /**
+     * Return a boolean if every player has a path
+     * @param players a list of plauer which is supposed to be ListOnGoing
+     * @return boolean true or false if there is a path or not
+     */
     public boolean hasPathAll(List<Player> players){
         for(Player player : players){
             if(!hasPath(player)){
@@ -268,7 +297,10 @@ public class Board implements Serializable {
         return true;
     }
 
-
+    /**
+     * Function used to display on the console a schematic board
+     * @return string that can be displayed using the command System.ont.println
+     */
     public String displayBoard(){
         String displayedBoard = "";
         for(int i=0; i < 9; i++){

@@ -1,5 +1,6 @@
 package org.projet.cypath.tools;
 
+import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 
@@ -33,7 +34,7 @@ public class Game {
             Box boxPlayer2 = board.getBox(8, 4);
             Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
             Box boxPlayer3= board.getBox(4, 0);
-            Player player3 = new Player(3, "3", "##FFFF00", boxPlayer3, board);
+            Player player3 = new Player(3, "3", "#FFFF00", boxPlayer3, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);
@@ -171,6 +172,7 @@ public class Game {
     }
     /**
      * Get the save of your game using this method
+     * Using this method, listWinners,listOngoing and board are going to be initialized if possible according to the save, if it is not possible, nothing will happen.
      * @throws IOException
      */
     public void getSave() throws IOException {
@@ -214,6 +216,10 @@ public class Game {
         }
     }
 
+    /**
+     * Mathod to ass a remove a player from listOnGoing and add him to listWinners
+     * @param player
+     */
     public void ifWinner(Player player){
         if(player.getVictoryBoxes().contains(player.getCurrentBox())){
             listOnGoing.remove(player);
@@ -221,6 +227,10 @@ public class Game {
         }
     }
 
+    /**
+     * Method used to add and test if there is only one player to add
+     * @return true or false if the add was succesful
+     */
     public boolean isGameOver(){
         if(listOnGoing.size() == 1){
             listWinners.add(listOnGoing.get(0));
@@ -228,6 +238,37 @@ public class Game {
             return true;
         }
         return false;
+    }
+    /**
+     *
+     * @param currentRow row of the fist wall
+     * @param currentCol column of the first wall
+     * @param  orientation is the orientation of the box, 0 for bottom and 1 for right
+     * @return boolean if there is a path or not
+     * @throws OutOfBoardException
+     */
+    public Boolean hasPath(int currentRow,int currentCol,int orientation) throws OutOfBoardException {
+        if (orientation == 0) {
+            this.getBoard().setBottomWall(currentRow,currentCol,true);
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setBottomWall(currentRow,currentCol,false);
+                    return false;
+                }
+            };
+            board.setBottomWall(currentRow,currentCol,false);
+        }
+        else {
+            board.setRightWall(currentRow, currentCol,true);
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setRightWall(currentRow,currentCol,false);
+                    return false;
+                }
+            }
+            board.setRightWall(currentRow,currentCol,false);
+        }
+        return true;
     }
 
 }
