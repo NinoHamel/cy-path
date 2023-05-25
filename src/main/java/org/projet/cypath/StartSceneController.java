@@ -31,6 +31,7 @@ import java.util.Objects;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class StartSceneController {
     private MainGame mainGame;
@@ -111,6 +112,10 @@ public class StartSceneController {
     @FXML
     private ImageView void2ImageView;
 
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
 
     /* IMAGES REGLES
     private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));*/
@@ -127,7 +132,7 @@ public class StartSceneController {
     }
 
     @FXML
-    private void handleStartButtonAction(MouseEvent event) throws IOException {
+    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
         mainGame.showGameScene();
     }
 
@@ -431,19 +436,5 @@ public class StartSceneController {
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-    }
-
-    private String getColorName(Color color) {
-        if (Color.RED.equals(color)) {
-            return "Red";
-        } else if (Color.GREEN.equals(color)) {
-            return "Green";
-        } else if (Color.BLUE.equals(color)) {
-            return "Blue";
-        } else if (Color.YELLOW.equals(color)) {
-            return "Yellow";
-        } else {
-            return "Unknown";
-        }
     }
 }

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.projet.cypath.exceptions.InvalidSceneException;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -43,15 +44,28 @@ public class MainGame extends Application {
      * Get the fxml, and launch the GameScene, with its controller
      * @throws IOException
      */
-    public void showGameScene() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("game_scene.fxml"));
-        Parent root = loader.load();
-        GameSceneController controller = loader.getController();
+    public void showGameScene() throws InvalidSceneException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        StartSceneController startController = loader.getController();
+        int numPlayers = startController.getNumPlayers();
+        GameSceneController controller = new GameSceneController(numPlayers);
         controller.setMainGame(this);
-        primaryStage.setTitle("Game");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+        Scene scene = controller.start();
+        if (scene != null) {
+            primaryStage.setTitle("Game");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } else {
+            throw new InvalidSceneException("No scene defined");
+        }
     }
+
 
     /**
      * Get the fxml, and launch the EndScene, with its controller
