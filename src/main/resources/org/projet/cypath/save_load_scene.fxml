@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import javafx.scene.chart.StackedAreaChart?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.SaveLoadSceneController">
+    <StackPane fx:id="loadScreen" visible="false" minWidth="1720" minHeight="720">
+        <VBox alignment="CENTER" spacing="120">
+            <Text text="Loading and Save" style="-fx-font-size: 100;"/>
+            <HBox fx:id="buttonBox1" alignment="CENTER" spacing="100">
+                <ImageView fx:id="loadImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleLoadButtonAction"/>
+                <ImageView fx:id="saveImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleSaveButtonAction"/>
+            </HBox>
+            <HBox fx:id="buttonBox2" alignment="CENTER" spacing="20">
+                <ImageView fx:id="startGameImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleStartButtonAction"/>
+                <ImageView fx:id="backButtonImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleButtonBack"/>
+                <ImageView fx:id="quitImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleQuitButtonAction"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</StackPane>

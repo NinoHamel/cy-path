@@ -31,35 +31,15 @@ import java.util.Objects;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import org.projet.cypath.exceptions.InvalidSceneException;
 
-public class StartSceneController {
+public class StartSceneController{
     private MainGame mainGame;
     private int numPlayers = 2;
-    private final List<Color> selectedColors = new ArrayList<>();
-    @FXML
-    private ComboBox<Integer> numPlayersComboBox;
-    @FXML
-    private Pane logoView;
     @FXML
     private StackPane playerSelectionView;
     @FXML
     private StackPane settingsView;
-    @FXML
-    private ComboBox<Color> player1ColorComboBox;
-    @FXML
-    private ComboBox<Color> player2ColorComboBox;
-    @FXML
-    private ComboBox<Color> player3ColorComboBox;
-    @FXML
-    private ComboBox<Color> player4ColorComboBox;
-    @FXML
-    private VBox player1ColorBox;
-    @FXML
-    private VBox player2ColorBox;
-    @FXML
-    private VBox player3ColorBox;
-    @FXML
-    private VBox player4ColorBox;
     @FXML
     private StackPane titleScreen;
     @FXML
@@ -111,6 +91,10 @@ public class StartSceneController {
     @FXML
     private ImageView void2ImageView;
 
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
 
     /* IMAGES REGLES
     private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));*/
@@ -127,8 +111,9 @@ public class StartSceneController {
     }
 
     @FXML
-    private void handleStartButtonAction(MouseEvent event) throws IOException {
-        mainGame.showGameScene();
+    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
+        mainGame.setNumPlayers(numPlayers);
+        mainGame.switchScene(mainGame.showGameScene());
     }
 
     @FXML
@@ -154,8 +139,9 @@ public class StartSceneController {
     }
 
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) {     //Open saves menu
+    private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
         System.out.println("Load button clicked");
+        mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
     @FXML
@@ -281,9 +267,9 @@ public class StartSceneController {
 
     public void createImageView(ImageView name, String path, int height, boolean aspectRatio){
 
-       name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
-       name.setFitHeight(height); //set height
-       name.setPreserveRatio(aspectRatio); //conserve aspect ratio
+        name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
+        name.setFitHeight(height); //set height
+        name.setPreserveRatio(aspectRatio); //conserve aspect ratio
 
     }
 
@@ -292,12 +278,12 @@ public class StartSceneController {
             case 0:
                 rulesText.setText("Ce projet est un jeu de plateau compétitif pour 2 ou 4 joueurs. Le but est de faire traverser le plateau à son pion avant les autres joueurs.\n" +
                         "La zone de jeu est constituée de 81 cases disposées en carré. Chaque case est séparée des autres par des lignes horizontales et verticales (quadrillage). Chaque joueur démarre sur la case milieu d'un des bords du plateau (pour 2 joueurs, les pions doivent être placés sur des bords opposés).");
-            break;
+                break;
 
             case 1:
                 rulesText.setText("Chaque joueur joue chacun son tour. A chaque tour de jeu, un joueur peut choisir de déplacer son pion d'une seule case horizontalement ou verticalement, dans n'importe quelle direction.\n" +
                         "Il peut également choisir de positionner une barrière, horizontalement ou verticalement. Une barrière possède une longueur de 2 cases. Une barrière ne peut pas dépasser de la zone de jeu. Une barrière ne pas superposer une autre barrière. Une barrière est forcément placée pour avoir 2 cases adjacentes complètes. Les barrières sont au nombre de 20 au total.");
-            break;
+                break;
 
             case 2:
                 rulesText.setText("Les barrières ne peuvent pas être franchies par les pions des joueurs. Ces derniers devront donc trouver un autre chemin pour progresser en direction\n" +
@@ -305,16 +291,16 @@ public class StartSceneController {
                         "Lorsqu'une barrière est posée, il est impossible de la déplacer pour le reste de la partie. Lorsqu'il n'y a plus de barrières à poser, les joueurs ne peuvent alors que déplacer leurs pions pour terminer la partie.\n" +
                         "Si il n'est plus possible de poser de nouvelles barrières, alors la seule action possible pour un joueur est de déplacer son pion.\n" +
                         "Lorsqu'un joueur pose une barrière, il doit s'assurer que le pion du joueur adverse dispose au moins d'un trajet possible. Il est interdit de bloquer définitivement l'adversaire : tout joueur doit avoir au moins 1 trajet possible.");
-            break;
+                break;
 
             case 3:
                 rulesText.setText("Le premier joueur à faire parvenir son pion sur n'importe quelle case qui se trouve sur le bord opposé à son point de départ est déclaré vainqueur. Lorsque 2 pions sont côte à côte, il est possible pour l'un de \"sauter\" par dessus l'autre pour passer de l'autre côté en un seul coup. Ceci n'est possible QUE SI la case d'arrivée n'est pas déjà occupée par un autre joueur (cas d'une partie à 4 joueurs par exemple), ou bien que la case à sauter et la case d'arrivée ne soient pas séparées par une barrière.\n" +
                         "Dans l'une des ces deux situations, et seulement dans ce cas là, il est possible pour le joueur actif de se déplacer en diagonale à côté du joueur adverse.");
-            break;
+                break;
 
             case 4:
                 rulesText.setText("Dans ce cas précis, si l'une des cases diagonales est séparée de la case du joueur jaune par une barrière, alors le déplacement diagonale ne pourra pas se faire non plus. Il faut voir ce \"saut\" comme si le joueur bleu avançait sur la case du joueur jaune, puis se déplaçait sur la case d'arrivée. Il effectue donc 2 déplacements consécutifs, si et seulement si ces 2 déplacements sont possibles (non entravés par une barrière, ou un 3ème joueur).");
-            break;
+                break;
         }
 
     }
@@ -332,36 +318,6 @@ public class StartSceneController {
 
 
     public void initialize() {
-
-        File file = new File("src/main/resources/org/projet/cypath/cypath.mp4");
-        Media media = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        MediaView mediaView = new MediaView(mediaPlayer);
-
-        mediaView.setFitWidth(logoView.getPrefWidth());
-        mediaView.setFitHeight(logoView.getPrefHeight());
-        mediaView.setPreserveRatio(true);
-
-        logoView.getChildren().add(mediaView);
-
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), logoView);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), logoView);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-
-        mediaPlayer.setOnEndOfMedia(fadeOut::play);
-
-        fadeOut.setOnFinished(event -> {
-            logoView.setVisible(false);
-            titleScreen.setVisible(true);
-        });
-
-        mediaPlayer.play();
-
         //main menu buttons
         createImageView( newgameImageView,"/org/projet/cypath/newgame.png",100,true);
         createImageView(loadImageView,"/org/projet/cypath/load.png",100,true);
@@ -431,19 +387,5 @@ public class StartSceneController {
         timeline.getKeyFrames().addAll(kf1, kf2, kf3);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-    }
-
-    private String getColorName(Color color) {
-        if (Color.RED.equals(color)) {
-            return "Red";
-        } else if (Color.GREEN.equals(color)) {
-            return "Green";
-        } else if (Color.BLUE.equals(color)) {
-            return "Blue";
-        } else if (Color.YELLOW.equals(color)) {
-            return "Yellow";
-        } else {
-            return "Unknown";
-        }
     }
 }

@@ -1,5 +1,6 @@
 package org.projet.cypath.players;
 
+import javafx.geometry.Orientation;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
@@ -21,7 +22,6 @@ public class Player implements Serializable {
     private final String color;
     private Box currentBox;
     private final List<Box> victoryBoxes;
-    private static final long SerialVersionUID=1L;
     private boolean victory;
     /**
      * Create a player
@@ -214,7 +214,26 @@ public class Player implements Serializable {
     public void possibleMoveJump(Board board, Box newBox, List<Box> possibleMove, String Orientation) throws OutOfBoardException {
         int rowPlayer = this.getCurrentBox().getRow();
         int columnPlayer = this.getCurrentBox().getColumn();
-        if(Orientation=="Right"&& newBox.hasRightWall()||Orientation=="Left"&& newBox.hasLeftWall()||Orientation=="Top"&& newBox.hasTopWall()||Orientation=="Bottom"&& newBox.hasBottomWall()) {
+        Box newNewBox=null;
+        if (Orientation=="Right" && board.onBoard(newBox.getRow(), newBox.getColumn()+1)) {
+                    newNewBox = board.getBox(newBox.getRow(), newBox.getColumn() + 1);
+        }
+        if (Orientation=="Left" && board.onBoard(newBox.getRow(), newBox.getColumn()-1)) {
+                    newNewBox = board.getBox(newBox.getRow(), newBox.getColumn() - 1);
+        }
+        if (Orientation=="Top" && board.onBoard(newBox.getRow()-1, newBox.getColumn())) {
+                    newNewBox = board.getBox(newBox.getRow()-1, newBox.getColumn());
+        }
+        if (Orientation=="Bottom" && board.onBoard(newBox.getRow()+1, newBox.getColumn())) {
+                    newNewBox = board.getBox(newBox.getRow()+1, newBox.getColumn());
+        }
+        if(
+                Orientation=="Right"&& (newBox.hasRightWall())||
+                Orientation=="Left"&& newBox.hasLeftWall()||
+                Orientation=="Top"&& newBox.hasTopWall()||
+                Orientation=="Bottom"&& newBox.hasBottomWall()||
+                newNewBox!=null && newNewBox.hasPlayer() && !newNewBox.equals(this.getCurrentBox()))
+     {
             // Déplacement bas
             if (board.onBoard(newBox.getRow() + 1, newBox.getColumn())) {
                 int newRowBottom = newBox.getRow() + 1;

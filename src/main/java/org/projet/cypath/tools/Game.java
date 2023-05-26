@@ -1,15 +1,21 @@
 package org.projet.cypath.tools;
 
+import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
     private List<Player> listWinners;
     private List<Player> listOnGoing;
+    private String uniqueId=generateUniqueId();
 
 
 
@@ -33,7 +39,7 @@ public class Game {
             Box boxPlayer2 = board.getBox(8, 4);
             Player player2 = new Player(2, "2", "#0000FF", boxPlayer2, board);
             Box boxPlayer3= board.getBox(4, 0);
-            Player player3 = new Player(3, "3", "##FFFF00", boxPlayer3, board);
+            Player player3 = new Player(3, "3", "#FFFF00", boxPlayer3, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);
@@ -63,6 +69,13 @@ public class Game {
     //Getter
 
     /**
+     * gette of the uniqueId
+     * @return the uniqueId
+     */
+    public String getUniqueId() {
+        return uniqueId;
+    }
+    /**
      * getter of board
      * @return the board of the game
      */
@@ -86,6 +99,13 @@ public class Game {
         return listOnGoing;
     }
 
+    /**
+     * sette of the unique id
+     * @param uniqueId the new uniqueId of the parameter
+     */
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     /**
      *add the winner in listWinners and remove the player from listOnGoing
@@ -104,11 +124,6 @@ public class Game {
         listOnGoing.remove(player);
     }
 
-    public static void combat(List<Player> listOnGoing){
-        while (listOnGoing.size()>1){
-            //TODO
-        }
-    }
 
     /**
      * Save your game using this method
@@ -141,22 +156,28 @@ public class Game {
 
     /**
      * Use the method to save your game in the files src/main/save/save.player and src/main/save/save.board
-     * @param board is the board of the game
      * @throws IOException
      */
-    public void save(Board board) throws IOException {
+    public void save() throws IOException {
+        Board board=this.getBoard();
         ObjectOutputStream oOSboard = null;
         ObjectOutputStream oOSplayer = null;
         try {
-            new File("src/main/save").mkdir();
-            oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.player"))));
-            for(Player player:this.listWinners){
+            String saveFolderPath = "src/main/save/" + this.uniqueId;
+
+            Files.createDirectories(Paths.get(saveFolderPath)); // Crée le répertoire de sauvegarde
+
+            // Sauvegarde des joueurs
+            oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveFolderPath + "/save.player")));
+            for (Player player : this.listWinners) {
                 oOSplayer.writeObject(player);
             }
-            for(Player player:this.listOnGoing){
+            for (Player player : this.listOnGoing) {
                 oOSplayer.writeObject(player);
             }
-            oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.board"))));
+
+            // Sauvegarde du plateau de jeu
+            oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveFolderPath + "/save.board")));
             oOSboard.writeObject(board);
         } catch (Exception e) {
             System.out.println(e);
@@ -169,51 +190,125 @@ public class Game {
             }
         }
     }
+
+    /**
+     * Use this method to create a unique id
+     * @return
+     */
+    private String generateUniqueId() {
+        String saveFolderPath = "src/main/save";
+        File saveFolder = new File(saveFolderPath);
+        int saveCount = 1; // Valeur par défaut si aucun fichier de sauvegarde n'existe
+
+        if (saveFolder.exists() && saveFolder.isDirectory()) {
+            File[] saves = saveFolder.listFiles();
+            if (saves != null) {
+                saveCount = saves.length + 1;
+            }
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+        return String.valueOf(saveCount) + "_" + now.format(formatter);
+    }
+
     /**
      * Get the save of your game using this method
+     * Using this method, listWinners,listOngoing and board are going to be initialized if possible according to the save, if it is not possible, nothing will happen.
      * @throws IOException
      */
-    public void getSave() throws IOException {
+    public void getSave(String saveId) throws IOException {
         ObjectInputStream oISboard = null;
         ObjectInputStream oISplayer = null;
+        uniqueId=saveId;
+        listWinners=new ArrayList<>();
+        listOnGoing=new ArrayList<>();
         try {
-            oISboard = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("src/main/save/save.board"))));
-            oISplayer = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("src/main/save/save.player"))));
+            String saveFolderPath = "src/main/save/" + saveId;
+
+            // Récupération des joueurs
+            oISplayer = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveFolderPath + "/save.player")));
             while (true) {
                 try {
                     Player player = (Player) oISplayer.readObject();
-                    if(player.isVictory()==false){
+                    if (player.isVictory()) {
+                        listWinners.add(player);
+                    } else {
                         listOnGoing.add(player);
                     }
-                    else {
-                        listWinners.add(player);
-                    }
                 } catch (EOFException e) {
                     // La fin du fichier a été atteinte
                     break;
                 }
             }
-            while (true) {
-                try {
-                    Board boardSave=(Board) oISboard.readObject();
-                    this.board=boardSave;
-                } catch (EOFException e) {
-                    // La fin du fichier a été atteinte
-                    break;
-                }
-            }
+
+            // Récupération du plateau de jeu
+            oISboard = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveFolderPath + "/save.board")));
+            this.board = (Board) oISboard.readObject();
         } catch (Exception e) {
             System.out.println(e);
         } finally {
-            if (oISboard != null) {
-                oISboard.close();
-            }
             if (oISplayer != null) {
                 oISplayer.close();
+            }
+            if (oISboard != null) {
+                oISboard.close();
             }
         }
     }
 
+    /**
+     * Use the method to delete every single saves from your file using {@link #deleteSave(File)}
+     */
+    public void deleteAllSaves() {
+        String saveFolderPath = "src/main/save";
+        File saveFolder = new File(saveFolderPath);
+
+        if (saveFolder.exists() && saveFolder.isDirectory()) {
+            File[] saves = saveFolder.listFiles();
+            if (saves != null) {
+                for (File save : saves) {
+                    deleteSave(save);
+                }
+            }
+        }
+    }
+
+    /**
+     * Use this method to delete a save from its id using {@link #deleteSave(File)}
+     * @param saveId
+     */
+    public void deleteSaveById(String saveId) {
+        String saveFolderPath = "src/main/save/" + saveId;
+        File saveFolder = new File(saveFolderPath);
+
+        if (saveFolder.exists() && saveFolder.isDirectory()) {
+            deleteSave(saveFolder);
+        }
+    }
+    /**
+     * Delete every file from a directory or a file recursively
+     * @param file a directory or a file
+     */
+    private void deleteSave(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    deleteSave(child);
+                }
+            }
+        }
+        file.delete();
+        // Supprime le répertoire parent uniquement s'il est vide
+        if (file.getParentFile() != null && file.getParentFile().isDirectory() && file.getParentFile().listFiles().length == 0) {
+            file.getParentFile().delete();
+        }
+    }
+    /**
+     * Method to remove a player from listOnGoing and add him to listWinners
+     * @param player
+     */
     public void ifWinner(Player player){
         if(player.getVictoryBoxes().contains(player.getCurrentBox())){
             this.listOnGoing.remove(player);
@@ -221,6 +316,10 @@ public class Game {
         }
     }
 
+    /**
+     * Method used to add and test if there is only one player to add
+     * @return true or false if the add was succesful
+     */
     public boolean isGameOver(){
         if(this.listOnGoing.size() == 1){
             this.listWinners.add(this.listOnGoing.get(0));
@@ -228,6 +327,37 @@ public class Game {
             return true;
         }
         return false;
+    }
+    /**
+     *
+     * @param currentRow row of the fist wall
+     * @param currentCol column of the first wall
+     * @param  orientation is the orientation of the box, 0 for bottom and 1 for right
+     * @return boolean if there is a path or not
+     * @throws OutOfBoardException
+     */
+    public Boolean hasPath(int currentRow,int currentCol,int orientation) throws OutOfBoardException {
+        if (orientation == 0) {
+            this.getBoard().setBottomWall(currentRow,currentCol,true);
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setBottomWall(currentRow,currentCol,false);
+                    return false;
+                }
+            };
+            board.setBottomWall(currentRow,currentCol,false);
+        }
+        else {
+            board.setRightWall(currentRow, currentCol,true);
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setRightWall(currentRow,currentCol,false);
+                    return false;
+                }
+            }
+            board.setRightWall(currentRow,currentCol,false);
+        }
+        return true;
     }
 
 }
