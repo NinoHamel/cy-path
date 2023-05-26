@@ -33,7 +33,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import org.projet.cypath.exceptions.InvalidSceneException;
 
-public class StartSceneController {
+public class StartSceneController{
     private MainGame mainGame;
     private int numPlayers = 2;
     private final List<Color> selectedColors = new ArrayList<>();
@@ -160,8 +160,9 @@ public class StartSceneController {
     }
 
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) {     //Open saves menu
+    private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
         System.out.println("Load button clicked");
+        mainGame.showSaveLoadScene();
     }
 
     @FXML
