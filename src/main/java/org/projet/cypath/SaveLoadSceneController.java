@@ -1,39 +1,19 @@
 package org.projet.cypath;
-import org.projet.cypath.exceptions.OutOfBoardException;
-import org.projet.cypath.tools.Game;
 
-import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.effect.*;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.util.Callback;
-import javafx.util.Duration;
+import org.projet.cypath.exceptions.InvalidSceneException;
+import org.projet.cypath.exceptions.OutOfBoardException;
+import org.projet.cypath.tools.Game;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class SaveLoadSceneController {
 

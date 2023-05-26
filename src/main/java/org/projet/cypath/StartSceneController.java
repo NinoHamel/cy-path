@@ -2,43 +2,37 @@ package org.projet.cypath;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.effect.*;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
+import org.projet.cypath.exceptions.InvalidSceneException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class StartSceneController{
     private MainGame mainGame;
     private int numPlayers = 2;
-    private final List<Color> selectedColors = new ArrayList<>();
-    @FXML
-    private ComboBox<Integer> numPlayersComboBox;
     @FXML
     private Pane logoView;
     @FXML
@@ -46,37 +40,9 @@ public class StartSceneController{
     @FXML
     private StackPane settingsView;
     @FXML
-    private ComboBox<Color> player1ColorComboBox;
-    @FXML
-    private ComboBox<Color> player2ColorComboBox;
-    @FXML
-    private ComboBox<Color> player3ColorComboBox;
-    @FXML
-    private ComboBox<Color> player4ColorComboBox;
-    @FXML
-    private VBox player1ColorBox;
-    @FXML
-    private VBox player2ColorBox;
-    @FXML
-    private VBox player3ColorBox;
-    @FXML
-    private VBox player4ColorBox;
-    @FXML
     private StackPane titleScreen;
     @FXML
-    private ImageView logoImage;
-    @FXML
-    private ImageView newGameButton;
-    @FXML
-    private ImageView loadGameButton;
-    @FXML
-    private ImageView settingsButton;
-    @FXML
-    private ImageView quitButton;
-    @FXML
     private ImageView newgameImageView;
-    @FXML
-    private ImageView startImageView;
     @FXML
     private ImageView loadImageView;
     @FXML
@@ -134,8 +100,10 @@ public class StartSceneController{
     @FXML
     private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
         mainGame.setNumPlayers(numPlayers);
-        mainGame.showGameScene();
+        Scene scene = mainGame.showGameScene();
+        mainGame.switchScene(scene);
     }
+
 
     @FXML
     private void handleButtonHover(MouseEvent event) {
@@ -162,7 +130,8 @@ public class StartSceneController{
     @FXML
     private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
         System.out.println("Load button clicked");
-        mainGame.showSaveLoadScene();
+        Scene scene = mainGame.showSaveLoadScene();
+        mainGame.switchScene(scene);
     }
 
     @FXML
@@ -339,36 +308,6 @@ public class StartSceneController{
 
 
     public void initialize() {
-
-        File file = new File("src/main/resources/org/projet/cypath/cypath.mp4");
-        Media media = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        MediaView mediaView = new MediaView(mediaPlayer);
-
-        mediaView.setFitWidth(logoView.getPrefWidth());
-        mediaView.setFitHeight(logoView.getPrefHeight());
-        mediaView.setPreserveRatio(true);
-
-        logoView.getChildren().add(mediaView);
-
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), logoView);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-        fadeIn.play();
-
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), logoView);
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-
-        mediaPlayer.setOnEndOfMedia(fadeOut::play);
-
-        fadeOut.setOnFinished(event -> {
-            logoView.setVisible(false);
-            titleScreen.setVisible(true);
-        });
-
-        mediaPlayer.play();
-
         //main menu buttons
         createImageView( newgameImageView,"/org/projet/cypath/newgame.png",100,true);
         createImageView(loadImageView,"/org/projet/cypath/load.png",100,true);
