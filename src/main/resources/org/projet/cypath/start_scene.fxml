@@ -8,13 +8,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.StartSceneController">
-    <stylesheets>
-        <URL value="@style.css"/>
-    </stylesheets>
-    <Pane fx:id="logoView">
-    </Pane>
-
-    <StackPane fx:id="titleScreen" visible="false" minWidth="1720" minHeight="720">
+    <StackPane fx:id="titleScreen" minWidth="1200" minHeight="800">
         <VBox alignment="CENTER" spacing="100">
             <Text fx:id="logoText"/>
             <HBox fx:id="buttonBox" alignment="CENTER" spacing="20">
@@ -26,7 +20,7 @@
         </VBox>
     </StackPane>
 
-    <StackPane fx:id="playerSelectionView" visible="false" minWidth="1720" minHeight="720">
+    <StackPane fx:id="playerSelectionView" visible="false" minWidth="1200" minHeight="800">
         <VBox spacing="20" alignment="CENTER">
             <Text text="CY-PATH" style="-fx-font-size: 100;"/>
             <Label text="Choose the number of players:" style="-fx-font-size: 50; -fx-font-weight: bold; -fx-text-fill: black;"/>
@@ -46,7 +40,7 @@
         </VBox>
     </StackPane>
 
-    <StackPane fx:id="settingsView" visible="false" minWidth="1720" minHeight="720">
+    <StackPane fx:id="settingsView" visible="false" minWidth="1200" minHeight="800">
         <VBox spacing="20" alignment="CENTER">
             <Text text="Settings" style="-fx-font-size: 100;"/>
             <VBox alignment="CENTER" spacing="20">

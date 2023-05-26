@@ -8,12 +8,6 @@
 <?import java.net.URL?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.SaveLoadSceneController">
-    <stylesheets>
-        <URL value="@style.css"/>
-    </stylesheets>
-    <Pane fx:id="logoView">
-    </Pane>
-
     <StackPane fx:id="loadScreen" visible="false" minWidth="1720" minHeight="720">
         <VBox alignment="CENTER" spacing="120">
             <Text text="Loading and Save" style="-fx-font-size: 100;"/>
@@ -28,6 +22,4 @@
             </HBox>
         </VBox>
     </StackPane>
-
-
 </StackPane>
