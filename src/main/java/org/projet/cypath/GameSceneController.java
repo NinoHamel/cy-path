@@ -1,11 +1,15 @@
 package org.projet.cypath;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
@@ -305,6 +309,13 @@ public class GameSceneController {
                                     Box currentBox=game.getBoard().getBox(currentRow,currentCol);
                                     currentBox.setHasPlayer(false);
                                     toRect.setFill((toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY);
+                                    //Clignottement du joueur quand il gagne
+                                    Timeline blinkAnimation = new Timeline(
+                                            new KeyFrame(Duration.seconds(0.5), new KeyValue(toRect.fillProperty(), Color.web(color))),
+                                            new KeyFrame(Duration.seconds(1.0), new KeyValue(toRect.fillProperty(), (toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY))
+                                    );
+                                    blinkAnimation.setCycleCount(2); // Effectuer le clignotement deux fois
+                                    blinkAnimation.play();
                                 }
                             }
                             // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
