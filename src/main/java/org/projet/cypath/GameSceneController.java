@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
+import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
 
@@ -21,6 +22,7 @@ public class GameSceneController {
     private MainGame mainGame;
     private Game game;
     private int numPlayers;
+    private int remainingWalls;
 
     public GameSceneController(int numPlayers) {
         this.numPlayers = numPlayers;
@@ -38,13 +40,18 @@ public class GameSceneController {
         }
 
         GridPane damier = createDamier();
-        Scene scene = new Scene(damier, 1200, 800);
+
+        StackPane rootPane = new StackPane();
+        rootPane.getChildren().add(damier);
+
+        Scene scene = new Scene(rootPane, 1200, 800);
 
         damier.prefWidthProperty().bind(scene.widthProperty());
         damier.prefHeightProperty().bind(scene.heightProperty());
 
         return scene;
     }
+
 
     private GridPane createDamier() {
         GridPane gridPane = initializeGridPane();
@@ -476,6 +483,11 @@ public class GameSceneController {
         );
         return newBorder;
 
+    }
+
+    public int CounterRemainingWalls(){
+        Board board = this.game.getBoard();
+        return remainingWalls = board.getRemainingWalls();
     }
 }
 
