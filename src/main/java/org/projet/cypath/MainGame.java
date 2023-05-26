@@ -21,13 +21,13 @@ public class MainGame extends Application {
      * @throws IOException
      */
     @Override
-    public void start(Stage stage) throws InvalidSceneException {
+    public void start(Stage stage) throws InvalidSceneException, IOException {
         this.primaryStage = stage;
-        switchScene(showVideoScene());
+        showVideoScene();
     }
 
 
-    public Scene showVideoScene() throws InvalidSceneException {
+    public void showVideoScene() throws InvalidSceneException {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
         primaryStage.setTitle("Intro");
@@ -39,7 +39,8 @@ public class MainGame extends Application {
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
         }
-        return scene;
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     /**
@@ -76,6 +77,7 @@ public class MainGame extends Application {
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
         }
+        switchScene(scene);
         return scene;
     }
 
@@ -113,7 +115,7 @@ public class MainGame extends Application {
             fadeInTransition.setToValue(1.0);
             fadeInTransition.play();
         } else {
-            FadeTransition fadeOutTransition = new FadeTransition(Duration.seconds(1), primaryStage.getScene().getRoot());
+            FadeTransition fadeOutTransition = new FadeTransition(Duration.seconds(0), primaryStage.getScene().getRoot());
             fadeOutTransition.setFromValue(1.0);
             fadeOutTransition.setToValue(0.0);
 

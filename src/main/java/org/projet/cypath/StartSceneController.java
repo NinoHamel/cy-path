@@ -2,39 +2,40 @@ package org.projet.cypath;
 
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.Glow;
-import javafx.scene.effect.InnerShadow;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
-import org.projet.cypath.exceptions.InvalidSceneException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class StartSceneController{
     private MainGame mainGame;
     private int numPlayers = 2;
-    @FXML
-    private Pane logoView;
     @FXML
     private StackPane playerSelectionView;
     @FXML
@@ -42,7 +43,19 @@ public class StartSceneController{
     @FXML
     private StackPane titleScreen;
     @FXML
+    private ImageView logoImage;
+    @FXML
+    private ImageView newGameButton;
+    @FXML
+    private ImageView loadGameButton;
+    @FXML
+    private ImageView settingsButton;
+    @FXML
+    private ImageView quitButton;
+    @FXML
     private ImageView newgameImageView;
+    @FXML
+    private ImageView startImageView;
     @FXML
     private ImageView loadImageView;
     @FXML
@@ -100,10 +113,8 @@ public class StartSceneController{
     @FXML
     private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
         mainGame.setNumPlayers(numPlayers);
-        Scene scene = mainGame.showGameScene();
-        mainGame.switchScene(scene);
+        mainGame.switchScene(mainGame.showGameScene());
     }
-
 
     @FXML
     private void handleButtonHover(MouseEvent event) {
@@ -130,8 +141,7 @@ public class StartSceneController{
     @FXML
     private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
         System.out.println("Load button clicked");
-        Scene scene = mainGame.showSaveLoadScene();
-        mainGame.switchScene(scene);
+        mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
     @FXML
@@ -257,9 +267,9 @@ public class StartSceneController{
 
     public void createImageView(ImageView name, String path, int height, boolean aspectRatio){
 
-       name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
-       name.setFitHeight(height); //set height
-       name.setPreserveRatio(aspectRatio); //conserve aspect ratio
+        name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
+        name.setFitHeight(height); //set height
+        name.setPreserveRatio(aspectRatio); //conserve aspect ratio
 
     }
 
@@ -268,12 +278,12 @@ public class StartSceneController{
             case 0:
                 rulesText.setText("Ce projet est un jeu de plateau compétitif pour 2 ou 4 joueurs. Le but est de faire traverser le plateau à son pion avant les autres joueurs.\n" +
                         "La zone de jeu est constituée de 81 cases disposées en carré. Chaque case est séparée des autres par des lignes horizontales et verticales (quadrillage). Chaque joueur démarre sur la case milieu d'un des bords du plateau (pour 2 joueurs, les pions doivent être placés sur des bords opposés).");
-            break;
+                break;
 
             case 1:
                 rulesText.setText("Chaque joueur joue chacun son tour. A chaque tour de jeu, un joueur peut choisir de déplacer son pion d'une seule case horizontalement ou verticalement, dans n'importe quelle direction.\n" +
                         "Il peut également choisir de positionner une barrière, horizontalement ou verticalement. Une barrière possède une longueur de 2 cases. Une barrière ne peut pas dépasser de la zone de jeu. Une barrière ne pas superposer une autre barrière. Une barrière est forcément placée pour avoir 2 cases adjacentes complètes. Les barrières sont au nombre de 20 au total.");
-            break;
+                break;
 
             case 2:
                 rulesText.setText("Les barrières ne peuvent pas être franchies par les pions des joueurs. Ces derniers devront donc trouver un autre chemin pour progresser en direction\n" +
@@ -281,16 +291,16 @@ public class StartSceneController{
                         "Lorsqu'une barrière est posée, il est impossible de la déplacer pour le reste de la partie. Lorsqu'il n'y a plus de barrières à poser, les joueurs ne peuvent alors que déplacer leurs pions pour terminer la partie.\n" +
                         "Si il n'est plus possible de poser de nouvelles barrières, alors la seule action possible pour un joueur est de déplacer son pion.\n" +
                         "Lorsqu'un joueur pose une barrière, il doit s'assurer que le pion du joueur adverse dispose au moins d'un trajet possible. Il est interdit de bloquer définitivement l'adversaire : tout joueur doit avoir au moins 1 trajet possible.");
-            break;
+                break;
 
             case 3:
                 rulesText.setText("Le premier joueur à faire parvenir son pion sur n'importe quelle case qui se trouve sur le bord opposé à son point de départ est déclaré vainqueur. Lorsque 2 pions sont côte à côte, il est possible pour l'un de \"sauter\" par dessus l'autre pour passer de l'autre côté en un seul coup. Ceci n'est possible QUE SI la case d'arrivée n'est pas déjà occupée par un autre joueur (cas d'une partie à 4 joueurs par exemple), ou bien que la case à sauter et la case d'arrivée ne soient pas séparées par une barrière.\n" +
                         "Dans l'une des ces deux situations, et seulement dans ce cas là, il est possible pour le joueur actif de se déplacer en diagonale à côté du joueur adverse.");
-            break;
+                break;
 
             case 4:
                 rulesText.setText("Dans ce cas précis, si l'une des cases diagonales est séparée de la case du joueur jaune par une barrière, alors le déplacement diagonale ne pourra pas se faire non plus. Il faut voir ce \"saut\" comme si le joueur bleu avançait sur la case du joueur jaune, puis se déplaçait sur la case d'arrivée. Il effectue donc 2 déplacements consécutifs, si et seulement si ces 2 déplacements sont possibles (non entravés par une barrière, ou un 3ème joueur).");
-            break;
+                break;
         }
 
     }

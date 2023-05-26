@@ -6,8 +6,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
+import javafx.animation.FadeTransition;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class VideoSceneController {
 
@@ -20,13 +24,11 @@ public class VideoSceneController {
     public Scene start() {
         StackPane root = new StackPane();
 
-        // Utilisez getResource pour obtenir le chemin correct du fichier.
-        String videoPath = getClass().getResource("/org/projet/cypath/cypath.mp4").toExternalForm();
+        String videoPath = Objects.requireNonNull(getClass().getResource("/org/projet/cypath/cypath.mp4")).toExternalForm();
         Media media = new Media(videoPath);
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
 
-        // Définir la taille du MediaView
         mediaView.setFitWidth(1720);
         mediaView.setFitHeight(720);
         mediaView.setPreserveRatio(true);
@@ -37,17 +39,19 @@ public class VideoSceneController {
 
         mediaPlayer.setOnError(() -> System.out.println("MediaPlayer Error: " + mediaPlayer.getError()));
 
-        // Passez à la scène de départ lorsque la vidéo est terminée.
-        mediaPlayer.setOnEndOfMedia(() -> Platform.runLater(() -> {
-            try {
-                mainGame.switchScene(mainGame.showStartScene());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
+        mediaPlayer.setOnEndOfMedia(() -> {
+            mediaPlayer.stop();
 
-        return new Scene(root, 1720, 720);
+            Platform.runLater(() -> {
+                try {
+                    mainGame.switchScene(mainGame.showStartScene());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        Scene scene = new Scene(root, 1720, 720);
+        return scene;
     }
-
 }
-

@@ -72,7 +72,7 @@ public class SaveLoadSceneController {
         System.out.println("Back button clicked");
 
         loadScreen.setVisible(false);
-        mainGame.showStartScene();
+        mainGame.switchScene(mainGame.showStartScene());
 
         /*fadingPanes(playerSelectionView,titleScreen); */
     }
