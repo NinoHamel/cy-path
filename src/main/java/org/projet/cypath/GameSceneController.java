@@ -301,6 +301,10 @@ public class GameSceneController {
                                     if (index.get() < 0) {
                                         index.set(listOnGoing.size() - 1);
                                     }
+                                    //On fait disparaitre le joueur du plateau si il a gagné
+                                    Box currentBox=game.getBoard().getBox(currentRow,currentCol);
+                                    currentBox.setHasPlayer(false);
+                                    toRect.setFill((toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                                 }
                             }
                             // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
