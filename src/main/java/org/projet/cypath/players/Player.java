@@ -22,7 +22,6 @@ public class Player implements Serializable {
     private final String color;
     private Box currentBox;
     private final List<Box> victoryBoxes;
-    private static final long SerialVersionUID=1L;
     private boolean victory;
     /**
      * Create a player
