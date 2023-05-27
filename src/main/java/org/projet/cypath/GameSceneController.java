@@ -7,11 +7,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
@@ -20,10 +20,6 @@ import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -36,8 +32,7 @@ public class GameSceneController {
     private static final int checkerboard_SIZE = 9;
     private MainGame mainGame;
     private Game game;
-    private int numPlayers;
-    private int remainingWalls;
+    private final int numPlayers;
 
     public GameSceneController(int numPlayers) {
         this.numPlayers = numPlayers;
@@ -87,16 +82,11 @@ public class GameSceneController {
         StackPane rootPane = new StackPane();
         rootPane.getChildren().add(double_Vbox);
 
-        Scene scene = new Scene(rootPane, 1200, 800);
-
-        //checkerboard.prefWidthProperty().bind(scene.widthProperty());
-        //checkerboard.prefHeightProperty().bind(scene.heightProperty());
-
-        return scene;
+        return new Scene(rootPane, 1200, 800);
     }
 
     private void initialize_player_turn_hbox(HBox player_hbox){
-        ImageView player_turnImageView = new ImageView(getClass().getResource("/org/projet/cypath/player.png").toExternalForm());
+        ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
         player_hbox.getChildren().add(player_turnImageView);
@@ -108,7 +98,7 @@ public class GameSceneController {
         player_hbox.getChildren().add(player_turn_text);
     }
     private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
-        ImageView wall_remainingImageView = new ImageView(getClass().getResource("/org/projet/cypath/wall_remaining.png").toExternalForm());
+        ImageView wall_remainingImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/wall_remaining.png")).toExternalForm());
         wall_remainingImageView.setFitHeight(80);
         wall_remainingImageView.setPreserveRatio(true);
         wall_remaining_hbox.getChildren().add(wall_remainingImageView);
@@ -126,7 +116,6 @@ public class GameSceneController {
      {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
      {@link #setCellPaneMouseEnterHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
      {@link #setCellPaneMouseExitHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
-     {@link #initializePlayerTurn(GridPane, List)},
      {@link #initializePlayers(GridPane, List)},
      {@link #initializeButtons(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, List, AtomicInteger)},
      @return The created GridPane.
@@ -160,21 +149,18 @@ public class GameSceneController {
                 // Appliquer la bordure à la cellule
                 cellPane.setBorder(whiteBorder);
 
-                final int currentRow = row;
-                final int currentCol = col;
-
                 AtomicReference<Border> savedBorder = new AtomicReference<>(cellPane.getBorder());
                 AtomicReference<Border> savedBottomCellBorder = new AtomicReference<>();
                 AtomicReference<Border> savedRightCellBorder = new AtomicReference<>();
 
 
-                setCellPaneClickHandler(cellPane, currentRow, currentCol,
+                setCellPaneClickHandler(cellPane, row, col,
                         actionMove, actionWall, horizontalWall, verticalWall,
                         gridPane,listOnGoing,listWinners,index);
-                setCellPaneMouseEnterHandler(cellPane, currentRow, currentCol,
+                setCellPaneMouseEnterHandler(cellPane, row, col,
                         actionWall, horizontalWall, verticalWall, savedBorder,
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
-                setCellPaneMouseExitHandler(cellPane, currentRow, currentCol,
+                setCellPaneMouseExitHandler(cellPane, row, col,
                         horizontalWall, verticalWall, savedBorder,
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
@@ -241,12 +227,12 @@ public class GameSceneController {
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
-    private void createImageView(Button name, String path, int height, boolean aspectRatio ){
+    private void createImageView(Button name, String path ){
         name.setStyle("-fx-background-color: transparent");
 
-        ImageView tempImageView = new ImageView(getClass().getResource(path).toExternalForm());
-        tempImageView.setFitHeight(height);
-        tempImageView.setPreserveRatio(aspectRatio);
+        ImageView tempImageView = new ImageView(Objects.requireNonNull(getClass().getResource(path)).toExternalForm());
+        tempImageView.setFitHeight(80);
+        tempImageView.setPreserveRatio(true);
         name.setGraphic(tempImageView);
     }
 
@@ -302,9 +288,9 @@ public class GameSceneController {
         });
 
         //Creating a graphic (image)
-        createImageView(moveButton,"/org/projet/cypath/move.png",80,true);
-        createImageView(placeWallButton,"/org/projet/cypath/wall.png",80,true);
-        createImageView(settingsButton,"/org/projet/cypath/settings.png",80,true);
+        createImageView(moveButton,"/org/projet/cypath/move.png");
+        createImageView(placeWallButton,"/org/projet/cypath/wall.png");
+        createImageView(settingsButton,"/org/projet/cypath/settings.png");
 
         vbox_buttons.getChildren().add(settingsButton);
         vbox_buttons.getChildren().add(moveButton);
@@ -343,7 +329,6 @@ public class GameSceneController {
 
     /**
      *Creates a button to initiate the wall placement mode.
-     *@param vbox_buttons
      *@param gridPane The GridPane representing the game board.
      *@param actionMove An AtomicReference<Boolean> representing the actionMove flag (set to false).
      *@param actionWall An AtomicReference<Boolean> representing the actionWall flag (set to true).
@@ -395,7 +380,7 @@ public class GameSceneController {
      */
     private Button createhorizontalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
         Button horizontalWallButton = new Button();
-        createImageView(horizontalWallButton,"/org/projet/cypath/rightKey.png",80,true);
+        createImageView(horizontalWallButton,"/org/projet/cypath/rightKey.png");
         horizontalWallButton.setOnAction(event -> {
             horizontalWall.set(true);
             verticalWall.set(false);
@@ -410,7 +395,7 @@ public class GameSceneController {
     */
     private Button createverticalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
         Button verticalWallButton = new Button();
-        createImageView(verticalWallButton,"/org/projet/cypath/upKey.png",80,true);
+        createImageView(verticalWallButton,"/org/projet/cypath/upKey.png");
         verticalWallButton.setOnAction(event -> {
             horizontalWall.set(false);
             verticalWall.set(true);
@@ -688,13 +673,12 @@ public class GameSceneController {
                 new BorderWidths(0, 0, 4, 0)
         );
         // Créer une nouvelle bordure en combinant les bordures individuelles
-        Border newBorder = new Border(
+        return new Border(
                 borderStrokeTop,
                 borderStrokeRight,
                 newBorderStrokeBottom,
                 borderStrokeLeft
         );
-        return newBorder;
     }
     /**
      Adds a right border to the given border. This simulates the appearance of a right wall.
@@ -717,13 +701,12 @@ public class GameSceneController {
                 new BorderWidths(0, 4, 0, 0)
         );
         // Créer une nouvelle bordure en combinant les bordures individuelles
-        Border newBorder = new Border(
+        return new Border(
                 borderStrokeTop,
                 newBorderStrokeRight,
                 borderStrokeBottom,
                 borderStrokeLeft
         );
-        return newBorder;
     }
 
     /**
@@ -732,7 +715,7 @@ public class GameSceneController {
      */
     public int CounterRemainingWalls(){
         Board board = this.game.getBoard();
-        return remainingWalls = board.getRemainingWalls();
+        return board.getRemainingWalls();
     }
 }
 
