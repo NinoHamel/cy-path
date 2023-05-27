@@ -255,7 +255,6 @@ public class StartSceneController{
         }
 
     }
-
     /**
      * Handles the click event of the "Previous" button.
      * Updates the rulesTextState variable and calls the setRulesText() method to update the rules text accordingly.
