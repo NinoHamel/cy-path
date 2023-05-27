@@ -1,9 +1,9 @@
 package org.projet.cypath;
 
-/**
- * Use this class to end the scene
- */
 public class EndSceneController {
+    /**
+     * Use this class to end the scene
+     */
     public void setMainGame(MainGame mainGame) {
     }
 }
