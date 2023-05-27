@@ -77,7 +77,10 @@ public class GameSceneController {
         player_turn_hbox.setAlignment(Pos.CENTER);
         player_turn_hbox.setSpacing(20);
 
-        initialize_player_turn_hbox(player_turn_hbox);
+        AtomicInteger index = new AtomicInteger();
+        List<Player> listOnGoing=game.getListOnGoing();
+
+        initialize_player_turn_hbox(player_turn_hbox, listOnGoing, index);
         initialize_wall_remaining_hbox(wall_remaining_hbox);
 
         StackPane rootPane = new StackPane();
@@ -86,18 +89,28 @@ public class GameSceneController {
         return new Scene(rootPane, 1200, 800);
     }
 
-    private void initialize_player_turn_hbox(HBox player_hbox){
+    private void initialize_player_turn_hbox(HBox player_hbox, List<Player> listOnGoing, AtomicInteger index) {
+        // Ajouter l'image du joueur à l'HBox
         ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
         player_hbox.getChildren().add(player_turnImageView);
 
-        Text player_turn_text = new Text();
-        player_turn_text.setText(": ONE");
-        player_turn_text.setStyle("-fx-font-size: 50");
-        player_turn_text.setTextAlignment(TextAlignment.CENTER);
-        player_hbox.getChildren().add(player_turn_text);
+        // Obtenir le joueur actuel et sa couleur
+        Player currentPlayer = listOnGoing.get(index.get());
+        String color = currentPlayer.getColor();
+
+        // Créer un StackPane avec un rectangle de la couleur du joueur actuel
+        StackPane cellPaneColorPlayer = new StackPane();
+        cellPaneColorPlayer.setPrefSize(50, 50);
+        Rectangle rect = new Rectangle(46, 46);
+        rect.setFill(Paint.valueOf(color));
+        cellPaneColorPlayer.getChildren().add(rect);
+
+        // Ajouter le StackPane à l'HBox
+        player_hbox.getChildren().add(cellPaneColorPlayer);
     }
+
     private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
         ImageView wall_remainingImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/wall_remaining.png")).toExternalForm());
         wall_remainingImageView.setFitHeight(80);
@@ -166,7 +179,6 @@ public class GameSceneController {
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
         }
-        initializePlayerTurn(gridPane,listOnGoing,index);
         initializePlayers(gridPane, listOnGoing);
         initializeButtons(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,listOnGoing,index);
 
@@ -235,24 +247,6 @@ public class GameSceneController {
         tempImageView.setFitHeight(80);
         tempImageView.setPreserveRatio(true);
         name.setGraphic(tempImageView);
-    }
-    /**
-     * Initializes the player's turn by displaying the current player's color on the grid pane.
-     * @param gridPane     The GridPane on which the player's color will be displayed.
-     * @param listOnGoing  The list of players in the current game.
-     * @param index        The index of the current player in the list.
-     */
-    private void initializePlayerTurn(GridPane gridPane,
-                                      List<Player> listOnGoing,
-                                      AtomicInteger index) {
-        Player currentPlayer = listOnGoing.get(index.get());
-        String color = currentPlayer.getColor();
-        StackPane cellPaneColorPlayer = new StackPane();
-        cellPaneColorPlayer.setPrefSize(50, 50);
-        Rectangle rect = new Rectangle(46, 46);
-        rect.setFill(Paint.valueOf(color));
-        cellPaneColorPlayer.getChildren().add(rect);
-        gridPane.add(cellPaneColorPlayer, 10, 0);
     }
 
     /**
@@ -428,6 +422,7 @@ public class GameSceneController {
         StackPane moveCellPane = (StackPane) gridPane.getChildren().get(81);
         Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
         moveRect.setFill(colorCurrentPlayer);
+
     }
 
     /**
