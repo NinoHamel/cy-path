@@ -34,7 +34,14 @@ import javafx.scene.media.MediaView;
 import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class StartSceneController{
+    /**
+     * The controller class for the main game screen.
+     */
     private MainGame mainGame;
+    /**
+     * The number of players in the game.
+     * Default value is 2.
+     */
     private int numPlayers = 2;
     @FXML
     private StackPane playerSelectionView;
@@ -90,7 +97,10 @@ public class StartSceneController{
     private ImageView void1ImageView;
     @FXML
     private ImageView void2ImageView;
-
+    /**
+     * Getter for the number of players.
+     * @return the number of players
+     */
     public int getNumPlayers() {
         return numPlayers;
     }
@@ -105,17 +115,27 @@ public class StartSceneController{
     private static boolean musicState = false;
     private static int rulesTextState = 0;
 
-
+    /**
+     * Setter for the MainGame instance.
+     * @param mainGame the MainGame instance
+     */
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
-
+    /**
+     * Event handler for the start button action.
+     * @param event the mouse event
+     * @throws InvalidSceneException if the scene is invalid
+     */
     @FXML
     private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
         mainGame.setNumPlayers(numPlayers);
         mainGame.switchScene(mainGame.showGameScene());
     }
-
+    /**
+     * Event handler for button hover event.
+     * @param event the mouse event
+     */
     @FXML
     private void handleButtonHover(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
@@ -123,13 +143,19 @@ public class StartSceneController{
         glow.setLevel(0.5); // Set between 0.0 and 1.0
         imageView.setEffect(glow);
     }
-
+    /**
+     * Event handler for button exit event.
+     * @param event the mouse event
+     */
     @FXML
     private void handleButtonExit(MouseEvent event) {
         ImageView imageView = (ImageView) event.getSource();
         imageView.setEffect(null); // remove the glow effect
     }
-
+    /**
+     * Event handler for the new game button action.
+     * @param event the mouse event
+     */
     @FXML
     private void handleNewGameButtonAction(MouseEvent event) {
         System.out.println("New Game button clicked");
@@ -137,33 +163,49 @@ public class StartSceneController{
 
         changeBackground(playerSelectionView);
     }
-
+    /**
+     * Event handler for the load button action.
+     * @param event the mouse event
+     * @throws IOException if an I/O error occurs
+     */
     @FXML
     private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
         System.out.println("Load button clicked");
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
-
+    /**
+     * Event handler for the settings button action.
+     * @param event the mouse event
+     */
     @FXML
     private void handleSettingsButtonAction(MouseEvent event) { //Open settings
         System.out.println("Settings button clicked");
         fadingPanes(titleScreen,settingsView);
         changeBackground(settingsView);
     }
-
+    /**
+     * Event handler for the quit button action.
+     * @param event the mouse event
+     */
     @FXML
     private void handleQuitButtonAction(MouseEvent event) {     //Quit the game
         System.out.println("Quit button clicked");
         Platform.exit();
     }
-
+    /**
+     * Handles the button action for navigating back to the previous screen.
+     * @param mouseEvent The mouse event triggered by the button click.
+     */
     @FXML
     public void handleButtonBack(MouseEvent mouseEvent) {
         System.out.println("Back button clicked");
 
         fadingPanes(playerSelectionView,titleScreen);
     }
-
+    /**
+     * Handles the button action for increasing the number of players.
+     * @param event The mouse event triggered by the button click.
+     */
     @FXML
     private void handlePlusButtonAction(MouseEvent event) {
         if (numPlayers < 4) {
@@ -171,7 +213,10 @@ public class StartSceneController{
             numPlayersLabel.setText(String.valueOf(numPlayers));
         }
     }
-
+    /**
+     * Handles the button action for decreasing the number of players.
+     * @param event The mouse event triggered by the button click.
+     */
     @FXML
     private void handleMinusButtonAction(MouseEvent event) {
         if (numPlayers > 2) {
@@ -179,7 +224,10 @@ public class StartSceneController{
             numPlayersLabel.setText(String.valueOf(numPlayers));
         }
     }
-
+    /**
+     * Handles the button action for navigating back to the main menu from the settings menu.
+     * @param mouseEvent The mouse event triggered by the button click.
+     */
     @FXML
     public void handleButtonBackSettings(MouseEvent mouseEvent) {
         System.out.println("Back button clicked");
@@ -188,7 +236,10 @@ public class StartSceneController{
 
 
     }
-
+    /**
+     * Handles the button action for toggling the music state.
+     * @param mouseEvent The mouse event triggered by the button click.
+     */
     @FXML
     public void handleButtonMusic(MouseEvent mouseEvent) {
         System.out.println("Music button clicked");
@@ -205,6 +256,11 @@ public class StartSceneController{
 
     }
 
+    /**
+     * Handles the click event of the "Previous" button.
+     * Updates the rulesTextState variable and calls the setRulesText() method to update the rules text accordingly.
+     * @param mouseEvent The MouseEvent representing the button click.
+     */
     @FXML
     public void handleButtonPrevious(MouseEvent mouseEvent) {
         System.out.println("Previous button clicked");
@@ -219,7 +275,11 @@ public class StartSceneController{
         setRulesText(rulesText);
 
     }
-
+    /**
+     * Handles the click event of the "Next" button.
+     * Updates the rulesTextState variable and calls the setRulesText() method to update the rules text accordingly.
+     * @param mouseEvent The MouseEvent representing the button click.
+     */
     @FXML
     public void handleButtonNext(MouseEvent mouseEvent) {
         System.out.println("Next button clicked");
@@ -234,7 +294,10 @@ public class StartSceneController{
         setRulesText(rulesText);
 
     }
-
+    /**
+     * Changes the background of a StackPane with the provided image.
+     * @param pane The StackPane to change the background of.
+     */
     @FXML
     private void changeBackground(StackPane pane) {
 
@@ -245,7 +308,11 @@ public class StartSceneController{
         Background background = new Background(backgroundImage);
         pane.setBackground(background);
     }
-
+    /**
+     * Fades out one StackPane and fades in another StackPane with a transition animation.
+     * @param fadeOutPane The StackPane to fade out.
+     * @param fadeInPane The StackPane to fade in.
+     */
     public void fadingPanes(StackPane fadeOutPane, StackPane fadeInPane){
 
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), fadeOutPane);
@@ -264,7 +331,13 @@ public class StartSceneController{
 
         fadeOut.play();
     }
-
+    /**
+     * Creates an ImageView with the provided image path, height, and aspect ratio settings.
+     * @param name The ImageView to create.
+     * @param path The path to the image resource.
+     * @param height The height of the ImageView.
+     * @param aspectRatio Whether to preserve the aspect ratio of the image.
+     */
     public void createImageView(ImageView name, String path, int height, boolean aspectRatio){
 
         name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
@@ -272,7 +345,10 @@ public class StartSceneController{
         name.setPreserveRatio(aspectRatio); //conserve aspect ratio
 
     }
-
+    /**
+     * Sets the text of the rulesText Text node based on the current rulesTextState.
+     * @param rulesText The Text node to set the text for.
+     */
     public static void setRulesText(Text rulesText){
         switch (rulesTextState){
             case 0:
@@ -304,7 +380,9 @@ public class StartSceneController{
         }
 
     }
-
+    /**
+     * Toggles the music state (on/off).
+     */
     public static void setMusicState(){
 
         if(musicState == true){
@@ -316,7 +394,9 @@ public class StartSceneController{
 
     }
 
-
+    /**
+     * Initializes the controller by setting up various UI elements and animations.
+     */
     public void initialize() {
         //main menu buttons
         createImageView( newgameImageView,"/org/projet/cypath/newgame.png",100,true);
