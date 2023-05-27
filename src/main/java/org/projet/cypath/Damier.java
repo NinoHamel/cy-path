@@ -24,7 +24,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Damier extends Application {
     private static final int DAMIER_SIZE = 9;
     private Game game; // Ajout d'une variable pour stocker l'instance de jeu
-
+    /**
+     * The entry point for the JavaFX application.
+     * Initializes the game and creates the game board.
+     *
+     * @param primaryStage The primary stage for the application.
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -40,7 +45,11 @@ public class Damier extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
+    /**
+     * Creates the game board (Damier) as a GridPane.
+     *
+     * @return The GridPane representing the game board.
+     */
     private GridPane createDamier() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
