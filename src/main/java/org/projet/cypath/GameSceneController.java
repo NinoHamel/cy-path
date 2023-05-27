@@ -16,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
@@ -346,7 +347,7 @@ public class GameSceneController {
      *
      * @throws IOException If an error occurs while loading the Save & Load scene.
      */
-    private void settingsButtonAction() throws IOException {
+    private void settingsButtonAction() throws IOException, InvalidSaveException {
         System.out.println("button click");
         mainGame.setThisGame(game);
         mainGame.switchScene(mainGame.showSaveLoadScene());
@@ -398,7 +399,7 @@ public class GameSceneController {
         settingsButton.setOnAction(event -> {
             try {
                 settingsButtonAction();
-            } catch (IOException e) {
+            } catch (IOException | InvalidSaveException e) {
                 throw new RuntimeException(e);
             }
         });

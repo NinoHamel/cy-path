@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Game;
@@ -91,9 +92,15 @@ public class SaveLoadSceneController {
      * @param mouseEvent The MouseEvent triggered by the button.
      */
     @FXML
-    public void handleSaveButtonAction(MouseEvent mouseEvent) throws IOException {
+    public void handleSaveButtonAction(MouseEvent mouseEvent) throws IOException, InvalidSaveException {
         System.out.println("Save button clicked");
-        game.save();
+        try{
+            game.save();
+        }
+        catch (Exception e){
+            throw new InvalidSaveException();
+        }
+
 
         
 
@@ -120,7 +127,7 @@ public class SaveLoadSceneController {
      * @throws OutOfBoardException If a board is out of bounds.
      */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException, InvalidSceneException {     //Open saves menu
+    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException, InvalidSceneException, InvalidSaveException {     //Open saves menu
         System.out.println("Load button clicked");
 
 

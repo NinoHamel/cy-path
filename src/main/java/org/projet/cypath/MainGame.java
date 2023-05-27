@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.tools.Game;
 
@@ -120,13 +121,19 @@ public class MainGame extends Application {
      * Displays the Save and Load scene in the application.
      * @return The scene object for the Save and Load scene.
      * @throws IOException If an error occurs while loading the FXML file.
+     * @throws InvalidSaveException If trying to save from a menu.
      */
-    public Scene showSaveLoadScene() throws IOException {
+    public Scene showSaveLoadScene() throws IOException, InvalidSaveException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
-        controller.setThisGame(this.game);
+        try{
+            controller.setThisGame(this.game);
+        }
+        catch (Exception e){
+            throw new InvalidSaveException();
+        }
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
         Scene scene = new Scene(root);

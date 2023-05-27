@@ -31,6 +31,7 @@ import java.util.Objects;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 
 public class StartSceneController{
@@ -169,7 +170,7 @@ public class StartSceneController{
      * @throws IOException if an I/O error occurs
      */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException {     //Open saves menu
+    private void handleLoadButtonAction(MouseEvent event) throws IOException, InvalidSaveException {     //Open saves menu
         System.out.println("Load button clicked");
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
