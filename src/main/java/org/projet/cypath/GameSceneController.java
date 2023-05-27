@@ -263,12 +263,24 @@ public class GameSceneController {
         return (StackPane) gridPane.getChildren().get(row * checkerboard_SIZE + column);
     }
 
+    /**
+     * Handles the action when the settings button is clicked.
+     * Switches the scene to the Save & Load scene.
+     *
+     * @throws IOException If an error occurs while loading the Save & Load scene.
+     */
     private void settingsButtonAction() throws IOException {
         System.out.println("button click");
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
-    private void createImageView(Button name, String path ){
+    /**
+     * Creates an ImageView for the specified button with the given image path.
+     *
+     * @param name The button to set the ImageView on.
+     * @param path The path to the image resource.
+     */
+    private void createImageView(Button name, String path) {
         name.setStyle("-fx-background-color: transparent");
 
         ImageView tempImageView = new ImageView(Objects.requireNonNull(getClass().getResource(path)).toExternalForm());
@@ -276,6 +288,7 @@ public class GameSceneController {
         tempImageView.setPreserveRatio(true);
         name.setGraphic(tempImageView);
     }
+
     /**
      *Initializes the buttons for the game interface.
      *A few buttons are created:
@@ -321,7 +334,21 @@ public class GameSceneController {
         vbox_buttons.getChildren().add(moveButton);
         vbox_buttons.getChildren().add(placeWallButton);
     }
-
+    /**
+     * Creates a move button for the game interface.
+     *
+     * @param vbox_buttons       The VBox container for buttons.
+     * @param gridPane           The GridPane representing the game board.
+     * @param actionMove         Atomic reference to track the action state for moving.
+     * @param actionWall         Atomic reference to track the action state for placing walls.
+     * @param horizontalWall     Atomic reference to track the state of horizontal wall placement.
+     * @param verticalWall       Atomic reference to track the state of vertical wall placement.
+     * @param horizontalWallButton The button for placing horizontal walls.
+     * @param verticalWallButton   The button for placing vertical walls.
+     * @param listOnGoing        The list of players currently playing the game.
+     * @param index              The index of the current player in the list of players.
+     * @return The move button.
+     */
     private Button createMoveButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionMove,
                                     AtomicReference<Boolean> actionWall, AtomicReference<Boolean> horizontalWall,
                                     AtomicReference<Boolean> verticalWall, Button horizontalWallButton, Button verticalWallButton,
