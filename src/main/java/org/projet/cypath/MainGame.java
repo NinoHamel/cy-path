@@ -101,6 +101,7 @@ public class MainGame extends Application {
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
+        controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save & Load");
         Scene scene = new Scene(root);
         return scene;

@@ -2,6 +2,7 @@ package org.projet.cypath;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,6 +34,8 @@ public class SaveLoadSceneController {
 
 
     private MainGame mainGame;
+
+    private Scene previousScene;
 
     @FXML
     private void changeBackground(StackPane pane) {
@@ -72,7 +75,7 @@ public class SaveLoadSceneController {
         System.out.println("Back button clicked");
 
         loadScreen.setVisible(false);
-        mainGame.switchScene(mainGame.showStartScene());
+        mainGame.switchScene(this.previousScene);
 
         /*fadingPanes(playerSelectionView,titleScreen); */
     }
@@ -111,6 +114,10 @@ public class SaveLoadSceneController {
 
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
+    }
+
+    public  void setPreviousScene(Scene previousScene){
+        this.previousScene = previousScene;
     }
 
     public void initialize() {
