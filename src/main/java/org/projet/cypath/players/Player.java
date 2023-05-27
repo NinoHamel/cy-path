@@ -17,12 +17,36 @@ import java.util.List;
  */
 public class Player implements Serializable {
 
+    /**
+     * Represents the unique identifier for the player.
+     */
     private final int id;
+
+    /**
+     * Represents the name of the player.
+     */
     private final String name;
+
+    /**
+     * Represents the color associated with the player.
+     */
     private final String color;
+
+    /**
+     * Represents the box currently occupied by the player.
+     */
     private Box currentBox;
+
+    /**
+     * Represents the list of boxes that represent victory for the player.
+     */
     private final List<Box> victoryBoxes;
+
+    /**
+     * Represents the status of victory for the player.
+     */
     private boolean victory;
+
     /**
      * Create a player
      *
