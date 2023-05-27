@@ -33,6 +33,7 @@ public class GameSceneController {
     private MainGame mainGame;
     private Game game;
     private final int numPlayers;
+    private Text wall_remaining_hbox_text;
 
     public GameSceneController(int numPlayers) {
         this.numPlayers = numPlayers;
@@ -103,7 +104,7 @@ public class GameSceneController {
         wall_remainingImageView.setPreserveRatio(true);
         wall_remaining_hbox.getChildren().add(wall_remainingImageView);
 
-        Text wall_remaining_hbox_text = new Text();
+        wall_remaining_hbox_text = new Text();
         wall_remaining_hbox_text.setText(": "+ CounterRemainingWalls());
         wall_remaining_hbox_text.setStyle("-fx-font-size: 90");
         wall_remaining_hbox_text.setTextAlignment(TextAlignment.CENTER);
@@ -672,6 +673,8 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 0, 4, 0)
         );
+        // Mettre à jour le compteur
+        updateWallCounter();
         // Créer une nouvelle bordure en combinant les bordures individuelles
         return new Border(
                 borderStrokeTop,
@@ -700,6 +703,8 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 4, 0, 0)
         );
+        // Mettre à jour le compteur
+        updateWallCounter();
         // Créer une nouvelle bordure en combinant les bordures individuelles
         return new Border(
                 borderStrokeTop,
@@ -716,6 +721,13 @@ public class GameSceneController {
     public int CounterRemainingWalls(){
         Board board = this.game.getBoard();
         return board.getRemainingWalls();
+    }
+
+    /**
+     * Update the text of the wall counter.
+     */
+    public void updateWallCounter(){
+        wall_remaining_hbox_text.setText(": "+ CounterRemainingWalls());
     }
 }
 
