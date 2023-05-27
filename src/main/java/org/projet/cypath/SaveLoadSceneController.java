@@ -105,15 +105,7 @@ public class SaveLoadSceneController {
 
         /*fadingPanes(playerSelectionView,titleScreen); */
     }
-    /**
-     * Handles the action when the start button is clicked.
-     * @param event The MouseEvent triggered by the button.
-     * @throws InvalidSceneException If the game scene is invalid or not available.
-     */
-    @FXML
-    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException  {
-        mainGame.showGameScene();
-    }
+
     /**
      * Handles the action when the load button is clicked.
      * @param event The MouseEvent triggered by the button.
@@ -186,8 +178,6 @@ public class SaveLoadSceneController {
         createImageView(quitImageView,"/org/projet/cypath/quit.png",100,true);
 
         createImageView(backButtonImageView,"/org/projet/cypath/back.png",100,true);
-
-        createImageView(startGameImageView,"/org/projet/cypath/start.png",100,true);
 
         createImageView(loadImageView,"/org/projet/cypath/load.png",100,true);
 
