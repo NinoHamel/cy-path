@@ -220,14 +220,14 @@ public class Game {
     public void getSave(String saveId) throws IOException {
         ObjectInputStream oISboard = null;
         ObjectInputStream oISplayer = null;
-        uniqueId=saveId;
+        //uniqueId=saveId;
         listWinners=new ArrayList<>();
         listOnGoing=new ArrayList<>();
         try {
-            String saveFolderPath = "src/main/save/" + saveId;
+            //String saveFolderPath = saveId;
 
             // Récupération des joueurs
-            oISplayer = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveFolderPath + "/save.player")));
+            oISplayer = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveId + "/save.player")));
             while (true) {
                 try {
                     Player player = (Player) oISplayer.readObject();
@@ -243,7 +243,7 @@ public class Game {
             }
 
             // Récupération du plateau de jeu
-            oISboard = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveFolderPath + "/save.board")));
+            oISboard = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveId + "/save.board")));
             this.board = (Board) oISboard.readObject();
         } catch (Exception e) {
             System.out.println(e);

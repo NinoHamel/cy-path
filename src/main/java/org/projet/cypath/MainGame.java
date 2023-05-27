@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.projet.cypath.exceptions.InvalidSceneException;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MainGame extends Application {
@@ -77,6 +78,23 @@ public class MainGame extends Application {
         primaryStage.setWidth(1200);
         primaryStage.setHeight(800);
         Scene scene = gameController.start();
+        if (scene == null) {
+            throw new InvalidSceneException("No scene defined");
+        }
+        switchScene(scene);
+        return scene;
+    }
+
+    public Scene showGameScene(String filepath) throws InvalidSceneException, IOException {
+
+        GameSceneController gameController = new GameSceneController(numPlayers);
+        gameController.setMainGame(this);
+        primaryStage.setTitle("Game");
+        primaryStage.setMinWidth(1200);
+        primaryStage.setMinHeight(800);
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(800);
+        Scene scene = gameController.load(filepath);
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
         }

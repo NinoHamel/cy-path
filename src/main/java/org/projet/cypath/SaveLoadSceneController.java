@@ -8,12 +8,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Game;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class SaveLoadSceneController {
@@ -81,6 +86,8 @@ public class SaveLoadSceneController {
     @FXML
     public void handleSaveButtonAction(MouseEvent mouseEvent) {
         System.out.println("Save button clicked");
+        //game.save();
+
         
 
     }
@@ -114,11 +121,22 @@ public class SaveLoadSceneController {
      * @throws OutOfBoardException If a board is out of bounds.
      */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException {     //Open saves menu
+    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException, InvalidSceneException {     //Open saves menu
         System.out.println("Load button clicked");
 
-        Game game = new Game(2);
-        //game.getSave();
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File("src"));
+        directoryChooser.setTitle("Load save");
+        File selectedDirectory = directoryChooser.showDialog(mainGame.showSaveLoadScene().getWindow());
+        String path = selectedDirectory.getPath();
+        System.out.println(selectedDirectory);
+        System.out.println(path);
+
+        mainGame.switchScene(mainGame.showGameScene(path));
+
+        //Game game = new Game(2);
+        //game.getSave("terst");
 
 
 

@@ -21,6 +21,7 @@ import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -74,6 +75,7 @@ public class GameSceneController {
      Starts the game and returns the JavaFX Scene using {@link #createCheckerboard(VBox, HBox)},
      @return The JavaFX Scene representing the game.
      */
+
     public Scene start() {
         try {
             game = new Game(numPlayers);
@@ -117,6 +119,55 @@ public class GameSceneController {
 
         return new Scene(rootPane, 1200, 800);
     }
+
+    public Scene load(String filepath) throws IOException {
+        try {
+            game = new Game(4);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        HBox double_Vbox = new HBox(); //create hbox
+        VBox first_Vbox = new VBox(); //create vbox
+        VBox second_Vbox = new VBox(); //create vbox
+        HBox player_turn_hbox = new HBox();
+        HBox wall_remaining_hbox = new HBox();
+
+        //settings vbox and hbox
+        double_Vbox.setSpacing(100);
+        double_Vbox.setAlignment(Pos.CENTER);
+        second_Vbox.setSpacing(50);
+        second_Vbox.setPadding(new Insets(50, 0, 0, 0));
+        second_Vbox.setAlignment(Pos.TOP_CENTER);
+        first_Vbox.setSpacing(50);
+        first_Vbox.setPadding(new Insets(50, 0, 0, 0));
+        first_Vbox.setAlignment(Pos.TOP_CENTER);
+        wall_remaining_hbox.setAlignment(Pos.CENTER);
+        wall_remaining_hbox.setSpacing(20);
+        player_turn_hbox.setAlignment(Pos.CENTER);
+        player_turn_hbox.setSpacing(20);
+
+        initialize_player_turn_hbox(player_turn_hbox);
+        initialize_wall_remaining_hbox(wall_remaining_hbox);
+
+
+        StackPane rootPane = new StackPane();
+        rootPane.getChildren().add(double_Vbox);
+
+
+        GridPane checkerboard = createCheckerboard(second_Vbox,player_turn_hbox); //create gridpane
+        first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
+        double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
+
+        game.getSave(filepath);
+        System.out.println(game.getBoard().displayBoard());
+
+        return new Scene(rootPane, 1200, 800);
+
+
+    }
+
+
     /**
      * Initializes the HBox for displaying the player's turn.
      *
