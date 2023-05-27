@@ -236,9 +236,12 @@ public class GameSceneController {
         tempImageView.setPreserveRatio(true);
         name.setGraphic(tempImageView);
     }
-
-
-
+    /**
+     * Initializes the player's turn by displaying the current player's color on the grid pane.
+     * @param gridPane     The GridPane on which the player's color will be displayed.
+     * @param listOnGoing  The list of players in the current game.
+     * @param index        The index of the current player in the list.
+     */
     private void initializePlayerTurn(GridPane gridPane,
                                       List<Player> listOnGoing,
                                       AtomicInteger index) {
@@ -249,7 +252,7 @@ public class GameSceneController {
         Rectangle rect = new Rectangle(46, 46);
         rect.setFill(Paint.valueOf(color));
         cellPaneColorPlayer.getChildren().add(rect);
-        gridPane.add(cellPaneColorPlayer, 10, 1);
+        gridPane.add(cellPaneColorPlayer, 10, 0);
     }
 
     /**
