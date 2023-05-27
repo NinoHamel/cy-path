@@ -364,7 +364,7 @@ public class GameSceneController {
         placeWallButton.setOnAction(event -> {
             if(!actionWall.get()) {
                 vbox_buttons.getChildren().add(verticalWallButton);
-                vbox_buttons.getChildren().add(verticalWallButton);
+                vbox_buttons.getChildren().add(horizontalWallButton);
             }
             actionMove.set(false);
             actionWall.set(true);
@@ -409,7 +409,7 @@ public class GameSceneController {
     *@return The created Button.
     */
     private Button createverticalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
-        Button verticalWallButton = new Button("verticalWall");
+        Button verticalWallButton = new Button();
         createImageView(verticalWallButton,"/org/projet/cypath/upKey.png",80,true);
         verticalWallButton.setOnAction(event -> {
             horizontalWall.set(false);
