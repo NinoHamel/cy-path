@@ -1,5 +1,8 @@
 package org.projet.cypath;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
@@ -28,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class GameSceneController {
-    private static final int DAMIER_SIZE = 9;
+    private static final int checkerboard_SIZE = 9;
     private MainGame mainGame;
     private Game game;
     private int numPlayers;
@@ -41,7 +45,10 @@ public class GameSceneController {
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
-
+    /**
+     Starts the game and returns the JavaFX Scene using {@link #createCheckerboard(VBox)},
+     @return The JavaFX Scene representing the game.
+     */
     public Scene start() {
         try {
             game = new Game(numPlayers);
@@ -55,8 +62,8 @@ public class GameSceneController {
         HBox player_turn_hbox = new HBox();
         HBox wall_remaining_hbox = new HBox();
 
-        GridPane damier = createDamier(second_Vbox); //create gridpane
-        first_Vbox.getChildren().addAll(player_turn_hbox,damier,wall_remaining_hbox); //first vbox filling
+        GridPane checkerboard = createCheckerboard(second_Vbox); //create gridpane
+        first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
         double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
 
         //settings vbox and hbox
@@ -81,8 +88,8 @@ public class GameSceneController {
 
         Scene scene = new Scene(rootPane, 1200, 800);
 
-        //damier.prefWidthProperty().bind(scene.widthProperty());
-        //damier.prefHeightProperty().bind(scene.heightProperty());
+        //checkerboard.prefWidthProperty().bind(scene.widthProperty());
+        //checkerboard.prefHeightProperty().bind(scene.heightProperty());
 
         return scene;
     }
@@ -112,26 +119,33 @@ public class GameSceneController {
         wall_remaining_hbox.getChildren().add(wall_remaining_hbox_text);
     }
 
-
-    private GridPane createDamier(VBox vbox_buttons) {
+    /**
+     Creates a GridPane representing the game board using:
+     {@link #initializeGridPane()},
+     {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
+     {@link #setCellPaneMouseEnterHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
+     {@link #setCellPaneMouseExitHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
+     {@link #initializePlayers(GridPane, List)},
+     {@link #initializeButtons(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, List, AtomicInteger)},
+     @return The created GridPane.
+     */
+    private GridPane createCheckerboard(VBox vbox_buttons) {
         GridPane gridPane = initializeGridPane();
-
-        AtomicReference<Boolean> actionBouger = new AtomicReference<>(false);
-        AtomicReference<Boolean> actionMur = new AtomicReference<>(false);
-        AtomicReference<Boolean> murHorizontal = new AtomicReference<>(false);
-        AtomicReference<Boolean> murVertical = new AtomicReference<>(false);
+        AtomicReference<Boolean> actionMove = new AtomicReference<>(false);
+        AtomicReference<Boolean> actionWall = new AtomicReference<>(false);
+        AtomicReference<Boolean> horizontalWall = new AtomicReference<>(false);
+        AtomicReference<Boolean> verticalWall = new AtomicReference<>(false);
         AtomicInteger index = new AtomicInteger();
         List<Player> listOnGoing=game.getListOnGoing();
         List<Player> listWinners=game.getListWinners();
-
-        for (int row = 0; row < DAMIER_SIZE; row++) {
-            for (int col = 0; col < DAMIER_SIZE; col++) {
+        for (int row = 0; row < checkerboard_SIZE; row++) {
+            for (int col = 0; col < checkerboard_SIZE; col++) {
                 // Créer des bordures blanches
                 //Création de bordures avec des tailles nuls car si l'on fait uniquement avec des bordures bottom et right, si les 2 ont la même taille et la même couleur, les 2 parties des murs forment un carré
-                BorderStroke whiteRightBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 2, 0, 0));
+                BorderStroke whiteRightBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 4, 0, 0));
                 BorderStroke whiteTopBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 0));
                 BorderStroke whiteLeftBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 0));
-                BorderStroke whiteBottomBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0));
+                BorderStroke whiteBottomBorderStroke = new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 4, 0));
                 Border whiteBorder = new Border(
                         whiteTopBorderStroke,
                         whiteRightBorderStroke,
@@ -153,23 +167,26 @@ public class GameSceneController {
 
 
                 setCellPaneClickHandler(cellPane, currentRow, currentCol,
-                        actionBouger, actionMur, murHorizontal, murVertical,savedBorder,
-                        savedBottomCellBorder, savedRightCellBorder,gridPane,listOnGoing,listWinners,index);
+                        actionMove, actionWall, horizontalWall, verticalWall,
+                        gridPane,listOnGoing,listWinners,index);
                 setCellPaneMouseEnterHandler(cellPane, currentRow, currentCol,
-                        actionMur, murHorizontal, murVertical, savedBorder,
+                        actionWall, horizontalWall, verticalWall, savedBorder,
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
                 setCellPaneMouseExitHandler(cellPane, currentRow, currentCol,
-                        murHorizontal, murVertical, savedBorder,
+                        horizontalWall, verticalWall, savedBorder,
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
         }
 
         initializePlayers(gridPane, listOnGoing);
-        initializeButtons(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,listOnGoing,index,listWinners);
+        initializeButtons(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,listOnGoing,index);
 
         return gridPane;
     }
-
+    /**
+     Initializes a GridPane for the game board.
+     @return The initialized GridPane.
+     */
     private GridPane initializeGridPane() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -177,7 +194,12 @@ public class GameSceneController {
         gridPane.setVgap(1);
         return gridPane;
     }
-
+    /**
+     Creates a StackPane representing a cell on the game board.
+     @param row The row index of the cell.
+     @param col The column index of the cell.
+     @return The created StackPane representing the cell.
+     */
     private StackPane createCellPane(int row, int col) {
         StackPane cellPane = new StackPane();
         cellPane.setPrefSize(50, 50);
@@ -186,7 +208,11 @@ public class GameSceneController {
         cellPane.getChildren().add(rect);
         return cellPane;
     }
-
+    /**
+     Initializes the visual representation of players on the game board.
+     @param gridPane The GridPane representing the game board.
+     @param listOnGoing The list of Player objects to be initialized.
+     */
     private void initializePlayers(GridPane gridPane, List<Player> listOnGoing) {
         for (Player player : listOnGoing) {
             int row = player.getCurrentBox().getRow();
@@ -197,8 +223,15 @@ public class GameSceneController {
             rect.setFill(Color.web(color));
         }
     }
+    /**
+     *Retrieves the StackPane representing a cell in the GridPane.
+     *@param gridPane The GridPane containing the cells and creating the board of the game.
+     *@param row The row index of the desired cell.
+     *@param column The column index of the desired cell.
+     *@return The StackPane representing the specified cell.
+     */
     private StackPane getCellPane(GridPane gridPane, int row, int column) {
-        return (StackPane) gridPane.getChildren().get(row * DAMIER_SIZE + column);
+        return (StackPane) gridPane.getChildren().get(row * checkerboard_SIZE + column);
     }
 
     private void settingsButtonAction() throws IOException {
@@ -215,16 +248,31 @@ public class GameSceneController {
         name.setGraphic(tempImageView);
     }
 
-    private void initializeButtons(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger,
-                                   AtomicReference<Boolean> actionMur, AtomicReference<Boolean> murHorizontal,
-                                   AtomicReference<Boolean> murVertical,List<Player> listOnGoing,
-                                   AtomicInteger index,List<Player> listWinners) {
-        Button murHorizontalButton=createMurHorizontalButton(murHorizontal,murVertical);
-        Button murVerticalButton=createMurVerticalButton(murHorizontal,murVertical);
-        Button bougerButton = createBougerButton(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,
-                murHorizontalButton,murVerticalButton,listOnGoing, index);
-        Button placeMursButton = createPlaceMursButton(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,
-        murHorizontalButton,murVerticalButton,listOnGoing,index);
+    /**
+     *Initializes the buttons for the game interface.
+     *A few buttons are created:
+     *horizontalWallButton using {@link #createhorizontalWallButton(AtomicReference, AtomicReference)}
+     *verticalWallButton using {@link #createverticalWallButton(AtomicReference, AtomicReference)}
+     *moveButton using {@link #createMoveButton(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, Button, Button, List, AtomicInteger)}
+     *placeWallButton using {@link #createplaceWallButton(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, Button, Button, List, AtomicInteger)}
+     *@param gridPane The GridPane representing the game board.
+     *@param actionMove An AtomicReference<Boolean> representing the actionMove flag.
+     *@param actionWall An AtomicReference<Boolean> representing the actionWall flag.
+     *@param horizontalWall An AtomicReference<Boolean> representing the horizontalWall flag. Created using {@link #createhorizontalWallButton(AtomicReference, AtomicReference)}
+     *@param verticalWall An AtomicReference<Boolean> representing the verticalWall flag. Created usind {@link #createverticalWallButton(AtomicReference, AtomicReference)}
+     *@param listOnGoing The list of players who are still playing.
+     *@param index The index of the current player in the listOnGoing.
+     */
+    private void initializeButtons(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionMove,
+                                   AtomicReference<Boolean> actionWall, AtomicReference<Boolean> horizontalWall,
+                                   AtomicReference<Boolean> verticalWall,List<Player> listOnGoing,
+                                   AtomicInteger index) {
+        Button horizontalWallButton=createhorizontalWallButton(horizontalWall,verticalWall);
+        Button verticalWallButton=createverticalWallButton(horizontalWall,verticalWall);
+        Button moveButton = createMoveButton(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,
+                horizontalWallButton,verticalWallButton,listOnGoing, index);
+        Button placeWallButton = createplaceWallButton(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,
+                horizontalWallButton,verticalWallButton,listOnGoing,index);
 
         Button settingsButton = new Button();
 
@@ -237,28 +285,28 @@ public class GameSceneController {
         });
 
         //Creating a graphic (image)
-        createImageView(bougerButton,"/org/projet/cypath/move.png",80,true);
-        createImageView(placeMursButton,"/org/projet/cypath/wall.png",80,true);
+        createImageView(moveButton,"/org/projet/cypath/move.png",80,true);
+        createImageView(placeWallButton,"/org/projet/cypath/wall.png",80,true);
         createImageView(settingsButton,"/org/projet/cypath/settings.png",80,true);
 
         vbox_buttons.getChildren().add(settingsButton);
-        vbox_buttons.getChildren().add(bougerButton);
-        vbox_buttons.getChildren().add(placeMursButton);
+        vbox_buttons.getChildren().add(moveButton);
+        vbox_buttons.getChildren().add(placeWallButton);
     }
 
-    private Button createBougerButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger,
-                                      AtomicReference<Boolean> actionMur, AtomicReference<Boolean> murHorizontal,
-                                      AtomicReference<Boolean> murVertical, Button murHorizontalButton, Button murVerticalButton,
-                                      List<Player> listOnGoing, AtomicInteger index){
+    private Button createMoveButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionMove,
+                                    AtomicReference<Boolean> actionWall, AtomicReference<Boolean> horizontalWall,
+                                    AtomicReference<Boolean> verticalWall, Button horizontalWallButton, Button verticalWallButton,
+                                    List<Player> listOnGoing, AtomicInteger index){
 
-    Button bougerButton = new Button();
-        bougerButton.setOnAction(event -> {
-            actionBouger.set(true);
-            actionMur.set(false);
-            vbox_buttons.getChildren().remove(murHorizontalButton);
-            vbox_buttons.getChildren().remove(murVerticalButton);
-            murHorizontal.set(false);
-            murVertical.set(false);
+    Button moveButton = new Button();
+        moveButton.setOnAction(event -> {
+            actionMove.set(true);
+            actionWall.set(false);
+            vbox_buttons.getChildren().remove(horizontalWallButton);
+            vbox_buttons.getChildren().remove(verticalWallButton);
+            horizontalWall.set(false);
+            verticalWall.set(false);
             try {
                 Player currentPlayer = listOnGoing.get(index.get());
                 List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
@@ -268,7 +316,7 @@ public class GameSceneController {
                 for (Box box : possibleMove) {
                     int moveRow = box.getRow();
                     int moveCol = box.getColumn();
-                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
                     Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                     moveRect.setFill(Color.PURPLE);
                 }
@@ -276,34 +324,46 @@ public class GameSceneController {
                 throw new RuntimeException(e);
             }
         });
-        return bougerButton;
+        return moveButton;
     }
 
-    private Button createPlaceMursButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger, AtomicReference<Boolean> actionMur,
-                                         AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical,
-                                         Button murHorizontalButton, Button murVerticalButton,
+    /**
+     *Creates a button to initiate the wall placement mode.
+     *@param vbox_buttons 
+     *@param gridPane The GridPane representing the game board.
+     *@param actionMove An AtomicReference<Boolean> representing the actionMove flag (set to false).
+     *@param actionWall An AtomicReference<Boolean> representing the actionWall flag (set to true).
+     *@param horizontalWall An AtomicReference<Boolean> representing the horizontalWall flag (set to false).
+     *@param verticalWall An AtomicReference<Boolean> representing the verticalWall flag (set to false).
+     *@param horizontalWallButton The Button for selecting horizontal wall placement.
+     *@param verticalWallButton The Button for selecting vertical wall placement.
+     *@param listOnGoing The list of players who are still playing.
+     *@param index The index of the current player in the listOnGoing.
+     *@return The created Button for initiating wall placement.
+     */
+    private Button createplaceWallButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionMove, AtomicReference<Boolean> actionWall,
+                                         AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall,
+                                         Button horizontalWallButton, Button verticalWallButton,
                                          List<Player> listOnGoing, AtomicInteger index
     ) {
-        Button placeMursButton = new Button();
-        placeMursButton.setOnAction(event -> {
-            if(!actionMur.get()) {
-                vbox_buttons.getChildren().add(murHorizontalButton);
-                vbox_buttons.getChildren().add(murVerticalButton);
+        Button placeWallButton = new Button();
+        placeWallButton.setOnAction(event -> {
+            if(!actionWall.get()) {
+                vbox_buttons.getChildren().add(verticalWallButton);
+                vbox_buttons.getChildren().add(verticalWallButton);
             }
-            actionBouger.set(false);
-            actionMur.set(true);
-            murHorizontal.set(false);
-            murVertical.set(false);
+            actionMove.set(false);
+            actionWall.set(true);
+            horizontalWall.set(false);
+            verticalWall.set(false);
             try {
                 Player currentPlayer = listOnGoing.get(index.get());
                 List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
-                int playerRow = currentPlayer.getCurrentBox().getRow();
-                int playerColumn = currentPlayer.getCurrentBox().getColumn();
                 // Enlever les couleurs des cases de mouvement possible de l'ancien joueur
                 for (Box box : possibleMove) {
                     int moveRow = box.getRow();
                     int moveCol = box.getColumn();
-                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
                     Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                     moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                 }
@@ -311,44 +371,65 @@ public class GameSceneController {
                 throw new RuntimeException(e);
             }
         });
-        return placeMursButton;
+        return placeWallButton;
     }
-
-
-
-    private Button createMurHorizontalButton(AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical) {
-
-        Button murHorizontalButton = new Button();
-        createImageView(murHorizontalButton,"/org/projet/cypath/rightKey.png",80,true);
-
-        murHorizontalButton.setOnAction(event -> {
-            murHorizontal.set(true);
-            murVertical.set(false);
+    /**
+     *Creates a button to select the horizontal wall option.
+     *@param horizontalWall A boolean value indicating whether the wall should be horizontal (set to true).
+     *@param verticalWall A boolean value indicating whether the wall should be vertical (set to false).
+     *@return The created Button.
+     */
+    private Button createhorizontalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
+        Button horizontalWallButton = new Button();
+        createImageView(horizontalWallButton,"/org/projet/cypath/rightKey.png",80,true);
+        horizontalWallButton.setOnAction(event -> {
+            horizontalWall.set(true);
+            verticalWall.set(false);
         });
-        return murHorizontalButton;
+        return horizontalWallButton;
     }
-
-    private Button createMurVerticalButton(AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical) {
-        Button murVerticalButton = new Button();
-        createImageView(murVerticalButton,"/org/projet/cypath/upKey.png",80,true);
-
-        murVerticalButton.setOnAction(event -> {
-            murHorizontal.set(false);
-            murVertical.set(true);
+    /**
+    *Creates a button to select the vertical wall option.
+    *@param horizontalWall A boolean value indicating whether the wall should be horizontal (set to false).
+    *@param verticalWall A boolean value indicating whether the wall should be vertical (set to true).
+    *@return The created Button.
+    */
+    private Button createverticalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
+        Button verticalWallButton = new Button("verticalWall");
+        createImageView(verticalWallButton,"/org/projet/cypath/upKey.png",80,true);
+        verticalWallButton.setOnAction(event -> {
+            horizontalWall.set(false);
+            verticalWall.set(true);
         });
-        return murVerticalButton;
+        return verticalWallButton;
     }
 
+    /**
+     *This method handles the player's interaction with a cell on the board. There are two possible scenarios:
+     *When the boolean variable actionMove is true, indicating that the player wants to move. The method will move the player to the corresponding cell if possible.
+     *When the boolean variable actionWall is true, indicating that the player wants to place a wall. The method will place a wall on the corresponding cell based on the following conditions:
+     *If horizontalWall is true, a horizontal wall will be placed on the board.
+     *If verticalWall is true, a vertical wall will be placed on the board.
+     *@param cellPane The cell that has been clicked.
+     *@param currentRow The row of the clicked cell.
+     *@param currentCol The column of the clicked cell.
+     *@param actionMove Boolean indicating if the player wants to move.
+     *@param actionWall Boolean indicating if the player wants to place a wall.
+     *@param horizontalWall Boolean indicating if a horizontal wall should be placed.
+     *@param verticalWall Boolean indicating if a vertical wall should be placed.
+     *@param gridPane The GridPane representing the game board.
+     *@param listOnGoing List of players who are still playing.
+     *@param listWinners List of players who have won.
+     *@param index The index of the current player in the listOnGoing.
+     */
     private void setCellPaneClickHandler(StackPane cellPane, int currentRow, int currentCol,
-                                         AtomicReference<Boolean> actionBouger, AtomicReference<Boolean> actionMur,
-                                         AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical,
-                                         AtomicReference<Border> savedBorder, AtomicReference<Border> savedBottomCellBorder,
-                                         AtomicReference<Border> savedRightCellBorder,
+                                         AtomicReference<Boolean> actionMove, AtomicReference<Boolean> actionWall,
+                                         AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall,
                                          GridPane gridPane,List<Player> listOnGoing,List<Player> listWinners,
                                          AtomicInteger index
                                          ) {
         cellPane.setOnMouseClicked(event -> {
-            if (actionBouger.get()) {
+            if (actionMove.get()) {
                     Player currentPlayer = listOnGoing.get(index.get());
                     int fromRow = currentPlayer.getCurrentBox().getRow();
                     int fromCol = currentPlayer.getCurrentBox().getColumn();
@@ -372,19 +453,19 @@ public class GameSceneController {
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
                                 Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                                 moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                             }
                             // Modifier la couleur de la case d'origine de l'ancienne position
-                            StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * DAMIER_SIZE + fromCol);
+                            StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * checkerboard_SIZE + fromCol);
                             Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
                             fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                             currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
                             int toRow = currentPlayer.getCurrentBox().getRow();
                             int toCol = currentPlayer.getCurrentBox().getColumn();
                             // Modifier la couleur de la nouvelle case de la nouvelle position
-                            StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * DAMIER_SIZE + toCol);
+                            StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * checkerboard_SIZE + toCol);
                             Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
                             toRect.setFill(Color.web(color));
                             //Vérifier si le joueur a gagné
@@ -399,6 +480,17 @@ public class GameSceneController {
                                     if (index.get() < 0) {
                                         index.set(listOnGoing.size() - 1);
                                     }
+                                    //On fait disparaitre le joueur du plateau si il a gagné
+                                    Box currentBox=game.getBoard().getBox(currentRow,currentCol);
+                                    currentBox.setHasPlayer(false);
+                                    toRect.setFill((toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY);
+                                    //Clignottement du joueur quand il gagne
+                                    Timeline blinkAnimation = new Timeline(
+                                            new KeyFrame(Duration.seconds(0.5), new KeyValue(toRect.fillProperty(), Color.web(color))),
+                                            new KeyFrame(Duration.seconds(1.0), new KeyValue(toRect.fillProperty(), (toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY))
+                                    );
+                                    blinkAnimation.setCycleCount(2); // Effectuer le clignotement deux fois
+                                    blinkAnimation.play();
                                 }
                             }
                             // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
@@ -412,7 +504,7 @@ public class GameSceneController {
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * DAMIER_SIZE + moveCol);
+                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
                                 Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                                 moveRect.setFill(Color.PURPLE);
                             }
@@ -423,10 +515,10 @@ public class GameSceneController {
                         System.out.println(e);
                     }
             }
-            if (actionMur.get()) {
+            if (actionWall.get()) {
                 try {
                     Box currentBox = game.getBoard().getBox(currentRow, currentCol);
-                    if (murHorizontal.get() && game.getBoard().canSetWall(currentBox, 0)) {
+                    if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
                         if (game.hasPath(currentRow, currentCol, 0)) {
                             game.getBoard().setBottomWall(currentRow, currentCol);
                             index.getAndIncrement();
@@ -435,7 +527,7 @@ public class GameSceneController {
                             }
                         }
                     }
-                    if (murVertical.get() && game.getBoard().canSetWall(currentBox, 1)) {
+                    if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
                         if (game.hasPath(currentRow, currentCol, 1)){
                             game.getBoard().setRightWall(currentRow, currentCol);
                             index.getAndIncrement();
@@ -448,42 +540,55 @@ public class GameSceneController {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                //  System.out.println("index:"+index);
             }
         });
     }
-
+    /**
+     *Sets the mouse enter event handler for a cell pane.
+     *If action wall is true, it displays the wall according to 2 different scenarios
+     *If horizontalWall is true, a horizontal wall will be displayed on the board.
+     *If verticalWall is true, a vertical wall will be displayed on the board.
+     *@param cellPane The StackPane representing the cell pane.
+     *@param currentRow The current row index of the cell pane.
+     *@param currentCol The current column index of the cell pane.
+     *@param actionWall AtomicReference<Boolean> flag indicating the wall action.
+     *@param horizontalWall AtomicReference<Boolean> flag indicating the horizontal wall option.
+     *@param verticalWall AtomicReference<Boolean> flag indicating the vertical wall option.
+     *@param savedBorder AtomicReference<Border> reference to store the original border of the cell pane.
+     *@param savedBottomCellBorder AtomicReference<Border> reference to store the original border of the bottom adjacent cell pane.
+     *@param savedRightCellBorder AtomicReference<Border> reference to store the original border of the right adjacent cell pane.
+     *@param gridPane The GridPane representing the game board.
+     */
     private void setCellPaneMouseEnterHandler(StackPane cellPane, int currentRow, int currentCol,
-                                              AtomicReference<Boolean> actionMur, AtomicReference<Boolean> murHorizontal,
-                                              AtomicReference<Boolean> murVertical, AtomicReference<Border> savedBorder,
+                                              AtomicReference<Boolean> actionWall, AtomicReference<Boolean> horizontalWall,
+                                              AtomicReference<Boolean> verticalWall, AtomicReference<Border> savedBorder,
                                               AtomicReference<Border> savedBottomCellBorder, AtomicReference<Border> savedRightCellBorder,
                                               GridPane gridPane
     ) {
         cellPane.setOnMouseEntered(event -> {
             try {
-                //System.out.println("mouseEntered CurrentRow:" + currentRow + ";" + currentCol);
                 Box currentBox = game.getBoard().getBox(currentRow, currentCol);
-                if (actionMur.get()) {
-                    if (murHorizontal.get() && game.getBoard().canSetWall(currentBox, 0)) {
-                        StackPane rightCell = (StackPane) gridPane.getChildren().get(DAMIER_SIZE * currentRow + (currentCol + 1));
+                if (actionWall.get()) {
+                    if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
+                        StackPane rightCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1));
 
                         savedBorder.set(cellPane.getBorder());
                         savedRightCellBorder.set(rightCell.getBorder());
                         Border currentBorder = cellPane.getBorder();
-                        Border rightBorder = ((StackPane) gridPane.getChildren().get(DAMIER_SIZE * currentRow + (currentCol + 1))).getBorder();
+                        Border rightBorder = ((StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1))).getBorder();
                         Border newBorder = addBottomBorder(currentBorder);
                         cellPane.setBorder(newBorder);
                         Border newRightBorder = addBottomBorder(rightBorder);
                         rightCell.setBorder(newRightBorder);
                     }
-                    if (murVertical.get() && game.getBoard().canSetWall(currentBox, 1)) {
-                        StackPane bottomCell = (StackPane) gridPane.getChildren().get(DAMIER_SIZE * (currentRow + 1) + (currentCol));
+                    if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
+                        StackPane bottomCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol));
 
                         savedBorder.set(cellPane.getBorder());
                         savedBottomCellBorder.set(bottomCell.getBorder());
 
                         Border currentBorder = cellPane.getBorder();
-                        Border rightCellBorder = ((StackPane) gridPane.getChildren().get(DAMIER_SIZE * (currentRow + 1) + (currentCol))).getBorder();
+                        Border rightCellBorder = ((StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol))).getBorder();
 
                         Border newBorder = addRightBorder(currentBorder);
                         cellPane.setBorder(newBorder);
@@ -496,38 +601,49 @@ public class GameSceneController {
             }
         });
     }
-
+    /**
+     *Sets the mouse exit event handler for a cell pane. If a wall display was present, it will be removed.
+     *@param cellPane The StackPane representing the cell pane.
+     *@param currentRow The current row index of the cell pane.
+     *@param currentCol The current column index of the cell pane.
+     *@param horizontalWall AtomicReference<Boolean> flag indicating the horizontal wall option.
+     *@param verticalWall AtomicReference<Boolean> flag indicating the vertical wall option.
+     *@param savedBorder AtomicReference<Border> reference to the saved original border of the cell pane. This is used to restore the original appearance of the current cell.
+     *@param savedBottomCellBorder AtomicReference<Border> reference to the saved original border of the bottom adjacent cell pane. This is used to restore the original appearance of the bottom cell if a wall was displayed.
+     *@param savedRightCellBorder AtomicReference<Border> reference to the saved original border of the right adjacent cell pane. This is used to restore the original appearance of the right cell if a wall was displayed.
+     *@param gridPane The GridPane representing the game board.
+     */
     private void setCellPaneMouseExitHandler(StackPane cellPane, int currentRow, int currentCol,
-                                             AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical,
+                                             AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall,
                                              AtomicReference<Border> savedBorder, AtomicReference<Border> savedBottomCellBorder,
                                              AtomicReference<Border> savedRightCellBorder,
                                              GridPane gridPane
                                              ) {
         cellPane.setOnMouseExited(event -> {
-            // System.out.println("mouseExited CurrentRow:" + currentRow + ";" + currentCol);
-
             try {
                 Box currentBox = game.getBoard().getBox(currentRow, currentCol);
-                //System.out.println("currentBox:" + currentBox);
                 // Vérifiez si une bordure à droite peut être supprimée
-                if (murHorizontal.get() && game.getBoard().canSetWall(currentBox, 0)) {
-                    StackPane rightCell = (StackPane) gridPane.getChildren().get(DAMIER_SIZE * currentRow + (currentCol + 1));
+                if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
+                    StackPane rightCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1));
                     cellPane.setBorder(savedBorder.get());
                     rightCell.setBorder(savedRightCellBorder.get());
                 }
-                if (murVertical.get() && game.getBoard().canSetWall(currentBox, 1)) {
-                    StackPane bottomCell = (StackPane) gridPane.getChildren().get(DAMIER_SIZE * (currentRow + 1) + (currentCol));
+                if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
+                    StackPane bottomCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol));
                     cellPane.setBorder(savedBorder.get());
                     bottomCell.setBorder(savedBottomCellBorder.get());
                 }
-
             } catch (Exception e) {
                 System.out.println(e);
             }
         });
     }
 
-
+    /**
+     *Adds a bottom border to the given border. This simulates the appearance of a bottom wall.
+     *@param border The original border to which the bottom border will be added.
+     *@return The new border with the added bottom border.
+     */
     private Border addBottomBorder(Border border) {
         //System.out.println(border.getStrokes().size());
         // Récupérer la bordure existante
@@ -544,7 +660,6 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 0, 4, 0)
         );
-        //System.out.println("borderStroke.getLeftStroke():" + "GRAY");
         // Créer une nouvelle bordure en combinant les bordures individuelles
         Border newBorder = new Border(
                 borderStrokeTop,
@@ -554,9 +669,12 @@ public class GameSceneController {
         );
         return newBorder;
     }
-
+    /**
+     Adds a right border to the given border. This simulates the appearance of a right wall.
+     @param border The original border to which the right border will be added.
+     @return The new border with the added right border.
+     */
     private Border addRightBorder(Border border) {
-        //System.out.println(border.getStrokes().size());
         // Récupérer la bordure existante
         BorderStroke borderStrokeTop = border.getStrokes().get(0);
         BorderStroke borderStrokeRight = border.getStrokes().get(1);
@@ -571,7 +689,6 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 4, 0, 0)
         );
-        //System.out.println("borderStroke.getLeftStroke():" + "GRAY");
         // Créer une nouvelle bordure en combinant les bordures individuelles
         Border newBorder = new Border(
                 borderStrokeTop,
@@ -580,9 +697,12 @@ public class GameSceneController {
                 borderStrokeLeft
         );
         return newBorder;
-
     }
 
+    /**
+     * Get the number of remaining walls.
+     * @return the number of remaining walls.
+     */
     public int CounterRemainingWalls(){
         Board board = this.game.getBoard();
         return remainingWalls = board.getRemainingWalls();
