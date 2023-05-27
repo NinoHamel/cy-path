@@ -16,7 +16,6 @@
                 <ImageView fx:id="saveImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleSaveButtonAction"/>
             </HBox>
             <HBox fx:id="buttonBox2" alignment="CENTER" spacing="20">
-                <ImageView fx:id="startGameImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleStartButtonAction"/>
                 <ImageView fx:id="backButtonImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleButtonBack"/>
                 <ImageView fx:id="quitImageView" onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit" onMouseClicked="#handleQuitButtonAction"/>
             </HBox>
