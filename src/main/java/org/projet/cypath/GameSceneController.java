@@ -43,7 +43,7 @@ public class GameSceneController {
         this.mainGame = mainGame;
     }
     /**
-     Starts the game and returns the JavaFX Scene using {@link #createCheckerboard(VBox)},
+     Starts the game and returns the JavaFX Scene using {@link #createCheckerboard(VBox, HBox)},
      @return The JavaFX Scene representing the game.
      */
     public Scene start() {
@@ -59,9 +59,7 @@ public class GameSceneController {
         HBox player_turn_hbox = new HBox();
         HBox wall_remaining_hbox = new HBox();
 
-        GridPane checkerboard = createCheckerboard(second_Vbox); //create gridpane
-        first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
-        double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
+
 
         //settings vbox and hbox
         double_Vbox.setSpacing(100);
@@ -77,38 +75,40 @@ public class GameSceneController {
         player_turn_hbox.setAlignment(Pos.CENTER);
         player_turn_hbox.setSpacing(20);
 
-        AtomicInteger index = new AtomicInteger();
-        List<Player> listOnGoing=game.getListOnGoing();
-
-        initialize_player_turn_hbox(player_turn_hbox, listOnGoing, index);
+        initialize_player_turn_hbox(player_turn_hbox);
         initialize_wall_remaining_hbox(wall_remaining_hbox);
+
 
         StackPane rootPane = new StackPane();
         rootPane.getChildren().add(double_Vbox);
 
+
+        GridPane checkerboard = createCheckerboard(second_Vbox,player_turn_hbox); //create gridpane
+        first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
+        double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
+
         return new Scene(rootPane, 1200, 800);
     }
-
-    private void initialize_player_turn_hbox(HBox player_hbox, List<Player> listOnGoing, AtomicInteger index) {
-        // Ajouter l'image du joueur à l'HBox
+    /**
+     * Initializes the HBox for displaying the player's turn.
+     *
+     * @param player_hbox The HBox container for the player's turn display.
+     */
+    private void initialize_player_turn_hbox(HBox player_hbox) {
         ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
         player_hbox.getChildren().add(player_turnImageView);
 
-        // Obtenir le joueur actuel et sa couleur
-        Player currentPlayer = listOnGoing.get(index.get());
-        String color = currentPlayer.getColor();
+        Text player_turn_text = new Text();
+        player_turn_text.setText(": ONE");
+        player_turn_text.setStyle("-fx-font-size: 50");
+        player_turn_text.setTextAlignment(TextAlignment.CENTER);
+        player_hbox.getChildren().add(player_turn_text);
 
-        // Créer un StackPane avec un rectangle de la couleur du joueur actuel
-        StackPane cellPaneColorPlayer = new StackPane();
-        cellPaneColorPlayer.setPrefSize(50, 50);
-        Rectangle rect = new Rectangle(46, 46);
-        rect.setFill(Paint.valueOf(color));
-        cellPaneColorPlayer.getChildren().add(rect);
-
-        // Ajouter le StackPane à l'HBox
-        player_hbox.getChildren().add(cellPaneColorPlayer);
+        Rectangle coloredBox = new Rectangle(60, 60);
+        coloredBox.setFill(Color.RED);
+        player_hbox.getChildren().add(coloredBox);
     }
 
     private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
@@ -127,14 +127,14 @@ public class GameSceneController {
     /**
      Creates a GridPane representing the game board using:
      {@link #initializeGridPane()},
-     {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
+     {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger, HBox)},
      {@link #setCellPaneMouseEnterHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
      {@link #setCellPaneMouseExitHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
      {@link #initializePlayers(GridPane, List)},
      {@link #initializeButtons(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, List, AtomicInteger)},
      @return The created GridPane.
      */
-    private GridPane createCheckerboard(VBox vbox_buttons) {
+    private GridPane createCheckerboard(VBox vbox_buttons,HBox player_turn_hbox) {
         GridPane gridPane = initializeGridPane();
         AtomicReference<Boolean> actionMove = new AtomicReference<>(false);
         AtomicReference<Boolean> actionWall = new AtomicReference<>(false);
@@ -170,7 +170,7 @@ public class GameSceneController {
 
                 setCellPaneClickHandler(cellPane, row, col,
                         actionMove, actionWall, horizontalWall, verticalWall,
-                        gridPane,listOnGoing,listWinners,index);
+                        gridPane,listOnGoing,listWinners,index,player_turn_hbox);
                 setCellPaneMouseEnterHandler(cellPane, row, col,
                         actionWall, horizontalWall, verticalWall, savedBorder,
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
@@ -248,7 +248,6 @@ public class GameSceneController {
         tempImageView.setPreserveRatio(true);
         name.setGraphic(tempImageView);
     }
-
     /**
      *Initializes the buttons for the game interface.
      *A few buttons are created:
@@ -403,26 +402,27 @@ public class GameSceneController {
     /**
      * Proceeds to the next turn by updating the game state and indicating the current player.
      * This method is used in
-     * {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
+     * {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger, HBox)},
      * {@link #initializeGridPane()},
-     * @param gridPane     The GridPane representing the game board.
      * @param listOnGoing  The list of players currently in the game.
      * @param index        The current player index.
+     * @param player_turn_hbox The Hbox where the name of the current player and his color are displayed
      */
-    private void nextTurn(GridPane gridPane,List<Player> listOnGoing,
-                          AtomicInteger index){
-        // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
+    private void nextTurn(List<Player> listOnGoing, AtomicInteger index,
+                          HBox player_turn_hbox) {
         index.getAndIncrement();
         if (index.get() >= listOnGoing.size()) {
             index.set(0);
         }
-        //Modifier la couleur de la case montrant à quelle joueur c'est le tour
+        // Modifier la couleur de la case montrant à quel joueur c'est le tour
         Player currentPlayer = listOnGoing.get(index.get());
-        Color colorCurrentPlayer= Color.valueOf(currentPlayer.getColor());
-        StackPane moveCellPane = (StackPane) gridPane.getChildren().get(81);
-        Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-        moveRect.setFill(colorCurrentPlayer);
-
+        String playerName = currentPlayer.getName();
+        Color colorCurrentPlayer = Color.valueOf(currentPlayer.getColor());
+        // Récupérer le Text et le Rectangle de la HBox
+        Text player_turn_text = (Text) player_turn_hbox.getChildren().get(1);
+        Rectangle coloredBox = (Rectangle) player_turn_hbox.getChildren().get(2);
+        player_turn_text.setText(playerName);
+        coloredBox.setFill(colorCurrentPlayer);
     }
 
     /**
@@ -447,8 +447,7 @@ public class GameSceneController {
                                          AtomicReference<Boolean> actionMove, AtomicReference<Boolean> actionWall,
                                          AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall,
                                          GridPane gridPane,List<Player> listOnGoing,List<Player> listWinners,
-                                         AtomicInteger index
-                                         ) {
+                                         AtomicInteger index,HBox player_turn_hbox) {
         cellPane.setOnMouseClicked(event -> {
             if (actionMove.get()) {
                     Player currentPlayer = listOnGoing.get(index.get());
@@ -515,7 +514,7 @@ public class GameSceneController {
                                 }
                             }
                             //Modification de la couleur de la case et incrémentation
-                            nextTurn(gridPane,listOnGoing,index);
+                            nextTurn(listOnGoing,index,player_turn_hbox);
                             // Afficher les nouveaux déplacements possible
                             currentPlayer = listOnGoing.get(index.get());
                             possibleMove = currentPlayer.possibleMove(game.getBoard());
@@ -540,16 +539,18 @@ public class GameSceneController {
                         if (game.hasPath(currentRow, currentCol, 0)) {
                             game.getBoard().setBottomWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
-                            nextTurn(gridPane,listOnGoing,index);
+                            nextTurn(listOnGoing,index,player_turn_hbox);
                         }
                     }
                     if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
                         if (game.hasPath(currentRow, currentCol, 1)){
                             game.getBoard().setRightWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
-                            nextTurn(gridPane,listOnGoing,index);
+                            nextTurn(listOnGoing,index,player_turn_hbox);
                         }
                     }
+                    // Mettre à jour le compteur
+                    updateWallCounter();
 
                 } catch (Exception e) {
                     System.out.println(e);
@@ -671,8 +672,6 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 0, 4, 0)
         );
-        // Mettre à jour le compteur
-        updateWallCounter();
         // Créer une nouvelle bordure en combinant les bordures individuelles
         return new Border(
                 borderStrokeTop,
@@ -701,8 +700,7 @@ public class GameSceneController {
                 borderStrokeBottom.getRadii(),
                 new BorderWidths(0, 4, 0, 0)
         );
-        // Mettre à jour le compteur
-        updateWallCounter();
+
         // Créer une nouvelle bordure en combinant les bordures individuelles
         return new Border(
                 borderStrokeTop,
