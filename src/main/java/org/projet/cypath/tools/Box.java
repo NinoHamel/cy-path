@@ -12,15 +12,51 @@ import org.projet.cypath.exceptions.OutOfBoardException;
  */
 public class Box implements Serializable {
 
+    /**
+     * Represents the row index of a cell.
+     */
     private int row;
+
+    /**
+     * Represents the column index of a cell.
+     */
     private int column;
+
+    /**
+     * Represents whether the cell is the origin of a vertical wall.
+     */
     private boolean OriginVerticalWall;
+
+    /**
+     * Represents whether the cell is the origin of a horizontal wall.
+     */
     private boolean OriginHorizontalWall;
+
+    /**
+     * Represents whether the cell has a wall on its left side.
+     */
     private boolean leftWall;
+
+    /**
+     * Represents whether the cell has a wall on its right side.
+     */
     private boolean rightWall;
+
+    /**
+     * Represents whether the cell has a wall on its top side.
+     */
     private boolean topWall;
+
+    /**
+     * Represents whether the cell has a wall on its bottom side.
+     */
     private boolean bottomWall;
+
+    /**
+     * Represents whether a player is present in the cell.
+     */
     private boolean player;
+
     /**
      * Constructs a Box object with the specified coordinates.
      *

@@ -18,14 +18,23 @@ import java.util.*;
  */
 public class Board implements Serializable {
 
+    /**
+     * Represents a two-dimensional array of Box objects.
+     */
     private Box[][] box;
 
+    /**
+     * Represents the number of remaining walls in the game.
+     */
     private int remainingWalls;
 
     //Constructor
+
     /**
      * Creates a 9 by 9 array to represent a grid
-     * @param playerNumber the number of player of the game
+     * @param playerNumber the number of players
+     * @throws OutOfBoardException
+     * @throws IOException
      */
     public Board(int playerNumber) throws OutOfBoardException, IOException {
         this.remainingWalls=20;
@@ -38,6 +47,10 @@ public class Board implements Serializable {
         }
     }
 
+    /**
+     * getter of the box
+     * @return the box
+     */
     public Box[][] getBox() {
         return box;
     }
@@ -57,7 +70,7 @@ public class Board implements Serializable {
      * @param row coordinate
      * @param column coordinate
      * @return box of the 2 int
-     * @throws OutOfBoardException
+     * @throws OutOfBoardException when the box isn't on the board
      */
     //Setter
     public Box getBox(int row,int column) throws OutOfBoardException {
