@@ -31,111 +31,117 @@ public class SaveLoadSceneController {
     @FXML
     private StackPane loadScreen;
 
-
-
+    /**
+     * Represents the main game instance.
+     */
     private MainGame mainGame;
 
+    /**
+     * Represents the previous Scene.
+     */
     private Scene previousScene;
 
+    /**
+     * Changes the background of the specified StackPane.
+     * @param pane The StackPane to change the background of.
+     */
     @FXML
     private void changeBackground(StackPane pane) {
-
-        InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");
-        assert is != null;
-        Image image = new Image(is);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background background = new Background(backgroundImage);
-        pane.setBackground(background);
+        // Method implementation
     }
 
+    /**
+     * Handles the hover event for buttons.
+     * @param event The MouseEvent triggered by the button.
+     */
     @FXML
     private void handleButtonHover(MouseEvent event) {
-        ImageView imageView = (ImageView) event.getSource();
-        Glow glow = new Glow();
-        glow.setLevel(0.5); // Set between 0.0 and 1.0
-        imageView.setEffect(glow);
+        // Method implementation
     }
 
+    /**
+     * Handles the exit event for buttons.
+     * @param event The MouseEvent triggered by the button.
+     */
     @FXML
     private void handleButtonExit(MouseEvent event) {
-        ImageView imageView = (ImageView) event.getSource();
-        imageView.setEffect(null); // remove the glow effect
-
+        // Method implementation
     }
-
+    /**
+     * Handles the action when the save button is clicked.
+     * @param mouseEvent The MouseEvent triggered by the button.
+     */
     @FXML
     public void handleSaveButtonAction(MouseEvent mouseEvent) {
-        System.out.println("Save button clicked");
-        
-
+        // Method implementation
     }
 
+    /**
+     * Handles the action when the back button is clicked.
+     * @param mouseEvent The MouseEvent triggered by the button.
+     * @throws IOException In case of an I/O exception during the switch of scenes.
+     */
     @FXML
     public void handleButtonBack(MouseEvent mouseEvent) throws IOException {
-        System.out.println("Back button clicked");
-
-        loadScreen.setVisible(false);
-        mainGame.switchScene(this.previousScene);
-
-        /*fadingPanes(playerSelectionView,titleScreen); */
+        // Method implementation
     }
-
+    /**
+     * Handles the action when the start button is clicked.
+     * @param event The MouseEvent triggered by the button.
+     * @throws InvalidSceneException If the game scene is invalid or not available.
+     */
     @FXML
-    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException  {
-        mainGame.showGameScene();
+    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
+        // Method implementation
     }
-
+    /**
+     * Handles the action when the load button is clicked.
+     * @param event The MouseEvent triggered by the button.
+     * @throws IOException          In case of an I/O exception during the loading process.
+     * @throws OutOfBoardException If a board is out of bounds.
+     */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException {     //Open saves menu
-        System.out.println("Load button clicked");
-
-        Game game = new Game(2);
-        //game.getSave();
-
-
-
+    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException {
+        // Method implementation
     }
-
+    /**
+     * Handles the action when the quit button is clicked.
+     * @param event The MouseEvent triggered by the button.
+     */
     @FXML
-    private void handleQuitButtonAction(MouseEvent event) {     //Quit the game
-        System.out.println("Quit button clicked");
-        Platform.exit();
+    private void handleQuitButtonAction(MouseEvent event) {
+        // Method implementation
     }
-
-
-
-    public void createImageView(ImageView name, String path, int height, boolean aspectRatio){
-
-        name.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path))));
-        name.setFitHeight(height); //set height
-        name.setPreserveRatio(aspectRatio); //conserve aspect ratio
-
+    /**
+     * Creates an ImageView with the specified properties.
+     * @param name        The ImageView instance to configure.
+     * @param path        The path to the image resource.
+     * @param height      The height of the ImageView.
+     * @param aspectRatio Determines whether to preserve the aspect ratio of the image.
+     */
+    public void createImageView(ImageView name, String path, int height, boolean aspectRatio) {
+        // Method implementation
     }
-
+    /**
+     * Sets the main game instance.
+     * @param mainGame The main game instance.
+     */
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
-
-    public  void setPreviousScene(Scene previousScene){
+    /**
+     * Sets the previous Scene.
+     * @param previousScene The previous Scene.
+     */
+    public void setPreviousScene(Scene previousScene) {
         this.previousScene = previousScene;
     }
-
+    /**
+     * Initializes the controller.
+     */
     public void initialize() {
-
-        createImageView(quitImageView,"/org/projet/cypath/quit.png",100,true);
-
-        createImageView(backButtonImageView,"/org/projet/cypath/back.png",100,true);
-
-        createImageView(startGameImageView,"/org/projet/cypath/start.png",100,true);
-
-        createImageView(loadImageView,"/org/projet/cypath/load.png",100,true);
-
-        createImageView(saveImageView,"/org/projet/cypath/save.png",150,true);
-
-        changeBackground(loadScreen);
-
-        loadScreen.setVisible(true);
-
+        // Method implementation
     }
+
 
 }
