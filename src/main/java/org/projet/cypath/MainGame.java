@@ -14,6 +14,33 @@ import java.io.IOException;
 
 public class MainGame extends Application {
     private Stage primaryStage;
+    /**
+     * Displays the Save & Load scene in the application.
+     * @return The scene object for the Save & Load scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public Scene showSaveLoadScene() throws IOException {
+        // Load the FXML file for the Save & Load scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
+        Parent root = loader.load();
+
+        // Retrieve the controller instance from the loader
+        SaveLoadSceneController controller = loader.getController();
+
+        // Set the MainGame instance for the Save & Load scene controller
+        controller.setMainGame(this);
+
+        // Set the previous scene as the current scene of the primary stage
+        controller.setPreviousScene(primaryStage.getScene());
+
+        // Set the title for the primary stage
+        primaryStage.setTitle("Save & Load");
+
+        // Create a new scene with the loaded FXML root
+        Scene scene = new Scene(root);
+
+        return scene;
+    }
 
     /**
      * Start the game on the StartScene
@@ -25,8 +52,10 @@ public class MainGame extends Application {
         this.primaryStage = stage;
         showVideoScene();
     }
-
-
+    /**
+     * Displays the video scene in the application.
+     * @throws InvalidSceneException If no scene is defined.
+     */
     public void showVideoScene() throws InvalidSceneException {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
@@ -63,7 +92,7 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the GameScene, with its controller
-     * @throws IOException
+     * @throws InvalidSceneException
      */
     public Scene showGameScene() throws InvalidSceneException {
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -96,19 +125,15 @@ public class MainGame extends Application {
         primaryStage.show();
     }
 
-    public Scene showSaveLoadScene() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
-        Parent root = loader.load();
-        SaveLoadSceneController controller = loader.getController();
-        controller.setMainGame(this);
-        controller.setPreviousScene(primaryStage.getScene());
-        primaryStage.setTitle("Save & Load");
-        Scene scene = new Scene(root);
-        return scene;
-    }
 
+
+    /**
+     * Switches the current scene of the application to the specified new scene.
+     * @param newScene The new scene to switch to.
+     */
     public void switchScene(Scene newScene) {
         if (primaryStage.getScene() == null) {
+            // If there is no current scene, set the new scene directly and apply a fade-in transition
             primaryStage.setScene(newScene);
 
             FadeTransition fadeInTransition = new FadeTransition(Duration.seconds(1), newScene.getRoot());
@@ -116,6 +141,7 @@ public class MainGame extends Application {
             fadeInTransition.setToValue(1.0);
             fadeInTransition.play();
         } else {
+            // If there is a current scene, apply a fade-out transition first, then set the new scene and apply a fade-in transition
             FadeTransition fadeOutTransition = new FadeTransition(Duration.seconds(0), primaryStage.getScene().getRoot());
             fadeOutTransition.setFromValue(1.0);
             fadeOutTransition.setToValue(0.0);
@@ -133,7 +159,16 @@ public class MainGame extends Application {
         }
     }
 
+
+    /**
+     * number of players
+     */
     private int numPlayers;
+
+    /**
+     * setter or the number of players
+     * @param numPlayers int corresponding to the number of players
+     */
     public void setNumPlayers(int numPlayers) {
         this.numPlayers = numPlayers;
     }
