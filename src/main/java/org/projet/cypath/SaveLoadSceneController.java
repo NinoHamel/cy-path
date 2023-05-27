@@ -48,6 +48,13 @@ public class SaveLoadSceneController {
      * Changes the background of the specified StackPane.
      * @param pane The StackPane to change the background of.
      */
+
+    private Game game;
+
+    public void setThisGame(Game game){
+        this.game = game;
+    }
+
     @FXML
     private void changeBackground(StackPane pane) {
 

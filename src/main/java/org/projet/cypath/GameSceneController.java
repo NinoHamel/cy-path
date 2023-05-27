@@ -349,6 +349,7 @@ public class GameSceneController {
      */
     private void settingsButtonAction() throws IOException {
         System.out.println("button click");
+        mainGame.setThisGame(game);
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 

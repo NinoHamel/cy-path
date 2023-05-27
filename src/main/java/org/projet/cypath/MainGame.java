@@ -9,8 +9,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.projet.cypath.exceptions.InvalidSceneException;
+import org.projet.cypath.tools.Game;
 
-import java.io.File;
 import java.io.IOException;
 
 public class MainGame extends Application {
@@ -126,11 +126,13 @@ public class MainGame extends Application {
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
+        controller.setThisGame(this.game);
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
         Scene scene = new Scene(root);
         return scene;
     }
+
     /**
      * Switches the current scene of the application to the specified new scene.
      * @param newScene The new scene to switch to.
@@ -170,6 +172,12 @@ public class MainGame extends Application {
      */
     public void setNumPlayers(int numPlayers) {
         this.numPlayers = numPlayers;
+    }
+
+    private Game game;
+
+    public void setThisGame(Game ThisGame){
+        this.game = ThisGame;
     }
 
     /**
