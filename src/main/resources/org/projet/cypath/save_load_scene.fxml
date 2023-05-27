@@ -8,7 +8,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.SaveLoadSceneController">
-    <StackPane fx:id="loadScreen" visible="false" minWidth="1720" minHeight="720">
+    <StackPane fx:id="loadScreen" visible="false" minWidth="1200" minHeight="800">
         <VBox alignment="CENTER" spacing="120">
             <Text text="Loading and Save" style="-fx-font-size: 100;"/>
             <HBox fx:id="buttonBox1" alignment="CENTER" spacing="100">
