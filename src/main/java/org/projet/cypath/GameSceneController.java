@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -125,6 +126,7 @@ public class GameSceneController {
      {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
      {@link #setCellPaneMouseEnterHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
      {@link #setCellPaneMouseExitHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane)},
+     {@link #initializePlayerTurn(GridPane, List)},
      {@link #initializePlayers(GridPane, List)},
      {@link #initializeButtons(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, List, AtomicInteger)},
      @return The created GridPane.
@@ -177,7 +179,7 @@ public class GameSceneController {
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
         }
-
+        initializePlayerTurn(gridPane,listOnGoing,index);
         initializePlayers(gridPane, listOnGoing);
         initializeButtons(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,listOnGoing,index);
 
@@ -248,6 +250,21 @@ public class GameSceneController {
         name.setGraphic(tempImageView);
     }
 
+
+
+    private void initializePlayerTurn(GridPane gridPane,
+                                      List<Player> listOnGoing,
+                                      AtomicInteger index) {
+        Player currentPlayer = listOnGoing.get(index.get());
+        String color = currentPlayer.getColor();
+        StackPane cellPaneColorPlayer = new StackPane();
+        cellPaneColorPlayer.setPrefSize(50, 50);
+        Rectangle rect = new Rectangle(46, 46);
+        rect.setFill(Paint.valueOf(color));
+        cellPaneColorPlayer.getChildren().add(rect);
+        gridPane.add(cellPaneColorPlayer, 10, 1);
+    }
+
     /**
      *Initializes the buttons for the game interface.
      *A few buttons are created:
@@ -310,13 +327,10 @@ public class GameSceneController {
             try {
                 Player currentPlayer = listOnGoing.get(index.get());
                 List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
-                int playerRow = currentPlayer.getCurrentBox().getRow();
-                int playerColumn = currentPlayer.getCurrentBox().getColumn();
-                //if (currentRow == playerRow && currentCol == playerColumn) {
                 for (Box box : possibleMove) {
                     int moveRow = box.getRow();
                     int moveCol = box.getColumn();
-                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
+                    StackPane moveCellPane=getCellPane(gridPane,moveRow,moveCol);
                     Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                     moveRect.setFill(Color.PURPLE);
                 }
@@ -329,7 +343,7 @@ public class GameSceneController {
 
     /**
      *Creates a button to initiate the wall placement mode.
-     *@param vbox_buttons 
+     *@param vbox_buttons
      *@param gridPane The GridPane representing the game board.
      *@param actionMove An AtomicReference<Boolean> representing the actionMove flag (set to false).
      *@param actionWall An AtomicReference<Boolean> representing the actionWall flag (set to true).
@@ -363,7 +377,7 @@ public class GameSceneController {
                 for (Box box : possibleMove) {
                     int moveRow = box.getRow();
                     int moveCol = box.getColumn();
-                    StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
+                    StackPane moveCellPane=getCellPane(gridPane,moveRow,moveCol);
                     Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                     moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                 }
@@ -402,6 +416,29 @@ public class GameSceneController {
             verticalWall.set(true);
         });
         return verticalWallButton;
+    }
+    /**
+     * Proceeds to the next turn by updating the game state and indicating the current player.
+     * This method is used in
+     * {@link #setCellPaneClickHandler(StackPane, int, int, AtomicReference, AtomicReference, AtomicReference, AtomicReference, GridPane, List, List, AtomicInteger)},
+     * {@link #initializeGridPane()},
+     * @param gridPane     The GridPane representing the game board.
+     * @param listOnGoing  The list of players currently in the game.
+     * @param index        The current player index.
+     */
+    private void nextTurn(GridPane gridPane,List<Player> listOnGoing,
+                          AtomicInteger index){
+        // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
+        index.getAndIncrement();
+        if (index.get() >= listOnGoing.size()) {
+            index.set(0);
+        }
+        //Modifier la couleur de la case montrant à quelle joueur c'est le tour
+        Player currentPlayer = listOnGoing.get(index.get());
+        Color colorCurrentPlayer= Color.valueOf(currentPlayer.getColor());
+        StackPane moveCellPane = (StackPane) gridPane.getChildren().get(81);
+        Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+        moveRect.setFill(colorCurrentPlayer);
     }
 
     /**
@@ -448,24 +485,24 @@ public class GameSceneController {
                                 break;
                             }
                         }
-                        // Enlever les couleurs des cases de mouvement possible de l'ancienne position
                         if (isValidMove) {
+                            // Enlever les couleurs des cases de mouvement possible de l'ancienne position
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
+                                StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
                                 Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                                 moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                             }
                             // Modifier la couleur de la case d'origine de l'ancienne position
-                            StackPane fromCellPane = (StackPane) gridPane.getChildren().get(fromRow * checkerboard_SIZE + fromCol);
+                            StackPane fromCellPane = getCellPane(gridPane,fromRow,fromCol);
                             Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
                             fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                             currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
                             int toRow = currentPlayer.getCurrentBox().getRow();
                             int toCol = currentPlayer.getCurrentBox().getColumn();
                             // Modifier la couleur de la nouvelle case de la nouvelle position
-                            StackPane toCellPane = (StackPane) gridPane.getChildren().get(toRow * checkerboard_SIZE + toCol);
+                            StackPane toCellPane = getCellPane(gridPane,toRow,toCol);
                             Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
                             toRect.setFill(Color.web(color));
                             //Vérifier si le joueur a gagné
@@ -493,18 +530,15 @@ public class GameSceneController {
                                     blinkAnimation.play();
                                 }
                             }
-                            // Incrémenter l'index et revenir à 0 si on atteint la taille de listOnGoing
-                            index.getAndIncrement();
-                            if (index.get() >= listOnGoing.size()) {
-                                index.set(0);
-                            }
+                            //Modification de la couleur de la case et incrémentation
+                            nextTurn(gridPane,listOnGoing,index);
                             // Afficher les nouveaux déplacements possible
                             currentPlayer = listOnGoing.get(index.get());
                             possibleMove = currentPlayer.possibleMove(game.getBoard());
                             for (Box box : possibleMove) {
                                 int moveRow = box.getRow();
                                 int moveCol = box.getColumn();
-                                StackPane moveCellPane = (StackPane) gridPane.getChildren().get(moveRow * checkerboard_SIZE + moveCol);
+                                StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
                                 Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
                                 moveRect.setFill(Color.PURPLE);
                             }
@@ -521,19 +555,15 @@ public class GameSceneController {
                     if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
                         if (game.hasPath(currentRow, currentCol, 0)) {
                             game.getBoard().setBottomWall(currentRow, currentCol);
-                            index.getAndIncrement();
-                            if (index.get() >= listOnGoing.size()) {
-                                index.set(0);
-                            }
+                            //Modification de la couleur de la case et incrémentation
+                            nextTurn(gridPane,listOnGoing,index);
                         }
                     }
                     if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
                         if (game.hasPath(currentRow, currentCol, 1)){
                             game.getBoard().setRightWall(currentRow, currentCol);
-                            index.getAndIncrement();
-                            if (index.get() >= listOnGoing.size()) {
-                                index.set(0);
-                            }
+                            //Modification de la couleur de la case et incrémentation
+                            nextTurn(gridPane,listOnGoing,index);
                         }
                     }
 
@@ -570,29 +600,27 @@ public class GameSceneController {
                 Box currentBox = game.getBoard().getBox(currentRow, currentCol);
                 if (actionWall.get()) {
                     if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
-                        StackPane rightCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1));
-
+                        StackPane rightCell=getCellPane(gridPane,currentRow,currentCol+1);
                         savedBorder.set(cellPane.getBorder());
                         savedRightCellBorder.set(rightCell.getBorder());
                         Border currentBorder = cellPane.getBorder();
-                        Border rightBorder = ((StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1))).getBorder();
+                        Border rightCellBorder = rightCell.getBorder();
                         Border newBorder = addBottomBorder(currentBorder);
                         cellPane.setBorder(newBorder);
-                        Border newRightBorder = addBottomBorder(rightBorder);
+                        Border newRightBorder = addBottomBorder(rightCellBorder);
                         rightCell.setBorder(newRightBorder);
                     }
                     if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
-                        StackPane bottomCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol));
-
+                        StackPane bottomCell=getCellPane(gridPane,currentRow+1,currentCol);
                         savedBorder.set(cellPane.getBorder());
                         savedBottomCellBorder.set(bottomCell.getBorder());
 
                         Border currentBorder = cellPane.getBorder();
-                        Border rightCellBorder = ((StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol))).getBorder();
+                        Border bottomCellBorder = bottomCell.getBorder();
 
                         Border newBorder = addRightBorder(currentBorder);
                         cellPane.setBorder(newBorder);
-                        Border newBottomBorder = addRightBorder(rightCellBorder);
+                        Border newBottomBorder = addRightBorder(bottomCellBorder);
                         bottomCell.setBorder(newBottomBorder);
                     }
                 }
@@ -624,12 +652,12 @@ public class GameSceneController {
                 Box currentBox = game.getBoard().getBox(currentRow, currentCol);
                 // Vérifiez si une bordure à droite peut être supprimée
                 if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
-                    StackPane rightCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * currentRow + (currentCol + 1));
+                    StackPane rightCell=getCellPane(gridPane,currentRow,currentCol+1);
                     cellPane.setBorder(savedBorder.get());
                     rightCell.setBorder(savedRightCellBorder.get());
                 }
                 if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
-                    StackPane bottomCell = (StackPane) gridPane.getChildren().get(checkerboard_SIZE * (currentRow + 1) + (currentCol));
+                    StackPane bottomCell=getCellPane(gridPane,currentRow+1,currentCol);
                     cellPane.setBorder(savedBorder.get());
                     bottomCell.setBorder(savedBottomCellBorder.get());
                 }
@@ -645,7 +673,6 @@ public class GameSceneController {
      *@return The new border with the added bottom border.
      */
     private Border addBottomBorder(Border border) {
-        //System.out.println(border.getStrokes().size());
         // Récupérer la bordure existante
         BorderStroke borderStrokeTop = border.getStrokes().get(0);
         BorderStroke borderStrokeRight = border.getStrokes().get(1);
