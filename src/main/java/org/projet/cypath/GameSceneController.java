@@ -1,18 +1,28 @@
 package org.projet.cypath;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -39,21 +49,71 @@ public class GameSceneController {
             throw new RuntimeException(e);
         }
 
-        GridPane damier = createDamier();
+        HBox double_Vbox = new HBox(); //create hbox
+        VBox first_Vbox = new VBox(); //create vbox
+        VBox second_Vbox = new VBox(); //create vbox
+        HBox player_turn_hbox = new HBox();
+        HBox wall_remaining_hbox = new HBox();
+
+        GridPane damier = createDamier(second_Vbox); //create gridpane
+        first_Vbox.getChildren().addAll(player_turn_hbox,damier,wall_remaining_hbox); //first vbox filling
+        double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
+
+        //settings vbox and hbox
+        double_Vbox.setSpacing(100);
+        double_Vbox.setAlignment(Pos.CENTER);
+        second_Vbox.setSpacing(50);
+        second_Vbox.setPadding(new Insets(50, 0, 0, 0));
+        second_Vbox.setAlignment(Pos.TOP_CENTER);
+        first_Vbox.setSpacing(50);
+        first_Vbox.setPadding(new Insets(50, 0, 0, 0));
+        first_Vbox.setAlignment(Pos.TOP_CENTER);
+        wall_remaining_hbox.setAlignment(Pos.CENTER);
+        wall_remaining_hbox.setSpacing(20);
+        player_turn_hbox.setAlignment(Pos.CENTER);
+        player_turn_hbox.setSpacing(20);
+
+        initialize_player_turn_hbox(player_turn_hbox);
+        initialize_wall_remaining_hbox(wall_remaining_hbox);
 
         StackPane rootPane = new StackPane();
-        rootPane.getChildren().add(damier);
+        rootPane.getChildren().add(double_Vbox);
 
         Scene scene = new Scene(rootPane, 1200, 800);
 
-        damier.prefWidthProperty().bind(scene.widthProperty());
-        damier.prefHeightProperty().bind(scene.heightProperty());
+        //damier.prefWidthProperty().bind(scene.widthProperty());
+        //damier.prefHeightProperty().bind(scene.heightProperty());
 
         return scene;
     }
 
+    private void initialize_player_turn_hbox(HBox player_hbox){
+        ImageView player_turnImageView = new ImageView(getClass().getResource("/org/projet/cypath/player.png").toExternalForm());
+        player_turnImageView.setFitHeight(80);
+        player_turnImageView.setPreserveRatio(true);
+        player_hbox.getChildren().add(player_turnImageView);
 
-    private GridPane createDamier() {
+        Text player_turn_text = new Text();
+        player_turn_text.setText(": ONE");
+        player_turn_text.setStyle("-fx-font-size: 50");
+        player_turn_text.setTextAlignment(TextAlignment.CENTER);
+        player_hbox.getChildren().add(player_turn_text);
+    }
+    private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
+        ImageView wall_remainingImageView = new ImageView(getClass().getResource("/org/projet/cypath/wall_remaining.png").toExternalForm());
+        wall_remainingImageView.setFitHeight(80);
+        wall_remainingImageView.setPreserveRatio(true);
+        wall_remaining_hbox.getChildren().add(wall_remainingImageView);
+
+        Text wall_remaining_hbox_text = new Text();
+        wall_remaining_hbox_text.setText(": "+ CounterRemainingWalls());
+        wall_remaining_hbox_text.setStyle("-fx-font-size: 90");
+        wall_remaining_hbox_text.setTextAlignment(TextAlignment.CENTER);
+        wall_remaining_hbox.getChildren().add(wall_remaining_hbox_text);
+    }
+
+
+    private GridPane createDamier(VBox vbox_buttons) {
         GridPane gridPane = initializeGridPane();
 
         AtomicReference<Boolean> actionBouger = new AtomicReference<>(false);
@@ -105,7 +165,7 @@ public class GameSceneController {
         }
 
         initializePlayers(gridPane, listOnGoing);
-        initializeButtons(gridPane, actionBouger, actionMur, murHorizontal, murVertical,listOnGoing,index,listWinners);
+        initializeButtons(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,listOnGoing,index,listWinners);
 
         return gridPane;
     }
@@ -141,31 +201,62 @@ public class GameSceneController {
         return (StackPane) gridPane.getChildren().get(row * DAMIER_SIZE + column);
     }
 
-    private void initializeButtons(GridPane gridPane, AtomicReference<Boolean> actionBouger,
+    private void settingsButtonAction() throws IOException {
+        System.out.println("button click");
+        mainGame.switchScene(mainGame.showSaveLoadScene());
+    }
+
+    private void createImageView(Button name, String path, int height, boolean aspectRatio ){
+        name.setStyle("-fx-background-color: transparent");
+
+        ImageView tempImageView = new ImageView(getClass().getResource(path).toExternalForm());
+        tempImageView.setFitHeight(height);
+        tempImageView.setPreserveRatio(aspectRatio);
+        name.setGraphic(tempImageView);
+    }
+
+    private void initializeButtons(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger,
                                    AtomicReference<Boolean> actionMur, AtomicReference<Boolean> murHorizontal,
                                    AtomicReference<Boolean> murVertical,List<Player> listOnGoing,
                                    AtomicInteger index,List<Player> listWinners) {
         Button murHorizontalButton=createMurHorizontalButton(murHorizontal,murVertical);
         Button murVerticalButton=createMurVerticalButton(murHorizontal,murVertical);
-        Button bougerButton = createBougerButton(gridPane, actionBouger, actionMur, murHorizontal, murVertical,
+        Button bougerButton = createBougerButton(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,
                 murHorizontalButton,murVerticalButton,listOnGoing, index);
-        Button placeMursButton = createPlaceMursButton(gridPane, actionBouger, actionMur, murHorizontal, murVertical,
+        Button placeMursButton = createPlaceMursButton(vbox_buttons, gridPane, actionBouger, actionMur, murHorizontal, murVertical,
         murHorizontalButton,murVerticalButton,listOnGoing,index);
-        gridPane.add(bougerButton, DAMIER_SIZE, 0);
-        gridPane.add(placeMursButton, DAMIER_SIZE, 1);
+
+        Button settingsButton = new Button();
+
+        settingsButton.setOnAction(event -> {
+            try {
+                settingsButtonAction();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //Creating a graphic (image)
+        createImageView(bougerButton,"/org/projet/cypath/move.png",80,true);
+        createImageView(placeMursButton,"/org/projet/cypath/wall.png",80,true);
+        createImageView(settingsButton,"/org/projet/cypath/settings.png",80,true);
+
+        vbox_buttons.getChildren().add(settingsButton);
+        vbox_buttons.getChildren().add(bougerButton);
+        vbox_buttons.getChildren().add(placeMursButton);
     }
 
-    private Button createBougerButton(GridPane gridPane, AtomicReference<Boolean> actionBouger,
+    private Button createBougerButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger,
                                       AtomicReference<Boolean> actionMur, AtomicReference<Boolean> murHorizontal,
                                       AtomicReference<Boolean> murVertical, Button murHorizontalButton, Button murVerticalButton,
                                       List<Player> listOnGoing, AtomicInteger index){
 
-    Button bougerButton = new Button("Bouger");
+    Button bougerButton = new Button();
         bougerButton.setOnAction(event -> {
             actionBouger.set(true);
             actionMur.set(false);
-            gridPane.getChildren().remove(murHorizontalButton);
-            gridPane.getChildren().remove(murVerticalButton);
+            vbox_buttons.getChildren().remove(murHorizontalButton);
+            vbox_buttons.getChildren().remove(murVerticalButton);
             murHorizontal.set(false);
             murVertical.set(false);
             try {
@@ -188,16 +279,16 @@ public class GameSceneController {
         return bougerButton;
     }
 
-    private Button createPlaceMursButton(GridPane gridPane, AtomicReference<Boolean> actionBouger, AtomicReference<Boolean> actionMur,
+    private Button createPlaceMursButton(VBox vbox_buttons, GridPane gridPane, AtomicReference<Boolean> actionBouger, AtomicReference<Boolean> actionMur,
                                          AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical,
                                          Button murHorizontalButton, Button murVerticalButton,
                                          List<Player> listOnGoing, AtomicInteger index
     ) {
-        Button placeMursButton = new Button("Placer murs");
+        Button placeMursButton = new Button();
         placeMursButton.setOnAction(event -> {
             if(!actionMur.get()) {
-                gridPane.add(murHorizontalButton, DAMIER_SIZE, 2);
-                gridPane.add(murVerticalButton, DAMIER_SIZE, 3);
+                vbox_buttons.getChildren().add(murHorizontalButton);
+                vbox_buttons.getChildren().add(murVerticalButton);
             }
             actionBouger.set(false);
             actionMur.set(true);
@@ -223,8 +314,13 @@ public class GameSceneController {
         return placeMursButton;
     }
 
+
+
     private Button createMurHorizontalButton(AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical) {
-        Button murHorizontalButton = new Button("murHorizontal");
+
+        Button murHorizontalButton = new Button();
+        createImageView(murHorizontalButton,"/org/projet/cypath/rightKey.png",80,true);
+
         murHorizontalButton.setOnAction(event -> {
             murHorizontal.set(true);
             murVertical.set(false);
@@ -233,7 +329,9 @@ public class GameSceneController {
     }
 
     private Button createMurVerticalButton(AtomicReference<Boolean> murHorizontal, AtomicReference<Boolean> murVertical) {
-        Button murVerticalButton = new Button("murVertical");
+        Button murVerticalButton = new Button();
+        createImageView(murVerticalButton,"/org/projet/cypath/upKey.png",80,true);
+
         murVerticalButton.setOnAction(event -> {
             murHorizontal.set(false);
             murVertical.set(true);
