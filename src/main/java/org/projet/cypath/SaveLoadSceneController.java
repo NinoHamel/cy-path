@@ -91,9 +91,9 @@ public class SaveLoadSceneController {
      * @param mouseEvent The MouseEvent triggered by the button.
      */
     @FXML
-    public void handleSaveButtonAction(MouseEvent mouseEvent) {
+    public void handleSaveButtonAction(MouseEvent mouseEvent) throws IOException {
         System.out.println("Save button clicked");
-        //game.save();
+        game.save();
 
         
 

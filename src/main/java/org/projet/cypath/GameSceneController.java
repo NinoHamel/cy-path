@@ -163,7 +163,6 @@ public class GameSceneController {
         first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
         double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
 
-
         System.out.println(game.getBoard().displayBoard());
 
         return new Scene(rootPane, 1200, 800);
