@@ -24,6 +24,7 @@ import org.projet.cypath.tools.Game;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -123,7 +124,7 @@ public class GameSceneController {
 
     public Scene load(String filepath) throws IOException {
         try {
-            game = new Game(4);
+            game = new Game(2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -148,6 +149,8 @@ public class GameSceneController {
         player_turn_hbox.setAlignment(Pos.CENTER);
         player_turn_hbox.setSpacing(20);
 
+        game.getSave(filepath);
+
         initialize_player_turn_hbox(player_turn_hbox);
         initialize_wall_remaining_hbox(wall_remaining_hbox);
 
@@ -160,7 +163,7 @@ public class GameSceneController {
         first_Vbox.getChildren().addAll(player_turn_hbox,checkerboard,wall_remaining_hbox); //first vbox filling
         double_Vbox.getChildren().addAll(first_Vbox,second_Vbox); //add gridpane and vbox to hbox
 
-        game.getSave(filepath);
+
         System.out.println(game.getBoard().displayBoard());
 
         return new Scene(rootPane, 1200, 800);
