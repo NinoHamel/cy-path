@@ -149,8 +149,8 @@ public class Player implements Serializable {
         if (board.onBoard(rowPlayer + 1, columnPlayer)) {
             int rowBottom = rowPlayer + 1;
             int columnBottom = columnPlayer;
-            Box boxBottom = board.getBox(rowBottom, columnBottom);
             if (board.onBoard(rowBottom, columnBottom) && !boxPlayer.hasBottomWall()) {
+                Box boxBottom = board.getBox(rowBottom, columnBottom);
                 if (!boxBottom.hasPlayer()) {
                     possibleMove.add(boxBottom);
                 } else {
@@ -163,8 +163,8 @@ public class Player implements Serializable {
         if (board.onBoard(rowPlayer - 1, columnPlayer)) {
             int rowTop = rowPlayer - 1;
             int columnTop = columnPlayer;
-            Box boxTop = board.getBox(rowTop, columnTop);
             if (board.onBoard(rowTop, columnTop) && !boxPlayer.hasTopWall()) {
+                Box boxTop = board.getBox(rowTop, columnTop);
                 if (!boxTop.hasPlayer()) {
                     possibleMove.add(boxTop);
                 } else {
@@ -177,8 +177,8 @@ public class Player implements Serializable {
         if (board.onBoard(rowPlayer, columnPlayer + 1)) {
             int rowRight = rowPlayer;
             int columnRight = columnPlayer + 1;
-            Box boxRight = board.getBox(rowRight, columnRight);
             if (board.onBoard(rowRight, columnRight) && !boxPlayer.hasRightWall()) {
+                Box boxRight = board.getBox(rowRight, columnRight);
                 if (!boxRight.hasPlayer()) {
                     possibleMove.add(boxRight);
                 } else {
@@ -191,8 +191,8 @@ public class Player implements Serializable {
         if (board.onBoard(rowPlayer, columnPlayer - 1)) {
             int rowLeft = rowPlayer;
             int columnLeft = columnPlayer - 1;
-            Box boxLeft = board.getBox(rowLeft, columnLeft);
             if (board.onBoard(rowLeft, columnLeft) && !boxPlayer.hasLeftWall()) {
+                Box boxLeft = board.getBox(rowLeft, columnLeft);
                 if (!boxLeft.hasPlayer()) {
                     possibleMove.add(boxLeft);
                 } else {
@@ -232,7 +232,8 @@ public class Player implements Serializable {
                 Orientation=="Left"&& newBox.hasLeftWall()||
                 Orientation=="Top"&& newBox.hasTopWall()||
                 Orientation=="Bottom"&& newBox.hasBottomWall()||
-                newNewBox!=null && newNewBox.hasPlayer() && !newNewBox.equals(this.getCurrentBox()))
+                newNewBox!=null && newNewBox.hasPlayer() && !newNewBox.equals(this.getCurrentBox())
+        )
      {
             // Déplacement bas
             if (board.onBoard(newBox.getRow() + 1, newBox.getColumn())) {
@@ -277,36 +278,46 @@ public class Player implements Serializable {
             if(Orientation == "Bottom"){
                 int newRowBottom = newBox.getRow()+1;
                 int newColumnBottom = newBox.getColumn();
-                Box newBoxBottom = board.getBox(newRowBottom, newColumnBottom);
-                if (board.onBoard(newRowBottom, newColumnBottom) && newBoxBottom.hasPlayer()==false) {
-                    possibleMove.add(newBoxBottom);
+                if (board.onBoard(newRowBottom, newColumnBottom)) {
+                    Box newBoxBottom = board.getBox(newRowBottom, newColumnBottom);
+                    if(newBoxBottom.hasPlayer()==false) {
+                        possibleMove.add(newBoxBottom);
+                    }
                 }
             }
             //Déplacement Haut
             if(Orientation == "Top"){
                 int newRowTop = newBox.getRow()-1;
                 int newColumnTop = newBox.getColumn();
-                Box newBoxTop = board.getBox(newRowTop, newColumnTop);
-                if (board.onBoard(newRowTop, newColumnTop) && newBoxTop.hasPlayer()==false) {
-                    possibleMove.add(newBoxTop);
+
+                if (board.onBoard(newRowTop, newColumnTop)) {
+                    Box newBoxTop = board.getBox(newRowTop, newColumnTop);
+                    if (newBoxTop.hasPlayer()==false) {
+                        possibleMove.add(newBoxTop);
+                    }
                 }
             }
             //Déplacement Droit
             if(Orientation == "Right"){
                 int newRowRight = newBox.getRow();
                 int newColumnRight = newBox.getColumn() + 1;
-                Box newBoxRight = board.getBox(newRowRight, newColumnRight);
-                if (board.onBoard(newRowRight, newColumnRight) && newBoxRight.hasPlayer()==false) {
-                    possibleMove.add(newBoxRight);
+
+                if (board.onBoard(newRowRight, newColumnRight)) {
+                    Box newBoxRight = board.getBox(newRowRight, newColumnRight);
+                    if(newBoxRight.hasPlayer()==false) {
+                        possibleMove.add(newBoxRight);
+                    }
                 }
             }
             //Déplacement Gauche
             if(Orientation == "Left"){
                 int newRowLeft = newBox.getRow();
                 int newColumnLeft = newBox.getColumn() - 1;
-                Box newBoxLeft = board.getBox(newRowLeft, newColumnLeft);
-                if (board.onBoard(newRowLeft, newColumnLeft) && newBoxLeft.hasPlayer()==false) {
-                    possibleMove.add(newBoxLeft);
+                if (board.onBoard(newRowLeft, newColumnLeft)) {
+                    Box newBoxLeft = board.getBox(newRowLeft, newColumnLeft);
+                    if(newBoxLeft.hasPlayer()==false) {
+                        possibleMove.add(newBoxLeft);
+                    }
                 }
             }
         }

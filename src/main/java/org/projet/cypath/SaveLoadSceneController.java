@@ -87,7 +87,7 @@ public class SaveLoadSceneController {
         System.out.println("Load button clicked");
 
         Game game = new Game(2);
-        game.getSave();
+        //game.getSave();
 
 
 
