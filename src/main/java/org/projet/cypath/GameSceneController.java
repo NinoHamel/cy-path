@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -258,10 +259,33 @@ public class GameSceneController {
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
         }
+        initializeRanking(gridPane,listOnGoing);
         initializePlayers(gridPane, listOnGoing);
         initializeButtons(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,listOnGoing,index);
 
         return gridPane;
+    }
+    /**
+     * Initializes the ranking cells in the grid pane based on the list of ongoing players.
+     * @param gridPane     The GridPane in which the ranking cells will be initialized.
+     * @param listOnGoing  The list of Player objects representing the ongoing players.
+     */
+    private void initializeRanking(GridPane gridPane, List<Player> listOnGoing) {
+        int rowIndex = 0; // Indice de ligne initial
+        for (int i = 1; i <= listOnGoing.size(); i++) {
+            StackPane playerRanking = new StackPane();
+            playerRanking.setPrefSize(100, 50);
+            Rectangle rect = new Rectangle(50, 50);
+            rect.setFill(Color.TRANSPARENT);
+            Label label = new Label(i + ": ");
+            label.setTextFill(Color.BLACK);
+            label.setStyle("-fx-font-size: 18; -fx-padding: 0 0 0 10;");
+            HBox hbox = new HBox(label, rect);
+            hbox.setAlignment(Pos.CENTER_LEFT);
+            playerRanking.getChildren().add(hbox);
+            gridPane.add(playerRanking, 9, i - 1);
+            rowIndex++; // Incrémenter l'indice de ligne
+        }
     }
     /**
      Initializes a GridPane for the game board.
@@ -405,7 +429,7 @@ public class GameSceneController {
                                     AtomicReference<Boolean> verticalWall, Button horizontalWallButton, Button verticalWallButton,
                                     List<Player> listOnGoing, AtomicInteger index){
 
-    Button moveButton = new Button();
+        Button moveButton = new Button();
         moveButton.setOnAction(event -> {
             actionMove.set(true);
             actionWall.set(false);
@@ -491,11 +515,11 @@ public class GameSceneController {
         return horizontalWallButton;
     }
     /**
-    *Creates a button to select the vertical wall option.
-    *@param horizontalWall A boolean value indicating whether the wall should be horizontal (set to false).
-    *@param verticalWall A boolean value indicating whether the wall should be vertical (set to true).
-    *@return The created Button.
-    */
+     *Creates a button to select the vertical wall option.
+     *@param horizontalWall A boolean value indicating whether the wall should be horizontal (set to false).
+     *@param verticalWall A boolean value indicating whether the wall should be vertical (set to true).
+     *@return The created Button.
+     */
     private Button createverticalWallButton(AtomicReference<Boolean> horizontalWall, AtomicReference<Boolean> verticalWall) {
         Button verticalWallButton = new Button();
         createImageView(verticalWallButton,"/org/projet/cypath/upKey.png");
@@ -556,87 +580,88 @@ public class GameSceneController {
                                          AtomicInteger index,HBox player_turn_hbox) {
         cellPane.setOnMouseClicked(event -> {
             if (actionMove.get()) {
-                    Player currentPlayer = listOnGoing.get(index.get());
-                    int fromRow = currentPlayer.getCurrentBox().getRow();
-                    int fromCol = currentPlayer.getCurrentBox().getColumn();
-                    List<Box> victoryBox = currentPlayer.getVictoryBoxes();
-                    String color = currentPlayer.getColor();
-                    try {
-                        // Mise à jour des mouvements possibles pour le joueur en cours
-                        List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
-                        // Vérifier si la case sélectionnée est une case de mouvement possible
-                        boolean isValidMove = false;
+                Player currentPlayer = listOnGoing.get(index.get());
+                int fromRow = currentPlayer.getCurrentBox().getRow();
+                int fromCol = currentPlayer.getCurrentBox().getColumn();
+                List<Box> victoryBox = currentPlayer.getVictoryBoxes();
+                String color = currentPlayer.getColor();
+                try {
+                    // Mise à jour des mouvements possibles pour le joueur en cours
+                    List<Box> possibleMove = currentPlayer.possibleMove(game.getBoard());
+                    // Vérifier si la case sélectionnée est une case de mouvement possible
+                    boolean isValidMove = false;
+                    for (Box box : possibleMove) {
+                        int moveRow = box.getRow();
+                        int moveCol = box.getColumn();
+                        if (currentRow == moveRow && currentCol == moveCol) {
+                            isValidMove = true;
+                            break;
+                        }
+                    }
+                    if (isValidMove) {
+                        // Enlever les couleurs des cases de mouvement possible de l'ancienne position
                         for (Box box : possibleMove) {
                             int moveRow = box.getRow();
                             int moveCol = box.getColumn();
-                            if (currentRow == moveRow && currentCol == moveCol) {
-                                isValidMove = true;
-                                break;
-                            }
+                            StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
+                            Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                            moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
                         }
-                        if (isValidMove) {
-                            // Enlever les couleurs des cases de mouvement possible de l'ancienne position
-                            for (Box box : possibleMove) {
-                                int moveRow = box.getRow();
-                                int moveCol = box.getColumn();
-                                StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
-                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                moveRect.setFill((moveRow + moveCol) % 2 == 0 ? Color.WHITE : Color.GREY);
-                            }
-                            // Modifier la couleur de la case d'origine de l'ancienne position
-                            StackPane fromCellPane = getCellPane(gridPane,fromRow,fromCol);
-                            Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
-                            fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.GREY);
-                            currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
-                            int toRow = currentPlayer.getCurrentBox().getRow();
-                            int toCol = currentPlayer.getCurrentBox().getColumn();
-                            // Modifier la couleur de la nouvelle case de la nouvelle position
-                            StackPane toCellPane = getCellPane(gridPane,toRow,toCol);
-                            Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
-                            toRect.setFill(Color.web(color));
-                            //Vérifier si le joueur a gagné
-                            for (Box boxVictory : victoryBox) {
-                                int victoryRow = boxVictory.getRow();
-                                int victoryCol = boxVictory.getColumn();
-                                if (victoryCol == toCol && victoryRow == toRow) {
-                                    currentPlayer.setVictory(true);
-                                    listWinners.add(currentPlayer);
-                                    listOnGoing.remove(currentPlayer);
-                                    index.getAndDecrement();
-                                    if (index.get() < 0) {
-                                        index.set(listOnGoing.size() - 1);
-                                    }
-                                    //On fait disparaitre le joueur du plateau si il a gagné
-                                    Box currentBox=game.getBoard().getBox(currentRow,currentCol);
-                                    currentBox.setHasPlayer(false);
-                                    toRect.setFill((toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY);
-                                    //Clignottement du joueur quand il gagne
-                                    Timeline blinkAnimation = new Timeline(
-                                            new KeyFrame(Duration.seconds(0.5), new KeyValue(toRect.fillProperty(), Color.web(color))),
-                                            new KeyFrame(Duration.seconds(1.0), new KeyValue(toRect.fillProperty(), (toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY))
-                                    );
-                                    blinkAnimation.setCycleCount(2); // Effectuer le clignotement deux fois
-                                    blinkAnimation.play();
+                        // Modifier la couleur de la case d'origine de l'ancienne position
+                        StackPane fromCellPane = getCellPane(gridPane,fromRow,fromCol);
+                        Rectangle fromRect = (Rectangle) fromCellPane.getChildren().get(0);
+                        fromRect.setFill((fromRow + fromCol) % 2 == 0 ? Color.WHITE : Color.GREY);
+                        currentPlayer.moveTo(game.getBoard().getBox(currentRow, currentCol));
+                        int toRow = currentPlayer.getCurrentBox().getRow();
+                        int toCol = currentPlayer.getCurrentBox().getColumn();
+                        // Modifier la couleur de la nouvelle case de la nouvelle position
+                        StackPane toCellPane = getCellPane(gridPane,toRow,toCol);
+                        Rectangle toRect = (Rectangle) toCellPane.getChildren().get(0);
+                        toRect.setFill(Color.web(color));
+                        //Vérifier si le joueur a gagné
+                        for (Box boxVictory : victoryBox) {
+                            int victoryRow = boxVictory.getRow();
+                            int victoryCol = boxVictory.getColumn();
+                            if (victoryCol == toCol && victoryRow == toRow) {
+                                currentPlayer.setVictory(true);
+                                listWinners.add(currentPlayer);
+                                listOnGoing.remove(currentPlayer);
+                                addWinners(gridPane,listWinners);
+                                index.getAndDecrement();
+                                if (index.get() < 0) {
+                                    index.set(listOnGoing.size() - 1);
                                 }
+                                //On fait disparaitre le joueur du plateau si il a gagné
+                                Box currentBox=game.getBoard().getBox(currentRow,currentCol);
+                                currentBox.setHasPlayer(false);
+                                toRect.setFill((toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY);
+                                //Clignottement du joueur quand il gagne
+                                Timeline blinkAnimation = new Timeline(
+                                        new KeyFrame(Duration.seconds(0.5), new KeyValue(toRect.fillProperty(), Color.web(color))),
+                                        new KeyFrame(Duration.seconds(1.0), new KeyValue(toRect.fillProperty(), (toRow + toCol) % 2 == 0 ? Color.WHITE : Color.GREY))
+                                );
+                                blinkAnimation.setCycleCount(2); // Effectuer le clignotement deux fois
+                                blinkAnimation.play();
                             }
-                            //Modification de la couleur de la case et incrémentation
-                            nextTurn(listOnGoing,index,player_turn_hbox);
-                            // Afficher les nouveaux déplacements possible
-                            currentPlayer = listOnGoing.get(index.get());
-                            possibleMove = currentPlayer.possibleMove(game.getBoard());
-                            for (Box box : possibleMove) {
-                                int moveRow = box.getRow();
-                                int moveCol = box.getColumn();
-                                StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
-                                Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
-                                moveRect.setFill(Color.PURPLE);
-                            }
-
                         }
+                        //Modification de la couleur de la case et incrémentation
+                        nextTurn(listOnGoing,index,player_turn_hbox);
+                        // Afficher les nouveaux déplacements possible
+                        currentPlayer = listOnGoing.get(index.get());
+                        possibleMove = currentPlayer.possibleMove(game.getBoard());
+                        for (Box box : possibleMove) {
+                            int moveRow = box.getRow();
+                            int moveCol = box.getColumn();
+                            StackPane moveCellPane = getCellPane(gridPane,moveRow,moveCol);
+                            Rectangle moveRect = (Rectangle) moveCellPane.getChildren().get(0);
+                            moveRect.setFill(Color.PURPLE);
+                        }
+
                     }
-                    catch(Exception e){
-                        System.out.println(e);
-                    }
+                }
+                catch(Exception e){
+                    System.out.println(e);
+                }
             }
             if (actionWall.get()) {
                 try {
@@ -663,6 +688,21 @@ public class GameSceneController {
                 }
             }
         });
+    }
+    /**
+     * Colorizes the ranking cells in the grid pane based on the list of winners.
+     * @param gridPane    The GridPane containing the ranking cells.
+     * @param listWinners The list of Player objects representing the winners.
+     */
+    private void addWinners(GridPane gridPane, List<Player> listWinners) {
+        for (int i = 0; i < listWinners.size(); i++) {
+            Player player = listWinners.get(i);
+            Color color = Color.valueOf(player.getColor());
+            StackPane rankingCellPane = getCellPane(gridPane, 9, i);
+            HBox hbox = (HBox) rankingCellPane.getChildren().get(0);
+            Rectangle rankingRect = (Rectangle) hbox.getChildren().get(1);
+            rankingRect.setFill(color);
+        }
     }
     /**
      *Sets the mouse enter event handler for a cell pane.
@@ -737,7 +777,7 @@ public class GameSceneController {
                                              AtomicReference<Border> savedBorder, AtomicReference<Border> savedBottomCellBorder,
                                              AtomicReference<Border> savedRightCellBorder,
                                              GridPane gridPane
-                                             ) {
+    ) {
         cellPane.setOnMouseExited(event -> {
             try {
                 Box currentBox = game.getBoard().getBox(currentRow, currentCol);
