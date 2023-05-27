@@ -17,9 +17,18 @@ public class VideoSceneController {
 
     private MainGame mainGame;
 
+    /**
+     * Sets the MainGame instance for the start scene.
+     * @param mainGame The MainGame instance to set.
+     */
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
+
+    /**
+     * Creates and returns the start scene.
+     * @return The created Scene object.
+     */
 
     public Scene start() {
         StackPane root = new StackPane();
