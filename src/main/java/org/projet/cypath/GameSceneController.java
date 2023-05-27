@@ -29,15 +29,43 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class GameSceneController {
+    /**
+     * Represents the size of the checkerboard.
+     */
     private static final int checkerboard_SIZE = 9;
+
+    /**
+     * Represents the main game instance.
+     */
     private MainGame mainGame;
+
+    /**
+     * Represents the game instance.
+     */
     private Game game;
+
+    /**
+     * Represents the number of players.
+     */
     private final int numPlayers;
+
+    /**
+     * Represents the Text element for displaying the remaining wall count.
+     */
     private Text wall_remaining_hbox_text;
 
+    /**
+     * Constructs a new GameSceneController with the specified number of players.
+     * @param numPlayers The number of players in the game.
+     */
     public GameSceneController(int numPlayers) {
         this.numPlayers = numPlayers;
     }
+
+    /**
+     * Setter of the mainGame
+     * @param mainGame
+     */
 
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
