@@ -297,20 +297,6 @@ public class Board implements Serializable {
     }
 
     /**
-     * Return a boolean if every player has a path
-     * @param players a list of plauer which is supposed to be ListOnGoing
-     * @return boolean true or false if there is a path or not
-     */
-    public boolean hasPathAll(List<Player> players){
-        for(Player player : players){
-            if(!hasPath(player)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Function used to display on the console a schematic board
      * @return string that can be displayed using the command System.ont.println
      */
