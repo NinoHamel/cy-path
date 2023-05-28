@@ -1,6 +1,5 @@
 package org.projet.cypath.players;
 
-import javafx.geometry.Orientation;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
@@ -180,7 +179,7 @@ public class Player implements Serializable {
         int columnPlayer = this.getCurrentBox().getColumn();
         Box boxPlayer = this.getCurrentBox();
 
-        // Déplacement bas
+        // Move bottom
         if (board.onBoard(rowPlayer + 1, columnPlayer)) {
             int rowBottom = rowPlayer + 1;
             int columnBottom = columnPlayer;
@@ -222,7 +221,7 @@ public class Player implements Serializable {
             }
         }
 
-        // Déplacement gauche
+        // Move left
         if (board.onBoard(rowPlayer, columnPlayer - 1)) {
             int rowLeft = rowPlayer;
             int columnLeft = columnPlayer - 1;
