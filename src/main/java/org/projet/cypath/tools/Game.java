@@ -135,12 +135,12 @@ public class Game {
         ObjectOutputStream oOSboard = null;
         ObjectOutputStream oOSplayer = null;
         try {
-            new File("src/main/save").mkdir();
-            oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.player"))));
+            new File("src/save").mkdir();
+            oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/save/save.player"))));
             for(Player player:playerList){
                 oOSplayer.writeObject(player);
             }
-            oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/main/save/save.board"))));
+            oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/save/save.board"))));
             oOSboard.writeObject(board);
         } catch (Exception e) {
             System.out.println(e);
@@ -155,7 +155,7 @@ public class Game {
     }
 
     /**
-     * Use the method to save your game in the files src/main/save/save.player and src/main/save/save.board
+     * Use the method to save your game in the files src/save/save.player and src/save/save.board
      * @throws IOException
      */
     public void save() throws IOException {
@@ -163,7 +163,7 @@ public class Game {
         ObjectOutputStream oOSboard = null;
         ObjectOutputStream oOSplayer = null;
         try {
-            String saveFolderPath = "src/main/save/" + this.uniqueId;
+            String saveFolderPath = "src/save/" + this.uniqueId;
 
             Files.createDirectories(Paths.get(saveFolderPath)); // Crée le répertoire de sauvegarde
 
@@ -196,7 +196,7 @@ public class Game {
      * @return
      */
     private String generateUniqueId() {
-        String saveFolderPath = "src/main/save";
+        String saveFolderPath = "src/save";
         File saveFolder = new File(saveFolderPath);
         int saveCount = 1; // Valeur par défaut si aucun fichier de sauvegarde n'existe
 
@@ -270,7 +270,7 @@ public class Game {
      * Use the method to delete every single saves from your file using {@link #deleteSave(File)}
      */
     public void deleteAllSaves() {
-        String saveFolderPath = "src/main/save";
+        String saveFolderPath = "src/save";
         File saveFolder = new File(saveFolderPath);
 
         if (saveFolder.exists() && saveFolder.isDirectory()) {
@@ -288,7 +288,7 @@ public class Game {
      * @param saveId
      */
     public void deleteSaveById(String saveId) {
-        String saveFolderPath = "src/main/save/" + saveId;
+        String saveFolderPath = "src/save/" + saveId;
         File saveFolder = new File(saveFolderPath);
 
         if (saveFolder.exists() && saveFolder.isDirectory()) {
