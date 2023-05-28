@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Game;
@@ -19,8 +20,8 @@ public class MainGame extends Application {
 
     /**
      * Start the game on the StartScene
-     * @param stage the input stage
-     * @throws InvalidSceneException throw exception if the scene is invalid
+     * @param stage
+     * @throws IOException
      */
     @Override
     public void start(Stage stage) throws InvalidSceneException {
@@ -36,10 +37,10 @@ public class MainGame extends Application {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
         primaryStage.setTitle("Intro");
-        primaryStage.setMinWidth(1720);
-        primaryStage.setMinHeight(720);
-        primaryStage.setWidth(1720);
-        primaryStage.setHeight(720);
+        primaryStage.setMinWidth(1422);
+        primaryStage.setMinHeight(800);
+        primaryStage.setWidth(1422);
+        primaryStage.setHeight(800);
         Scene scene = videoController.start();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
@@ -51,8 +52,8 @@ public class MainGame extends Application {
     /**
      * Get the fxml, launch the controller, and set properties to the stage (name / size)
      *
-     * @return the created scene
-     * @throws IOException input or output exception
+     * @return
+     * @throws IOException
      */
     public Scene showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
@@ -60,9 +61,9 @@ public class MainGame extends Application {
         StartSceneController controller = loader.getController();
         controller.setMainGame(this);
         primaryStage.setTitle("Game Start");
-        primaryStage.setMinWidth(1200);
+        primaryStage.setMinWidth(1400);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1200);
+        primaryStage.setWidth(1400);
         primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -72,13 +73,16 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the GameScene, with its controller
-     * @throws InvalidSceneException If no scene is defined.
-     * @throws OutOfBoardException the exception when a position is out of the board
+     * @throws InvalidSceneException
      */
     public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
         primaryStage.setTitle("Game");
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         gameController.load_walls();
         Scene scene = gameController.start();
         if (scene == null) {
@@ -88,18 +92,16 @@ public class MainGame extends Application {
         return scene;
     }
 
-    /**
-     * Get the fxml, launch the controller, and set properties to the stage (name / size)
-     *
-     * @return the created scene
-     * @throws IOException input or output exception
-     */
     public Scene showGameScene(String filepath) throws InvalidSceneException, IOException, OutOfBoardException {
 
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
 
         primaryStage.setTitle("Game");
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         Scene scene = gameController.load(filepath);
         gameController.load_walls();
         if (scene == null) {
@@ -110,11 +112,13 @@ public class MainGame extends Application {
     }
 
 
+
+
     /**
      * Get the fxml, and launch the EndScene, with its controller
      *
-     * @return the created scene
-     * @throws IOException input or output exception
+     * @return
+     * @throws IOException
      */
     public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
@@ -133,15 +137,27 @@ public class MainGame extends Application {
      * Displays the Save and Load scene in the application.
      * @return The scene object for the Save and Load scene.
      * @throws IOException If an error occurs while loading the FXML file.
+     * @throws InvalidSaveException If trying to save from a menu.
      */
-    public Scene showSaveLoadScene() throws IOException {
+    public Scene showSaveLoadScene() throws InvalidSaveException, IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
+        try{
+            controller.setThisGame(this.game);
+        }
+        catch (Exception e){
+            throw new InvalidSaveException();
+        }
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
-        return new Scene(root);
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
+        Scene scene = new Scene(root);
+        return scene;
     }
 
     /**
@@ -192,18 +208,18 @@ public class MainGame extends Application {
 
     /**
      * Allow to bind a game instance from a controller to the MainGame
-     * @param ThisGame a game instance
+     * @param ThisGame
      */
+
     public void setThisGame(Game ThisGame){
         this.game = ThisGame;
     }
 
     /**
      * Start the game.
-     * @param args arguments of main method
+     * @param args
      */
     public static void main(String[] args) {
         launch(args);
     }
 }
-
