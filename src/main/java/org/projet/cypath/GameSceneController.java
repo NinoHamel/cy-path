@@ -44,9 +44,21 @@ public class GameSceneController {
      * Represents the game instance.
      */
     private Game game;
+
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    private Board board;
     /**
      * Represent the board of the game
      */
+
     private GridPane gridPane;
     /**
      * Represents the number of players.
@@ -78,7 +90,7 @@ public class GameSceneController {
      @return The JavaFX Scene representing the game.
      */
 
-    public Scene start() {
+    public Scene start() throws OutOfBoardException {
         try {
             game = new Game(numPlayers);
         } catch (Exception e) {
@@ -176,7 +188,7 @@ public class GameSceneController {
      *
      * @param player_hbox The HBox container for the player's turn display.
      */
-    private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing) {
+    private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing) throws OutOfBoardException {
         ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
@@ -185,6 +197,11 @@ public class GameSceneController {
         AtomicInteger index = initializeIndex(listOnGoing);
 
         Player player=listOnGoing.get(index.get());
+        System.out.println("player: "+player);
+        int rowPlayer=player.getCurrentBox().getRow();
+        int colPlayer=player.getCurrentBox().getColumn();
+
+
         Color color= Color.valueOf(player.getColor());
 
         Text player_turn_text = new Text();
@@ -221,7 +238,7 @@ public class GameSceneController {
      {@link #initializeButtons(VBox, GridPane, AtomicReference, AtomicReference, AtomicReference, AtomicReference, List, AtomicInteger)},
      @return The created GridPane.
      */
-    private GridPane createCheckerboard(VBox vbox_buttons,HBox player_turn_hbox) {
+    private GridPane createCheckerboard(VBox vbox_buttons,HBox player_turn_hbox) throws OutOfBoardException {
         gridPane = initializeGridPane();
         AtomicReference<Boolean> actionMove = new AtomicReference<>(false);
         AtomicReference<Boolean> actionWall = new AtomicReference<>(false);
@@ -230,6 +247,21 @@ public class GameSceneController {
         List<Player> listOnGoing=game.getListOnGoing();
         AtomicInteger index = initializeIndex(listOnGoing);
         List<Player> listWinners=game.getListWinners();
+        board=game.getBoard();
+        for(Player player:listOnGoing) {
+            int rowPlayer=player.getCurrentBox().getRow();
+            int colPlayer=player.getCurrentBox().getColumn();
+            //Mettre à jour les victory box
+            List<Box> victoryBox = player.getVictoryBoxes();
+            for (int test = 0; test < victoryBox.size(); test++) {
+                Box box = victoryBox.get(test);
+                int colBox = box.getColumn();
+                int rowBox = box.getRow();
+                Box box2 = board.getBox(rowBox, colBox);
+                victoryBox.set(test, box2);
+            }
+            player.setCurrentBox(board.getBox(rowPlayer, colPlayer));
+        }
         for (int row = 0; row < checkerboard_SIZE; row++) {
             for (int col = 0; col < checkerboard_SIZE; col++) {
                 // Créer des bordures blanches
@@ -671,6 +703,8 @@ public class GameSceneController {
                                          GridPane gridPane,List<Player> listOnGoing,List<Player> listWinners,
                                          AtomicInteger index,HBox player_turn_hbox) {
         cellPane.setOnMouseClicked(event -> {
+            System.out.println("actionMove.get(): "+actionMove.get());
+            System.out.println("actionWall.get(): "+actionWall.get());
             if (actionMove.get()) {
                 Player currentPlayer = listOnGoing.get(index.get());
                 int fromRow = currentPlayer.getCurrentBox().getRow();
@@ -750,7 +784,6 @@ public class GameSceneController {
                         }
 
                     }
-                    System.out.println(game.getBoard().displayBoard());
                 }
 
                 catch(Exception e){
@@ -760,8 +793,12 @@ public class GameSceneController {
             if (actionWall.get()) {
                 try {
                     Box currentBox = game.getBoard().getBox(currentRow, currentCol);
+                    System.out.println("currentBox: "+currentBox);
+                    System.out.println(this.game.getBoard());
+                    Board board=game.getBoard();
                     if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
                         if (game.hasPath(currentRow, currentCol, 0)) {
+                            System.out.println("horizontal 2 ok");
                             game.getBoard().setBottomWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
                             nextTurn(listOnGoing,index,player_turn_hbox);
@@ -769,6 +806,7 @@ public class GameSceneController {
                     }
                     if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
                         if (game.hasPath(currentRow, currentCol, 1)){
+                            System.out.println("vertical 2 ok");
                             game.getBoard().setRightWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
                             nextTurn(listOnGoing,index,player_turn_hbox);
@@ -965,5 +1003,34 @@ public class GameSceneController {
     public void updateWallCounter(){
         wall_remaining_hbox_text.setText(": "+ CounterRemainingWalls());
     }
+    /*
+    public Boolean hasPath(Board board,int currentRow,int currentCol,int orientation,List<Player> listOnGoing) throws OutOfBoardException {
+        System.out.println(game.getBoard());
+        board=game.getBoard();
+        listOnGoing=game.getListOnGoing();
+        if (orientation == 0) {
+            board.setBottomWall(currentRow,currentCol,true);
+            System.out.println("ok set bottomWall");
+            System.out.println("size: "+listOnGoing.size());
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setBottomWall(currentRow,currentCol,false);
+                    return false;
+                }
+            };
+            board.setBottomWall(currentRow,currentCol,false);
+        }
+        else {
+            board.setRightWall(currentRow, currentCol,true);
+            for (Player player : listOnGoing) {
+                if (!board.hasPath(player)) {
+                    board.setRightWall(currentRow,currentCol,false);
+                    return false;
+                }
+            }
+            board.setRightWall(currentRow,currentCol,false);
+        }
+        return true;
+    }*/
 }
 
