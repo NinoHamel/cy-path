@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Game;
@@ -37,10 +36,10 @@ public class MainGame extends Application {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
         primaryStage.setTitle("Intro");
-        primaryStage.setMinWidth(1422);
-        primaryStage.setMinHeight(800);
-        primaryStage.setWidth(1422);
-        primaryStage.setHeight(800);
+        primaryStage.setMinWidth(1720);
+        primaryStage.setMinHeight(720);
+        primaryStage.setWidth(1720);
+        primaryStage.setHeight(720);
         Scene scene = videoController.start();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
@@ -61,9 +60,9 @@ public class MainGame extends Application {
         StartSceneController controller = loader.getController();
         controller.setMainGame(this);
         primaryStage.setTitle("Game Start");
-        primaryStage.setMinWidth(1400);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
+        primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -80,10 +79,6 @@ public class MainGame extends Application {
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1400);
-        primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
-        primaryStage.setHeight(850);
         gameController.load_walls();
         Scene scene = gameController.start();
         if (scene == null) {
@@ -105,10 +100,6 @@ public class MainGame extends Application {
         gameController.setMainGame(this);
 
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1400);
-        primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
-        primaryStage.setHeight(850);
         Scene scene = gameController.load(filepath);
         gameController.load_walls();
         if (scene == null) {
@@ -142,19 +133,14 @@ public class MainGame extends Application {
      * Displays the Save and Load scene in the application.
      * @return The scene object for the Save and Load scene.
      * @throws IOException If an error occurs while loading the FXML file.
-     * @throws InvalidSaveException If trying to save from a menu.
      */
-    public Scene showSaveLoadScene() throws InvalidSaveException, IOException {
+    public Scene showSaveLoadScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
-        primaryStage.setMinWidth(1400);
-        primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
-        primaryStage.setHeight(850);
         return new Scene(root);
     }
 
