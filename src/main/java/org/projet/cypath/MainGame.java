@@ -37,10 +37,10 @@ public class MainGame extends Application {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
         primaryStage.setTitle("Intro");
-        primaryStage.setMinWidth(1422);
-        primaryStage.setMinHeight(800);
-        primaryStage.setWidth(1422);
-        primaryStage.setHeight(800);
+        primaryStage.setMinWidth(1420);
+        primaryStage.setMinHeight(720);
+        primaryStage.setWidth(1420);
+        primaryStage.setHeight(720);
         Scene scene = videoController.start();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
@@ -61,9 +61,9 @@ public class MainGame extends Application {
         StartSceneController controller = loader.getController();
         controller.setMainGame(this);
         primaryStage.setTitle("Game Start");
-        primaryStage.setMinWidth(1400);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
+        primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -79,9 +79,9 @@ public class MainGame extends Application {
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1400);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
+        primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
         gameController.load_walls();
         Scene scene = gameController.start();
@@ -98,9 +98,9 @@ public class MainGame extends Application {
         gameController.setMainGame(this);
 
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1400);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
+        primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
         Scene scene = gameController.load(filepath);
         gameController.load_walls();
@@ -152,9 +152,9 @@ public class MainGame extends Application {
         }
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
-        primaryStage.setMinWidth(1400);
+        primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(850);
-        primaryStage.setWidth(1400);
+        primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         return scene;
@@ -223,3 +223,4 @@ public class MainGame extends Application {
         launch(args);
     }
 }
+
