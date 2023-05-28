@@ -326,8 +326,8 @@ public class Game {
     }
 
     /**
-     * Method used to add and test if there is only one player to add
-     * @return true or false if the add was succesful
+     * Check if the game is over and change the player lists in this case
+     * @return true or false if the game is over
      */
     public boolean isGameOver(){
         if(listOnGoing.size() == 1){
