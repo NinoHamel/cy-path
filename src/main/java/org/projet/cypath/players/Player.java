@@ -152,6 +152,10 @@ public class Player implements Serializable {
         return this.currentBox;
     }
 
+    /**
+     * Getter of the list of the victory boxes
+     * @return the list of the victory boxes
+     */
     public List<Box> getVictoryBoxes(){
         return this.victoryBoxes;
     }
