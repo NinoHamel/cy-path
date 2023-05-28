@@ -10,16 +10,42 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * The Game class represents a game instance of the board game.
+ * It manages the players, the board, and the game state.
+ *
+ * @author Côme QUINTYN
+ * @version 1.0
+ * @see Box
+ */
 public class Game {
+    /**
+     * Represents the list of players who have won the game.
+     */
     private List<Player> listWinners;
+
+    /**
+     * Represents the list of players currently participating in the game.
+     */
     private List<Player> listOnGoing;
+
+    /**
+     * Represents the unique identifier for the game instance.
+     */
     private String uniqueId=generateUniqueId();
-
-
-
+    /**
+     * Represents the game board for the current game.
+     */
     private Board board;
-
+    /**
+     * Constructs a new Game instance with the specified number of players.
+     *
+     * @param numberOfPlayers The number of players in the game.
+     * @throws IOException          If an I/O error occurs during the game initialization.
+     * @throws OutOfBoardException  If the number of players is invalid for the board.
+     */
     public Game(int numberOfPlayers) throws IOException, OutOfBoardException {
         this.board=new Board(numberOfPlayers);
         if (numberOfPlayers==2){
@@ -66,14 +92,6 @@ public class Game {
         }
     }
     //Getter
-
-    /**
-     * getter of the uniqueId
-     * @return the uniqueId
-     */
-    public String getUniqueId() {
-        return uniqueId;
-    }
     /**
      * getter of board
      * @return the board of the game
@@ -97,62 +115,6 @@ public class Game {
     public List<Player> getListOnGoing() {
         return listOnGoing;
     }
-
-    /**
-     * setter of the unique id
-     * @param uniqueId the new uniqueId of the parameter
-     */
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
-    }
-
-    /**
-     *add the winner in listWinners and remove the player from listOnGoing
-     * @param player is for the player who won
-     */
-    public void addPlayerListWinners(Player player) {
-        player.setVictory(true);
-        listWinners.add(player);
-        removePlayerListOnGoing(player);
-    }
-    /**
-     * remove the player from listOnGoing
-     * @param player a player
-     */
-    public void removePlayerListOnGoing(Player player) {
-        listOnGoing.remove(player);
-    }
-
-
-    /**
-     * Save your game using this method
-     * @param board is the board of the game
-     * @param playerList is a list of players
-     * @throws IOException input or output exception
-     */
-    public void save(Board board,List<Player> playerList) throws IOException {
-        ObjectOutputStream oOSboard = null;
-        ObjectOutputStream oOSplayer = null;
-        try {
-            new File("src/save").mkdir();
-            oOSplayer = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/save/save.player"))));
-            for(Player player:playerList){
-                oOSplayer.writeObject(player);
-            }
-            oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("src/save/save.board"))));
-            oOSboard.writeObject(board);
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            if (oOSplayer != null) {
-                oOSplayer.close();
-            }
-            if (oOSboard != null) {
-                oOSboard.close();
-            }
-        }
-    }
-
     /**
      * Use the method to save your game in the files src/save/save.player and src/save/save.board
      * @throws IOException input or output exception
@@ -179,7 +141,7 @@ public class Game {
             oOSboard = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(saveFolderPath + "/save.board")));
             oOSboard.writeObject(board);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e+" save");
         } finally {
             if (oOSplayer != null) {
                 oOSplayer.close();
@@ -208,7 +170,7 @@ public class Game {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime now = LocalDateTime.now();
-        return String.valueOf(saveCount) + "_" + now.format(formatter);
+        return saveCount + "_" + now.format(formatter);
     }
 
     /**
@@ -245,7 +207,7 @@ public class Game {
             oISboard = new ObjectInputStream(new BufferedInputStream(new FileInputStream(saveId + "/save.board")));
             this.board = (Board) oISboard.readObject();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e+" getSave");
         } finally {
             if (oISplayer != null) {
                 oISplayer.close();
@@ -309,7 +271,7 @@ public class Game {
         }
         file.delete();
         // Supprime le répertoire parent uniquement s'il est vide
-        if (file.getParentFile() != null && file.getParentFile().isDirectory() && file.getParentFile().listFiles().length == 0) {
+        if (file.getParentFile() != null && file.getParentFile().isDirectory() && Objects.requireNonNull(file.getParentFile().listFiles()).length == 0) {
             file.getParentFile().delete();
         }
     }
