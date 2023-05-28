@@ -149,12 +149,6 @@ public class MainGame extends Application {
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();
         controller.setMainGame(this);
-        try{
-            controller.setThisGame(this.game);
-        }
-        catch (Exception e){
-            throw new InvalidSaveException();
-        }
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
         primaryStage.setMinWidth(1400);

@@ -9,7 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
@@ -18,8 +17,6 @@ import org.projet.cypath.tools.Game;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class SaveLoadSceneController {
@@ -33,8 +30,6 @@ public class SaveLoadSceneController {
     @FXML
     private ImageView backButtonImageView;
     @FXML
-    private ImageView startGameImageView;
-    @FXML
     private StackPane loadScreen;
     /**
      * Represents the main game instance.
@@ -47,7 +42,6 @@ public class SaveLoadSceneController {
     private Scene previousScene;
     /**
      * Changes the background of the specified StackPane.
-     * @param pane The StackPane to change the background of.
      */
 
     private Game game;
@@ -58,7 +52,6 @@ public class SaveLoadSceneController {
 
     @FXML
     private void changeBackground(StackPane pane) {
-
         InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");
         assert is != null;
         Image image = new Image(is);
@@ -89,10 +82,9 @@ public class SaveLoadSceneController {
     }
     /**
      * Handles the action when the save button is clicked.
-     * @param mouseEvent The MouseEvent triggered by the button.
      */
     @FXML
-    public void handleSaveButtonAction(MouseEvent mouseEvent) throws InvalidSaveException {
+    public void handleSaveButtonAction() throws InvalidSaveException {
         System.out.println("Save button clicked");
         try{
             game.save();
@@ -107,11 +99,9 @@ public class SaveLoadSceneController {
     }
     /**
      * Handles the action when the back button is clicked.
-     * @param mouseEvent The MouseEvent triggered by the button.
-     * @throws IOException In case of an I/O exception during the switch of scenes.
      */
     @FXML
-    public void handleButtonBack(MouseEvent mouseEvent) throws IOException {
+    public void handleButtonBack() {
         System.out.println("Back button clicked");
 
         mainGame.switchScene(this.previousScene);
@@ -120,12 +110,11 @@ public class SaveLoadSceneController {
 
     /**
      * Handles the action when the load button is clicked.
-     * @param event The MouseEvent triggered by the button.
      * @throws IOException          In case of an I/O exception during the loading process.
      * @throws OutOfBoardException If a board is out of bounds.
      */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException, OutOfBoardException, InvalidSceneException, InvalidSaveException {     //Open saves menu
+    private void handleLoadButtonAction() throws IOException, OutOfBoardException, InvalidSceneException, InvalidSaveException {     //Open saves menu
         System.out.println("Load button clicked");
 
 
@@ -141,10 +130,9 @@ public class SaveLoadSceneController {
     }
     /**
      * Handles the action when the quit button is clicked.
-     * @param event The MouseEvent triggered by the button.
      */
     @FXML
-    private void handleQuitButtonAction(MouseEvent event) {     //Quit the game
+    private void handleQuitButtonAction() {     //Quit the game
         System.out.println("Quit button clicked");
         Platform.exit();
     }
