@@ -16,6 +16,28 @@ import java.util.List;
  * @version 1.0
  */
 public class Player implements Serializable {
+    /**
+     * Getter of isTurn
+     * @return boolean isTurn
+     */
+
+    public boolean isTurn() {
+        return isTurn;
+    }
+
+    /**
+     * Setter of isTurn
+     * @param turn boolean true or false
+     */
+    public void setTurn(boolean turn) {
+        isTurn = turn;
+    }
+
+    /**
+     * Tells if it is the player's turn or not
+     */
+    boolean isTurn=false;
+
 
     /**
      * Represents the unique identifier for the player.
