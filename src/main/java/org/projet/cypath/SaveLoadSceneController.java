@@ -92,7 +92,7 @@ public class SaveLoadSceneController {
      * @param mouseEvent The MouseEvent triggered by the button.
      */
     @FXML
-    public void handleSaveButtonAction(MouseEvent mouseEvent) throws IOException, InvalidSaveException {
+    public void handleSaveButtonAction(MouseEvent mouseEvent) throws InvalidSaveException {
         System.out.println("Save button clicked");
         try{
             game.save();
@@ -114,10 +114,8 @@ public class SaveLoadSceneController {
     public void handleButtonBack(MouseEvent mouseEvent) throws IOException {
         System.out.println("Back button clicked");
 
-        loadScreen.setVisible(false);
         mainGame.switchScene(this.previousScene);
 
-        /*fadingPanes(playerSelectionView,titleScreen); */
     }
 
     /**
@@ -192,8 +190,6 @@ public class SaveLoadSceneController {
         createImageView(saveImageView,"/org/projet/cypath/save.png",150,true);
 
         changeBackground(loadScreen);
-
-        loadScreen.setVisible(true);
 
     }
 
