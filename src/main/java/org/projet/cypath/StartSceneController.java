@@ -21,7 +21,9 @@ import java.util.Objects;
 import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
-
+/**
+ * The controller class for the main game screen.
+ */
 public class StartSceneController{
     /**
      * The controller class for the main game screen.

@@ -67,7 +67,7 @@ public class GameSceneController {
     private Text wall_remaining_hbox_text;
     /**
      * Getter of the board
-     * @return
+     * @return the board of the GameSceneController
      */
     public Board getBoard() {
         return board;
@@ -75,7 +75,7 @@ public class GameSceneController {
 
     /**
      * Setter of the board
-     * @param board
+     * @param board to be set
      */
     public void setBoard(Board board) {
         this.board = board;
@@ -90,16 +90,16 @@ public class GameSceneController {
 
     /**
      * Setter of the mainGame
+     * @param mainGame to be set
      */
-
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
     /**
      Starts the game and returns the JavaFX Scene using {@link #createCheckerboard(VBox, HBox)},
      @return The JavaFX Scene representing the game.
+     @throws OutOfBoardException If the game encounters an out-of-board exception.
      */
-
     public Scene start() throws OutOfBoardException {
         try {
             game = new Game(numPlayers);

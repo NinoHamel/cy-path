@@ -19,6 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
+/**
+ * The controller class for the load scene of the application.
+ * It handles the functionality and interactions related to save and load games.
+ */
+
 public class SaveLoadSceneController {
 
     @FXML
@@ -41,15 +46,20 @@ public class SaveLoadSceneController {
      */
     private Scene previousScene;
     /**
-     * Changes the background of the specified StackPane.
+     * Game which shall be loaded
      */
-
     private Game game;
 
+    /**
+     * Setter of game
+     * @param game to set as the game of SaveLoadSceneController
+     */
     public void setThisGame(Game game){
         this.game = game;
     }
-
+    /**
+     * Changes the background of the specified StackPane.
+     */
     @FXML
     private void changeBackground(StackPane pane) {
         InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");

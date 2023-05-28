@@ -9,9 +9,14 @@ import javafx.scene.media.MediaView;
 
 import java.io.IOException;
 import java.util.Objects;
-
+/**
+ * The controller class for the video scene in the application.
+ * It handles the functionality and interactions related to the video playback.
+ */
 public class VideoSceneController {
-
+    /**
+     * MainGame instance for the start scene.
+     */
     private MainGame mainGame;
     /**
      * Sets the MainGame instance for the start scene.

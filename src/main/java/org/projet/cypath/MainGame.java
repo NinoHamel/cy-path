@@ -15,11 +15,18 @@ import org.projet.cypath.tools.Game;
 
 import java.io.IOException;
 
+/**
+ * MainGame is the main class of the application
+ */
 public class MainGame extends Application {
+    /**
+     * Primary stage of the application
+     */
     private Stage primaryStage;
-
     /**
      * Start the game on the StartScene
+     * @param stage stage of the scene
+     * @throws InvalidSceneException if the scene is invalid
      */
     @Override
     public void start(Stage stage) throws InvalidSceneException {
@@ -49,7 +56,7 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, launch the controller, and set properties to the stage (name / size)
-     *
+     * @throws IOException if an I/O error occurs while loading the scene
      */
     public Scene showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
@@ -68,7 +75,10 @@ public class MainGame extends Application {
     }
 
     /**
-     * Get the fxml, and launch the GameScene, with its controller
+     * Displays the game scene.
+     * @return the Scene object representing the game scene
+     * @throws InvalidSceneException if the scene is invalid
+     * @throws OutOfBoardException if the scene contains objects placed outside the game board
      */
     public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -86,7 +96,14 @@ public class MainGame extends Application {
         switchScene(scene);
         return scene;
     }
-
+    /**
+     * Displays the game scene based on the provided file path.
+     * @param filepath the file path of the game scene
+     * @return the Scene object representing the game scene
+     * @throws InvalidSceneException if the scene is invalid
+     * @throws IOException if an I/O error occurs while loading the scene
+     * @throws OutOfBoardException if the scene contains objects placed outside the game board
+     */
     public Scene showGameScene(String filepath) throws InvalidSceneException, IOException, OutOfBoardException {
 
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -106,12 +123,10 @@ public class MainGame extends Application {
         return scene;
     }
 
-
-
-
     /**
      * Get the fxml, and launch the EndScene, with its controller
-     *
+     * @return EndScene whene there only one player in listOnGoing
+     * @throws IOException if an I/O error occurs while loading the scene
      */
     public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
@@ -200,14 +215,14 @@ public class MainGame extends Application {
 
     /**
      * Allow to bind a game instance from a controller to the MainGame
+     * @param ThisGame the game to be bind
      */
-
     public void setThisGame(Game ThisGame){
         this.game = ThisGame;
     }
-
     /**
      * Start the game.
+     * @param args
      */
     public static void main(String[] args) {
         launch(args);
