@@ -185,10 +185,9 @@ public class GameSceneController {
 
     /**
      * Initializes the HBox for displaying the player's turn.
-     *
      * @param player_hbox The HBox container for the player's turn display.
      */
-    private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing) throws OutOfBoardException {
+    private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing){
         ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
@@ -198,9 +197,6 @@ public class GameSceneController {
 
         Player player=listOnGoing.get(index.get());
         System.out.println("player: "+player);
-        int rowPlayer=player.getCurrentBox().getRow();
-        int colPlayer=player.getCurrentBox().getColumn();
-
 
         Color color= Color.valueOf(player.getColor());
 
@@ -787,18 +783,14 @@ public class GameSceneController {
                 }
 
                 catch(Exception e){
-                    System.out.println(e);
+                    System.out.println(e+" actionMove");
                 }
             }
             if (actionWall.get()) {
                 try {
                     Box currentBox = game.getBoard().getBox(currentRow, currentCol);
-                    System.out.println("currentBox: "+currentBox);
-                    System.out.println(this.game.getBoard());
-                    Board board=game.getBoard();
                     if (horizontalWall.get() && game.getBoard().canSetWall(currentBox, 0)) {
                         if (game.hasPath(currentRow, currentCol, 0)) {
-                            System.out.println("horizontal 2 ok");
                             game.getBoard().setBottomWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
                             nextTurn(listOnGoing,index,player_turn_hbox);
@@ -806,7 +798,6 @@ public class GameSceneController {
                     }
                     if (verticalWall.get() && game.getBoard().canSetWall(currentBox, 1)) {
                         if (game.hasPath(currentRow, currentCol, 1)){
-                            System.out.println("vertical 2 ok");
                             game.getBoard().setRightWall(currentRow, currentCol);
                             //Modification de la couleur de la case et incrémentation
                             nextTurn(listOnGoing,index,player_turn_hbox);
@@ -816,7 +807,7 @@ public class GameSceneController {
                     updateWallCounter();
 
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println(e+" actionWall");
                 }
             }
         });
@@ -888,7 +879,7 @@ public class GameSceneController {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e+" setOnMouseEntered");
             }
         });
     }
@@ -925,7 +916,7 @@ public class GameSceneController {
                     bottomCell.setBorder(savedBottomCellBorder.get());
                 }
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e+" setOnMouseExited");
             }
         });
     }
@@ -966,7 +957,6 @@ public class GameSceneController {
     private Border addRightBorder(Border border) {
         // Récupérer la bordure existante
         BorderStroke borderStrokeTop = border.getStrokes().get(0);
-        BorderStroke borderStrokeRight = border.getStrokes().get(1);
         BorderStroke borderStrokeBottom = border.getStrokes().get(2);
         BorderStroke borderStrokeLeft = border.getStrokes().get(3);
         // Récupérer les propriétés de la bordure existante
@@ -1003,34 +993,5 @@ public class GameSceneController {
     public void updateWallCounter(){
         wall_remaining_hbox_text.setText(": "+ CounterRemainingWalls());
     }
-    /*
-    public Boolean hasPath(Board board,int currentRow,int currentCol,int orientation,List<Player> listOnGoing) throws OutOfBoardException {
-        System.out.println(game.getBoard());
-        board=game.getBoard();
-        listOnGoing=game.getListOnGoing();
-        if (orientation == 0) {
-            board.setBottomWall(currentRow,currentCol,true);
-            System.out.println("ok set bottomWall");
-            System.out.println("size: "+listOnGoing.size());
-            for (Player player : listOnGoing) {
-                if (!board.hasPath(player)) {
-                    board.setBottomWall(currentRow,currentCol,false);
-                    return false;
-                }
-            };
-            board.setBottomWall(currentRow,currentCol,false);
-        }
-        else {
-            board.setRightWall(currentRow, currentCol,true);
-            for (Player player : listOnGoing) {
-                if (!board.hasPath(player)) {
-                    board.setRightWall(currentRow,currentCol,false);
-                    return false;
-                }
-            }
-            board.setRightWall(currentRow,currentCol,false);
-        }
-        return true;
-    }*/
 }
 
