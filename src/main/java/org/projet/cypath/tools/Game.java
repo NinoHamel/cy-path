@@ -1,6 +1,5 @@
 package org.projet.cypath.tools;
 
-import org.projet.cypath.exceptions.InvalidWallException;
 import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.players.Player;
 
@@ -69,7 +68,7 @@ public class Game {
     //Getter
 
     /**
-     * gette of the uniqueId
+     * getter of the uniqueId
      * @return the uniqueId
      */
     public String getUniqueId() {
@@ -100,7 +99,7 @@ public class Game {
     }
 
     /**
-     * sette of the unique id
+     * setter of the unique id
      * @param uniqueId the new uniqueId of the parameter
      */
     public void setUniqueId(String uniqueId) {
@@ -118,7 +117,7 @@ public class Game {
     }
     /**
      * remove the player from listOnGoing
-     * @param player
+     * @param player a player
      */
     public void removePlayerListOnGoing(Player player) {
         listOnGoing.remove(player);
@@ -129,7 +128,7 @@ public class Game {
      * Save your game using this method
      * @param board is the board of the game
      * @param playerList is a list of players
-     * @throws IOException
+     * @throws IOException input or output exception
      */
     public void save(Board board,List<Player> playerList) throws IOException {
         ObjectOutputStream oOSboard = null;
@@ -156,7 +155,7 @@ public class Game {
 
     /**
      * Use the method to save your game in the files src/save/save.player and src/save/save.board
-     * @throws IOException
+     * @throws IOException input or output exception
      */
     public void save() throws IOException {
         Board board=this.getBoard();
@@ -193,7 +192,7 @@ public class Game {
 
     /**
      * Use this method to create a unique id
-     * @return
+     * @return the created unique id
      */
     private String generateUniqueId() {
         String saveFolderPath = "src/save";
@@ -215,7 +214,7 @@ public class Game {
     /**
      * Get the save of your game using this method
      * Using this method, listWinners,listOngoing and board are going to be initialized if possible according to the save, if it is not possible, nothing will happen.
-     * @throws IOException
+     * @throws IOException input or output exception
      */
     public void getSave(String saveId) throws IOException, OutOfBoardException {
         ObjectInputStream oISboard = null;
@@ -285,7 +284,7 @@ public class Game {
 
     /**
      * Use this method to delete a save from its id using {@link #deleteSave(File)}
-     * @param saveId
+     * @param saveId a save id
      */
     public void deleteSaveById(String saveId) {
         String saveFolderPath = "src/save/" + saveId;
@@ -314,16 +313,6 @@ public class Game {
             file.getParentFile().delete();
         }
     }
-    /**
-     * Method to remove a player from listOnGoing and add him to listWinners
-     * @param player
-     */
-    public void ifWinner(Player player){
-        if(player.getVictoryBoxes().contains(player.getCurrentBox())){
-            listOnGoing.remove(player);
-            listWinners.add(player);
-        }
-    }
 
     /**
      * Check if the game is over and change the player lists in this case
@@ -343,7 +332,7 @@ public class Game {
      * @param currentCol column of the first wall
      * @param  orientation is the orientation of the box, 0 for bottom and 1 for right
      * @return boolean if there is a path or not
-     * @throws OutOfBoardException
+     * @throws OutOfBoardException the exception when a position is out of the board
      */
     public Boolean hasPath(int currentRow,int currentCol,int orientation) throws OutOfBoardException {
         if (orientation == 0) {
@@ -353,7 +342,7 @@ public class Game {
                     board.setBottomWall(currentRow,currentCol,false);
                     return false;
                 }
-            };
+            }
             board.setBottomWall(currentRow,currentCol,false);
         }
         else {
