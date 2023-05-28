@@ -275,23 +275,25 @@ public class GameSceneController {
 
 
     public void load_walls() throws OutOfBoardException {
-        Board board=game.getBoard();
-        for(int row = 0; row<9; row++){
-            for(int col = 0; col<9; col++) {
-                Box box=board.getBox(row,col);
-                if(box.hasBottomWall()){
-                    StackPane cellPane=getCellPane(gridPane,row,col);
-                    Border currentBorder = cellPane.getBorder();
-                    Border newBorder = addBottomBorder(currentBorder);
-                    cellPane.setBorder(newBorder);
-                    System.out.println("row:"+row+";col:"+col);
-                }
-                if(box.hasRightWall()){
-                    StackPane cellPane=getCellPane(gridPane,row,col);
-                    Border currentBorder = cellPane.getBorder();
-                    Border newBorder = addRightBorder(currentBorder);
-                    cellPane.setBorder(newBorder);
-                    System.out.println("row:"+row+";col:"+col);
+        if(game!=null) {
+            Board board = game.getBoard();
+            for (int row = 0; row < 9; row++) {
+                for (int col = 0; col < 9; col++) {
+                    Box box = board.getBox(row, col);
+                    if (box.hasBottomWall()) {
+                        StackPane cellPane = getCellPane(gridPane, row, col);
+                        Border currentBorder = cellPane.getBorder();
+                        Border newBorder = addBottomBorder(currentBorder);
+                        cellPane.setBorder(newBorder);
+                        System.out.println("row:" + row + ";col:" + col);
+                    }
+                    if (box.hasRightWall()) {
+                        StackPane cellPane = getCellPane(gridPane, row, col);
+                        Border currentBorder = cellPane.getBorder();
+                        Border newBorder = addRightBorder(currentBorder);
+                        cellPane.setBorder(newBorder);
+                        System.out.println("row:" + row + ";col:" + col);
+                    }
                 }
             }
         }
