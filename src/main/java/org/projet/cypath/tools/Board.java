@@ -33,8 +33,8 @@ public class Board implements Serializable {
     /**
      * Creates a 9 by 9 array to represent a grid
      * @param playerNumber the number of players
-     * @throws OutOfBoardException
-     * @throws IOException
+     * @throws OutOfBoardException the exception when a position is out of the board
+     * @throws IOException input or output exception
      */
     public Board(int playerNumber) throws OutOfBoardException, IOException {
         this.remainingWalls=20;
@@ -84,7 +84,7 @@ public class Board implements Serializable {
      * @param box is the first position of the wall
      * @param orientation is to determine the orientation of the wall, 0 for horizontal and 1 for vertical
      * @return boolean True or False depending on the 2 positions or an error
-     * @throws InvalidWallException
+     * @throws InvalidWallException the wall is invalid
      */
     public Boolean canSetWall(Box box, int orientation) throws InvalidWallException {
         int row=box.getRow();
@@ -137,17 +137,17 @@ public class Board implements Serializable {
     /**
      * Set or Destroy a bottom wall by using the first position
      * @param box is for the 1st box
-     * @param boulean true or false to add or delete a wall
+     * @param wallState true or false to add or delete a wall
      */
-    public void setBottomWall(Box box,Boolean boulean){
+    public void setBottomWall(Box box,Boolean wallState){
             int x=box.getRow();
             int y=box.getColumn();
-            this.box[x][y].setBottomWall(boulean);
-            this.box[x][y+1].setBottomWall(boulean);
-            this.box[x+1][y].setTopWall(boulean);
-            this.box[x+1][y+1].setTopWall(boulean);
-            this.box[x][y].setOriginHorizontalWall(boulean);
-            if (boulean) {
+            this.box[x][y].setBottomWall(wallState);
+            this.box[x][y+1].setBottomWall(wallState);
+            this.box[x+1][y].setTopWall(wallState);
+            this.box[x+1][y+1].setTopWall(wallState);
+            this.box[x][y].setOriginHorizontalWall(wallState);
+            if (wallState) {
                 remainingWalls--;
             }
             else {
@@ -172,17 +172,17 @@ public class Board implements Serializable {
     /**
      * Set or Destroy a right wall by using the first position
      * @param box is for the 1st box
-     * @param boulean true or false to add or delete a wall
+     * @param wallState true or false to add or delete a wall
      */
-    public void setRightWall(Box box,Boolean boulean){
+    public void setRightWall(Box box,Boolean wallState){
             int x=box.getRow();
             int y=box.getColumn();
-            this.box[x][y].setRightWall(boulean);
-            this.box[x+1][y].setRightWall(boulean);
-            this.box[x][y+1].setLeftWall(boulean);
-            this.box[x+1][y+1].setLeftWall(boulean);
-            this.box[x][y].setOriginVerticalWall(boulean);
-            if (boulean) {
+            this.box[x][y].setRightWall(wallState);
+            this.box[x+1][y].setRightWall(wallState);
+            this.box[x][y+1].setLeftWall(wallState);
+            this.box[x+1][y+1].setLeftWall(wallState);
+            this.box[x][y].setOriginVerticalWall(wallState);
+            if (wallState) {
                 remainingWalls--;
             }
             else {
@@ -205,11 +205,12 @@ public class Board implements Serializable {
      * Set or Destroy a bottom wall by using the first position by getting the box and the using {@link #setBottomWall(Box,Boolean)}
      * @param row is the row of the wall
      * @param column is the column of the wall
+     * @param wallState true or false to add or delete a wall
      * @throws OutOfBoardException if the row or column aren't on the board
      */
-    public void setBottomWall(int row,int column,Boolean boulean) throws OutOfBoardException {
+    public void setBottomWall(int row,int column,Boolean wallState) throws OutOfBoardException {
         if (onBoard(row,column)){
-            setBottomWall(this.getBox(row,column),boulean);
+            setBottomWall(this.getBox(row,column),wallState);
         }
     }
     /**
@@ -227,11 +228,12 @@ public class Board implements Serializable {
      * Set or Destroy a right wall by using the first position by getting the box and the using {@link #setBottomWall(Box,Boolean)}
      * @param row is the row of the wall
      * @param column is the column of the wall
+     * @param wallState true or false to add or delete a wall
      * @throws OutOfBoardException if the row or column aren't on the board
      */
-    public void setRightWall(int row,int column,Boolean boulean) throws OutOfBoardException {
+    public void setRightWall(int row,int column,Boolean wallState) throws OutOfBoardException {
         if (onBoard(row,column)){
-            setRightWall(this.getBox(row,column),boulean);
+            setRightWall(this.getBox(row,column),wallState);
         }
     }
 
@@ -251,38 +253,27 @@ public class Board implements Serializable {
      */
     public boolean hasPath(Player player){
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // droite, gauche, bas, haut
-        //List<Box> winBoxList = new ArrayList<>(Arrays.asList(player.getVictoryBoxes()));
         int[][] saveVisitedBoxArray = new int[9][9];
         Queue<Box> queue = new LinkedList<>();
         queue.add(player.getCurrentBox());
-        boolean hasWall = false;
+        boolean hasWall;
 
         while(queue.size() > 0){
             Box treatedBox = queue.peek();
             queue.remove();
             saveVisitedBoxArray[treatedBox.getRow()][treatedBox.getColumn()] = -1;
-            //if(winBoxList.contains(treatedBox)){return true;}
             for(int i=0; i < 4; i++){
                 int newPositionRow = treatedBox.getRow() + directions[i][0];
                 int newPositionColumn = treatedBox.getColumn() + directions[i][1];
 
                 if(newPositionRow >= 0 && newPositionColumn >= 0 && newPositionRow < 9 && newPositionColumn < 9 && saveVisitedBoxArray[newPositionRow][newPositionColumn] != -1){
-                    switch (i){
-                        case 0:
-                            hasWall = this.box[newPositionRow][newPositionColumn].hasLeftWall();
-                            break;
-                        case 1:
-                            hasWall = this.box[newPositionRow][newPositionColumn].hasRightWall();
-                            break;
-                        case 2:
-                            hasWall = this.box[newPositionRow][newPositionColumn].hasTopWall();
-                            break;
-                        case 3:
-                            hasWall = this.box[newPositionRow][newPositionColumn].hasBottomWall();
-                            break;
-                        default:
-                            throw new RuntimeException("Loop error");
-                    }
+                    hasWall = switch (i) {
+                        case 0 -> this.box[newPositionRow][newPositionColumn].hasLeftWall();
+                        case 1 -> this.box[newPositionRow][newPositionColumn].hasRightWall();
+                        case 2 -> this.box[newPositionRow][newPositionColumn].hasTopWall();
+                        case 3 -> this.box[newPositionRow][newPositionColumn].hasBottomWall();
+                        default -> throw new RuntimeException("Loop error");
+                    };
                     if(!hasWall){
                         Box newBox = this.box[newPositionRow][newPositionColumn];
                         if(player.getVictoryBoxes().contains(newBox)){
@@ -301,56 +292,52 @@ public class Board implements Serializable {
      * @return string that can be displayed using the command System.ont.println
      */
     public String displayBoard(){
-        String displayedBoard = "";
-        for(int i=0; i < 9; i++){
-            displayedBoard += "++---";
-        }
-        displayedBoard += "++\n";
+        StringBuilder displayedBoard = new StringBuilder();
+        displayedBoard.append("++---".repeat(9));
+        displayedBoard.append("++\n");
         for(int i=0; i < 9; i++){
             for (int j=0; j < 9; j++){
                 if(this.box[i][j].hasTopWall()){
-                    displayedBoard += "++---";
+                    displayedBoard.append("++---");
                 }
                 else{
-                    displayedBoard += "++   ";
+                    displayedBoard.append("++   ");
                 }
             }
-            displayedBoard += "++\n|";
+            displayedBoard.append("++\n|");
             for (int j=0; j < 9; j++){
                 if(this.box[i][j].hasLeftWall()){
-                    displayedBoard += "|";
+                    displayedBoard.append("|");
                 }
                 else{
-                    displayedBoard += " ";
+                    displayedBoard.append(" ");
                 }
                 if(this.box[i][j].hasPlayer()){
-                    displayedBoard += " P ";
+                    displayedBoard.append(" P ");
                 }
                 else{
-                    displayedBoard += "   ";
+                    displayedBoard.append("   ");
                 }
                 if(this.box[i][j].hasRightWall()){
-                    displayedBoard += "|";
+                    displayedBoard.append("|");
                 }
                 else{
-                    displayedBoard += " ";
+                    displayedBoard.append(" ");
                 }
             }
-            displayedBoard += "|\n";
+            displayedBoard.append("|\n");
             for (int j=0; j < 9; j++){
                 if(this.box[i][j].hasBottomWall()){
-                    displayedBoard += "++---";
+                    displayedBoard.append("++---");
                 }
                 else{
-                    displayedBoard += "++   ";
+                    displayedBoard.append("++   ");
                 }
             }
-            displayedBoard += "++\n";
+            displayedBoard.append("++\n");
         }
-        for(int i=0; i < 9; i++){
-            displayedBoard += "++---";
-        }
-        displayedBoard += "++\n";
-        return displayedBoard;
+        displayedBoard.append("++---".repeat(9));
+        displayedBoard.append("++\n");
+        return displayedBoard.toString();
     }
 }
