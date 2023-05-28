@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.shape.Rectangle?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 <AnchorPane fx:id="endScenePane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.projet.cypath.EndSceneController">
 
     <VBox fx:id="mainContainer" alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
 
-        <Label fx:id="titleLabel" text="The End !" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);" />
+        <Label fx:id="titleLabel" text="The End !" style="-fx-font-size: 100px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);" />
 
-        <HBox fx:id="winnerContainer" spacing="10">
-            <Label fx:id="winnerLabel" text="The winner is : " style="-fx-font-size: 20px;"/>
-            <Rectangle fx:id="winnerColorBox" width="40" height="40" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);" />
+        <HBox fx:id="winnerContainer" spacing="10" alignment="CENTER">
+            <Label fx:id="winnerLabel" text="The winner is : " style="-fx-font-size: 80px;"/>
+            <Rectangle fx:id="winnerColorBox" width="80" height="80" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);" />
         </HBox>
 
-        <HBox fx:id="otherPlayersContainer" alignment="CENTER" spacing="10" />
+        <HBox fx:id="otherPlayersContainer" alignment="CENTER" spacing="25" />
 
     </VBox>
 

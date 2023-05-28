@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import java.net.URL?>
-<?import javafx.scene.chart.StackedAreaChart?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.StartSceneController">
     <StackPane fx:id="titleScreen" minWidth="1200" minHeight="800">
         <VBox alignment="CENTER" spacing="100">
