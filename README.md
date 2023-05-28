@@ -16,7 +16,6 @@
 - [X] Gestion du tour par tour
 - [X] Gestion de la victoire (test bon mur)
 - [X] Gestion des sauvegardes
-- [ ] IA ?
 
 ## Liste des choses à faire (JFX) (Clément / Nino)
 - [X] Interface début jeu (choix nombre joueur) (choix couleur ?)
@@ -27,4 +26,3 @@
 - [X] prévisualiser la pose d'une barrière, etc
 - [X] Affichage succès défaite / victoire
 - [X] Interface pour sauvegarder / charger une sauvegarde
-- [ ] 3D ?
