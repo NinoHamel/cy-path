@@ -59,6 +59,7 @@ public class Player implements Serializable {
      * @param name the name of the player
      * @param color the color witch represent the player on the board
      * @param Box the Box where the player is on the board
+     * @param board board of the player
      */
     public Player(int id, String name, String color, Box Box, Board board) throws OutOfBoardException {
         this.id = id;
@@ -247,6 +248,7 @@ public class Player implements Serializable {
      * @param board is the board where the player moves
      * @param newBox is the box where another player is
      * @param possibleMove is the list of the possible move
+     * @param Orientation orientation of the direction where the player should move
      * @throws OutOfBoardException the exception when a position is out of the board
      */
     public void possibleMoveJump(Board board, Box newBox, List<Box> possibleMove, String Orientation) throws OutOfBoardException {
