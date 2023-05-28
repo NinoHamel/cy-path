@@ -217,7 +217,7 @@ public class Game {
      * Using this method, listWinners,listOngoing and board are going to be initialized if possible according to the save, if it is not possible, nothing will happen.
      * @throws IOException
      */
-    public void getSave(String saveId) throws IOException {
+    public void getSave(String saveId) throws IOException, OutOfBoardException {
         ObjectInputStream oISboard = null;
         ObjectInputStream oISplayer = null;
         //uniqueId=saveId;
@@ -254,6 +254,15 @@ public class Game {
             if (oISboard != null) {
                 oISboard.close();
             }
+        }
+        for(Player player:listOnGoing){
+            Box boxPlayer=player.getCurrentBox();
+            int colPlayer=boxPlayer.getColumn();
+            int rowPlayer=boxPlayer.getRow();
+            this.board.getBox(rowPlayer,colPlayer).setHasPlayer(false);
+            System.out.println("ok: "+player);
+            player.setCurrentBox(this.getBoard().getBox(rowPlayer,colPlayer));
+            this.board.getBox(rowPlayer,colPlayer).setHasPlayer(true);
         }
     }
 
