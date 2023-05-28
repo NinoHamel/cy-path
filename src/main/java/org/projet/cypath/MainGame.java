@@ -20,8 +20,8 @@ public class MainGame extends Application {
 
     /**
      * Start the game on the StartScene
-     * @param stage the input stage
-     * @throws InvalidSceneException the scene is invalid
+     * @param stage
+     * @throws IOException
      */
     @Override
     public void start(Stage stage) throws InvalidSceneException {
@@ -37,10 +37,10 @@ public class MainGame extends Application {
         VideoSceneController videoController = new VideoSceneController();
         videoController.setMainGame(this);
         primaryStage.setTitle("Intro");
-        primaryStage.setMinWidth(1200);
-        primaryStage.setMinHeight(720);
-        primaryStage.setWidth(1720);
-        primaryStage.setHeight(720);
+        primaryStage.setMinWidth(1422);
+        primaryStage.setMinHeight(800);
+        primaryStage.setWidth(1422);
+        primaryStage.setHeight(800);
         Scene scene = videoController.start();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
@@ -52,8 +52,8 @@ public class MainGame extends Application {
     /**
      * Get the fxml, launch the controller, and set properties to the stage (name / size)
      *
-     * @return the scene created
-     * @throws IOException input or output exception
+     * @return
+     * @throws IOException
      */
     public Scene showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
@@ -61,6 +61,10 @@ public class MainGame extends Application {
         StartSceneController controller = loader.getController();
         controller.setMainGame(this);
         primaryStage.setTitle("Game Start");
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -69,16 +73,16 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the GameScene, with its controller
-     * @throws InvalidSceneException the scene is invalid
+     * @throws InvalidSceneException
      */
     public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1200);
-        primaryStage.setMinHeight(800);
-        primaryStage.setWidth(1200);
-        primaryStage.setHeight(800);
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         gameController.load_walls();
         Scene scene = gameController.start();
         if (scene == null) {
@@ -94,10 +98,10 @@ public class MainGame extends Application {
         gameController.setMainGame(this);
 
         primaryStage.setTitle("Game");
-        primaryStage.setMinWidth(1200);
-        primaryStage.setMinHeight(800);
-        primaryStage.setWidth(1200);
-        primaryStage.setHeight(800);
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         Scene scene = gameController.load(filepath);
         gameController.load_walls();
         if (scene == null) {
@@ -112,8 +116,9 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the EndScene, with its controller
-     * @return the end scene
-     * @throws IOException input or output exception
+     *
+     * @return
+     * @throws IOException
      */
     public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
@@ -147,6 +152,10 @@ public class MainGame extends Application {
         }
         controller.setPreviousScene(primaryStage.getScene());
         primaryStage.setTitle("Save and Load");
+        primaryStage.setMinWidth(1400);
+        primaryStage.setMinHeight(850);
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(850);
         Scene scene = new Scene(root);
         return scene;
     }
@@ -208,7 +217,7 @@ public class MainGame extends Application {
 
     /**
      * Start the game.
-     * @param args arguments of the main
+     * @param args
      */
     public static void main(String[] args) {
         launch(args);
