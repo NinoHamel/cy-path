@@ -1,4 +1,5 @@
 package org.projet.cypath;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -10,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -20,7 +22,10 @@ import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,7 +71,7 @@ public class GameSceneController {
 
     /**
      * Setter of the mainGame
-     * @param mainGame principal Class
+     * @param mainGame
      */
 
     public void setMainGame(MainGame mainGame) {
@@ -121,13 +126,6 @@ public class GameSceneController {
         return new Scene(rootPane, 1200, 800);
     }
 
-    /**
-     * Loads a game scene from a file.
-     * @param filepath The path of the file to load the game from.
-     * @return The loaded Scene object.
-     * @throws IOException          If an I/O error occurs while loading the file.
-     * @throws OutOfBoardException  If the loaded game contains invalid board data.
-     */
     public Scene load(String filepath) throws IOException, OutOfBoardException {
         try {
             game = new Game(2);
@@ -179,6 +177,7 @@ public class GameSceneController {
 
     /**
      * Initializes the HBox for displaying the player's turn.
+     *
      * @param player_hbox The HBox container for the player's turn display.
      */
     private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing) {
@@ -202,10 +201,7 @@ public class GameSceneController {
         coloredBox.setFill(color);
         player_hbox.getChildren().add(coloredBox);
     }
-    /**
-     * Initializes and configures the HBox for displaying the remaining walls.
-     * @param wall_remaining_hbox The HBox to initialize.
-     */
+
     private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
         ImageView wall_remainingImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/wall_remaining.png")).toExternalForm());
         wall_remainingImageView.setFitHeight(80);
@@ -306,13 +302,12 @@ public class GameSceneController {
         }
         return index;
     }
-    /**
-     * Load graphically the different wall of a save
-     * @throws OutOfBoardException when a box is not in the board
-     */
+
+
     public void load_walls() throws OutOfBoardException {
         if(game!=null) {
             Board board = game.getBoard();
+            List<Player> listOnGoing=game.getListOnGoing();
             List<Player> listWinners=game.getListWinners();
             for (int row = 0; row < 9; row++) {
                 for (int col = 0; col < 9; col++) {
@@ -343,6 +338,7 @@ public class GameSceneController {
      * @param listOnGoing  The list of Player objects representing the ongoing players.
      */
     private void initializeRanking(GridPane gridPane, List<Player> listOnGoing,List<Player> listWinners) {
+        int rowIndex = 0; // Indice de ligne initial
         for (int i = 1; i <= listOnGoing.size()+listWinners.size(); i++) {
             StackPane playerRanking = new StackPane();
             playerRanking.setPrefSize(100, 50);
@@ -355,6 +351,7 @@ public class GameSceneController {
             hbox.setAlignment(Pos.CENTER_LEFT);
             playerRanking.getChildren().add(hbox);
             gridPane.add(playerRanking, 9, i - 1);
+            rowIndex++; // Incrémenter l'indice de ligne
         }
     }
     /**
@@ -420,6 +417,11 @@ public class GameSceneController {
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
+    private void backButtonAction() throws IOException {
+        System.out.println("back button clicked");
+        mainGame.switchScene(mainGame.showStartScene());
+    }
+
     /**
      * Creates an ImageView for the specified button with the given image path.
      *
@@ -462,6 +464,7 @@ public class GameSceneController {
                 horizontalWallButton,verticalWallButton,listOnGoing,index);
 
         Button settingsButton = new Button();
+        Button backButton = new Button();
 
         settingsButton.setOnAction(event -> {
             try {
@@ -471,11 +474,21 @@ public class GameSceneController {
             }
         });
 
+        backButton.setOnAction(event -> {
+            try {
+                backButtonAction();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         //Creating a graphic (image)
         createImageView(moveButton,"/org/projet/cypath/move.png");
         createImageView(placeWallButton,"/org/projet/cypath/wall.png");
         createImageView(settingsButton,"/org/projet/cypath/settings.png");
+        createImageView(backButton,"/org/projet/cypath/back.png");
 
+        vbox_buttons.getChildren().add(backButton);
         vbox_buttons.getChildren().add(settingsButton);
         vbox_buttons.getChildren().add(moveButton);
         vbox_buttons.getChildren().add(placeWallButton);
@@ -744,7 +757,7 @@ public class GameSceneController {
                 }
 
                 catch(Exception e){
-                    System.out.println(e+"a");
+                    System.out.println(e);
                 }
             }
             if (actionWall.get()) {
@@ -768,7 +781,7 @@ public class GameSceneController {
                     updateWallCounter();
 
                 } catch (Exception e) {
-                    System.out.println(e+"actionWall");
+                    System.out.println(e);
                 }
             }
         });
@@ -840,7 +853,7 @@ public class GameSceneController {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e+"setOnMouseEntered");
+                System.out.println(e);
             }
         });
     }
@@ -877,7 +890,7 @@ public class GameSceneController {
                     bottomCell.setBorder(savedBottomCellBorder.get());
                 }
             } catch (Exception e) {
-                System.out.println(e+" setOnMouseExited");
+                System.out.println(e);
             }
         });
     }
@@ -918,6 +931,7 @@ public class GameSceneController {
     private Border addRightBorder(Border border) {
         // Récupérer la bordure existante
         BorderStroke borderStrokeTop = border.getStrokes().get(0);
+        BorderStroke borderStrokeRight = border.getStrokes().get(1);
         BorderStroke borderStrokeBottom = border.getStrokes().get(2);
         BorderStroke borderStrokeLeft = border.getStrokes().get(3);
         // Récupérer les propriétés de la bordure existante
@@ -938,6 +952,7 @@ public class GameSceneController {
                 borderStrokeLeft
         );
     }
+
     /**
      * Get the number of remaining walls.
      * @return the number of remaining walls.
@@ -946,6 +961,7 @@ public class GameSceneController {
         Board board = this.game.getBoard();
         return board.getRemainingWalls();
     }
+
     /**
      * Update the text of the wall counter.
      */
