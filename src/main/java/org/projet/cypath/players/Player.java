@@ -17,23 +17,6 @@ import java.util.List;
  */
 public class Player implements Serializable {
     /**
-     * Getter of isTurn
-     * @return boolean isTurn
-     */
-
-    public boolean isTurn() {
-        return isTurn;
-    }
-
-    /**
-     * Setter of isTurn
-     * @param turn boolean true or false
-     */
-    public void setTurn(boolean turn) {
-        isTurn = turn;
-    }
-
-    /**
      * Tells if it is the player's turn or not
      */
     boolean isTurn=false;
@@ -68,6 +51,7 @@ public class Player implements Serializable {
      * Represents the status of victory for the player.
      */
     private boolean victory;
+  
 
     /**
      * Create a player
@@ -106,6 +90,22 @@ public class Player implements Serializable {
         }
     }
 
+      /**
+     * Getter of isTurn
+     * @return boolean isTurn
+     */
+
+    public boolean isTurn() {
+        return isTurn;
+    }
+
+    /**
+     * Setter of isTurn
+     * @param turn boolean true or false
+     */
+    public void setTurn(boolean turn) {
+        isTurn = turn;
+    }
     /**
      * Setter of victory
      * @param victory
