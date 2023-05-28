@@ -20,8 +20,6 @@ public class MainGame extends Application {
 
     /**
      * Start the game on the StartScene
-     * @param stage
-     * @throws IOException
      */
     @Override
     public void start(Stage stage) throws InvalidSceneException {
@@ -52,8 +50,6 @@ public class MainGame extends Application {
     /**
      * Get the fxml, launch the controller, and set properties to the stage (name / size)
      *
-     * @return
-     * @throws IOException
      */
     public Scene showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
@@ -73,7 +69,6 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the GameScene, with its controller
-     * @throws InvalidSceneException
      */
     public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -117,8 +112,6 @@ public class MainGame extends Application {
     /**
      * Get the fxml, and launch the EndScene, with its controller
      *
-     * @return
-     * @throws IOException
      */
     public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
@@ -156,8 +149,7 @@ public class MainGame extends Application {
         primaryStage.setMinHeight(850);
         primaryStage.setWidth(1200);
         primaryStage.setHeight(850);
-        Scene scene = new Scene(root);
-        return scene;
+        return new Scene(root);
     }
 
     /**
@@ -208,7 +200,6 @@ public class MainGame extends Application {
 
     /**
      * Allow to bind a game instance from a controller to the MainGame
-     * @param ThisGame
      */
 
     public void setThisGame(Game ThisGame){
@@ -217,7 +208,6 @@ public class MainGame extends Application {
 
     /**
      * Start the game.
-     * @param args
      */
     public static void main(String[] args) {
         launch(args);
