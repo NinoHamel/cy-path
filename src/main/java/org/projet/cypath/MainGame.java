@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
+import org.projet.cypath.exceptions.OutOfBoardException;
 import org.projet.cypath.tools.Game;
 
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class MainGame extends Application {
         return scene;
     }
 
-    public Scene showGameScene(String filepath) throws InvalidSceneException, IOException {
+    public Scene showGameScene(String filepath) throws InvalidSceneException, IOException, OutOfBoardException {
 
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);

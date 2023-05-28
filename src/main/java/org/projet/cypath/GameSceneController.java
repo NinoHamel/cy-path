@@ -123,7 +123,7 @@ public class GameSceneController {
         return new Scene(rootPane, 1200, 800);
     }
 
-    public Scene load(String filepath) throws IOException {
+    public Scene load(String filepath) throws IOException, OutOfBoardException {
         try {
             game = new Game(2);
         } catch (Exception e) {
@@ -662,7 +662,9 @@ public class GameSceneController {
                         }
 
                     }
+                    System.out.println(game.getBoard().displayBoard());
                 }
+
                 catch(Exception e){
                     System.out.println(e);
                 }
