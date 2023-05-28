@@ -186,7 +186,9 @@ public class GameSceneController {
         player_turnImageView.setPreserveRatio(true);
         player_hbox.getChildren().add(player_turnImageView);
 
-        Player player=listOnGoing.get(0);
+        AtomicInteger index = initializeIndex(listOnGoing);
+
+        Player player=listOnGoing.get(index.get());
         Color color= Color.valueOf(player.getColor());
 
         Text player_turn_text = new Text();
@@ -229,8 +231,8 @@ public class GameSceneController {
         AtomicReference<Boolean> actionWall = new AtomicReference<>(false);
         AtomicReference<Boolean> horizontalWall = new AtomicReference<>(false);
         AtomicReference<Boolean> verticalWall = new AtomicReference<>(false);
-        AtomicInteger index = new AtomicInteger();
         List<Player> listOnGoing=game.getListOnGoing();
+        AtomicInteger index = initializeIndex(listOnGoing);
         List<Player> listWinners=game.getListWinners();
         for (int row = 0; row < checkerboard_SIZE; row++) {
             for (int col = 0; col < checkerboard_SIZE; col++) {
@@ -275,6 +277,31 @@ public class GameSceneController {
         return gridPane;
     }
 
+    /**
+     * Initialize the index correctly, useful only when a game is loaded
+     * @param listOnGoing the list of players who are still playing
+     */
+    private AtomicInteger initializeIndex(List<Player> listOnGoing) {
+        int compteur=0;
+        AtomicInteger index = new AtomicInteger();
+        for (int i=0;i<listOnGoing.size();i++){
+            Player player=listOnGoing.get(i);
+            if(player.isTurn()){
+                index.set(i);
+                break;
+            }
+            else{
+                compteur++;
+            }
+        }
+        //Si la partie n'a jamais commencé
+        if(compteur==listOnGoing.size()){
+            index.set(0);
+            Player currentPlayer=listOnGoing.get(0);
+            currentPlayer.setTurn(true);
+        }
+        return index;
+    }
 
 
     public void load_walls() throws OutOfBoardException {
@@ -581,12 +608,15 @@ public class GameSceneController {
      */
     private void nextTurn(List<Player> listOnGoing, AtomicInteger index,
                           HBox player_turn_hbox) {
+        Player pastPlayer=listOnGoing.get(index.get());
+        pastPlayer.setTurn(false);
         index.getAndIncrement();
         if (index.get() >= listOnGoing.size()) {
             index.set(0);
         }
         // Modifier la couleur de la case montrant à quel joueur c'est le tour
         Player currentPlayer = listOnGoing.get(index.get());
+        currentPlayer.setTurn(true);
         String playerName = currentPlayer.getName();
         Color colorCurrentPlayer = Color.valueOf(currentPlayer.getColor());
         // Récupérer le Text et le Rectangle de la HBox
