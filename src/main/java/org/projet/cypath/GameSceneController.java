@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -23,9 +22,7 @@ import org.projet.cypath.tools.Board;
 import org.projet.cypath.tools.Box;
 import org.projet.cypath.tools.Game;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,7 +68,6 @@ public class GameSceneController {
 
     /**
      * Setter of the mainGame
-     * @param mainGame
      */
 
     public void setMainGame(MainGame mainGame) {
@@ -307,7 +303,6 @@ public class GameSceneController {
     public void load_walls() throws OutOfBoardException {
         if(game!=null) {
             Board board = game.getBoard();
-            List<Player> listOnGoing=game.getListOnGoing();
             List<Player> listWinners=game.getListWinners();
             for (int row = 0; row < 9; row++) {
                 for (int col = 0; col < 9; col++) {
@@ -338,7 +333,6 @@ public class GameSceneController {
      * @param listOnGoing  The list of Player objects representing the ongoing players.
      */
     private void initializeRanking(GridPane gridPane, List<Player> listOnGoing,List<Player> listWinners) {
-        int rowIndex = 0; // Indice de ligne initial
         for (int i = 1; i <= listOnGoing.size()+listWinners.size(); i++) {
             StackPane playerRanking = new StackPane();
             playerRanking.setPrefSize(100, 50);
@@ -351,7 +345,6 @@ public class GameSceneController {
             hbox.setAlignment(Pos.CENTER_LEFT);
             playerRanking.getChildren().add(hbox);
             gridPane.add(playerRanking, 9, i - 1);
-            rowIndex++; // Incrémenter l'indice de ligne
         }
     }
     /**
@@ -417,6 +410,10 @@ public class GameSceneController {
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
 
+    /**
+     * Handles the action when the back button is clicked.
+     * Switches the scene to the StartScene.
+     */
     private void backButtonAction() throws IOException {
         System.out.println("back button clicked");
         mainGame.switchScene(mainGame.showStartScene());
