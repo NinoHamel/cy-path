@@ -346,4 +346,12 @@ public class Player implements Serializable {
             }
         }
     }
+
+    /**
+     * Setter of the box where the player is
+     * @param box
+     */
+    public void setCurrentBox(Box box) {
+        this.currentBox=box;
+    }
 }
