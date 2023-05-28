@@ -50,7 +50,7 @@ public class GameSceneController {
     /**
      * Represent the board of the game
      */
-    GridPane gridPane;
+    private GridPane gridPane;
     /**
      * Represents the number of players.
      */
