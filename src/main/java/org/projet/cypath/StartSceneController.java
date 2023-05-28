@@ -33,6 +33,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
+import org.projet.cypath.exceptions.OutOfBoardException;
 
 public class StartSceneController{
     /**
@@ -129,7 +130,7 @@ public class StartSceneController{
      * @throws InvalidSceneException if the scene is invalid
      */
     @FXML
-    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException {
+    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException, OutOfBoardException {
         mainGame.setNumPlayers(numPlayers);
         mainGame.switchScene(mainGame.showGameScene());
     }
