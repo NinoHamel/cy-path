@@ -71,7 +71,7 @@ public class MainGame extends Application {
      * Get the fxml, and launch the GameScene, with its controller
      * @throws InvalidSceneException
      */
-    public Scene showGameScene() throws InvalidSceneException {
+    public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
         primaryStage.setTitle("Game");
@@ -79,6 +79,7 @@ public class MainGame extends Application {
         primaryStage.setMinHeight(800);
         primaryStage.setWidth(1200);
         primaryStage.setHeight(800);
+        gameController.load_walls();
         Scene scene = gameController.start();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
@@ -91,18 +92,22 @@ public class MainGame extends Application {
 
         GameSceneController gameController = new GameSceneController(numPlayers);
         gameController.setMainGame(this);
+
         primaryStage.setTitle("Game");
         primaryStage.setMinWidth(1200);
         primaryStage.setMinHeight(800);
         primaryStage.setWidth(1200);
         primaryStage.setHeight(800);
         Scene scene = gameController.load(filepath);
+        gameController.load_walls();
         if (scene == null) {
             throw new InvalidSceneException("No scene defined");
         }
         switchScene(scene);
         return scene;
     }
+
+
 
 
     /**
@@ -124,7 +129,7 @@ public class MainGame extends Application {
      * @throws IOException If an error occurs while loading the FXML file.
      * @throws InvalidSaveException If trying to save from a menu.
      */
-    public Scene showSaveLoadScene() throws IOException, InvalidSaveException {
+    public Scene showSaveLoadScene() throws InvalidSaveException, IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("save_load_scene.fxml"));
         Parent root = loader.load();
         SaveLoadSceneController controller = loader.getController();

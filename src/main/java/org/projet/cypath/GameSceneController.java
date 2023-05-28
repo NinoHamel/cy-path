@@ -47,7 +47,10 @@ public class GameSceneController {
      * Represents the game instance.
      */
     private Game game;
-
+    /**
+     * Represent the board of the game
+     */
+    GridPane gridPane;
     /**
      * Represents the number of players.
      */
@@ -218,7 +221,7 @@ public class GameSceneController {
      @return The created GridPane.
      */
     private GridPane createCheckerboard(VBox vbox_buttons,HBox player_turn_hbox) {
-        GridPane gridPane = initializeGridPane();
+        gridPane = initializeGridPane();
         AtomicReference<Boolean> actionMove = new AtomicReference<>(false);
         AtomicReference<Boolean> actionWall = new AtomicReference<>(false);
         AtomicReference<Boolean> horizontalWall = new AtomicReference<>(false);
@@ -268,6 +271,34 @@ public class GameSceneController {
 
         return gridPane;
     }
+
+
+
+    public void load_walls() throws OutOfBoardException {
+        Board board=game.getBoard();
+        for(int row = 0; row<9; row++){
+            for(int col = 0; col<9; col++) {
+                Box box=board.getBox(row,col);
+                if(box.hasBottomWall()){
+                    StackPane cellPane=getCellPane(gridPane,row,col);
+                    Border currentBorder = cellPane.getBorder();
+                    Border newBorder = addBottomBorder(currentBorder);
+                    cellPane.setBorder(newBorder);
+                    System.out.println("row:"+row+";col:"+col);
+                }
+                if(box.hasRightWall()){
+                    StackPane cellPane=getCellPane(gridPane,row,col);
+                    Border currentBorder = cellPane.getBorder();
+                    Border newBorder = addRightBorder(currentBorder);
+                    cellPane.setBorder(newBorder);
+                    System.out.println("row:"+row+";col:"+col);
+                }
+            }
+        }
+    }
+
+
+
     /**
      * Initializes the ranking cells in the grid pane based on the list of ongoing players.
      * @param gridPane     The GridPane in which the ranking cells will be initialized.
