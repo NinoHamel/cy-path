@@ -727,8 +727,6 @@ public class GameSceneController {
                                          GridPane gridPane,List<Player> listOnGoing,List<Player> listWinners,
                                          AtomicInteger index,HBox player_turn_hbox) {
         cellPane.setOnMouseClicked(event -> {
-            System.out.println("actionMove.get(): "+actionMove.get());
-            System.out.println("actionWall.get(): "+actionWall.get());
             if (actionMove.get()) {
                 Player currentPlayer = listOnGoing.get(index.get());
                 int fromRow = currentPlayer.getCurrentBox().getRow();
