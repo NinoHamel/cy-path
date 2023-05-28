@@ -140,12 +140,6 @@ public class SaveLoadSceneController {
         System.out.println(path);
 
         mainGame.switchScene(mainGame.showGameScene(path));
-
-        //Game game = new Game(2);
-        //game.getSave("terst");
-
-
-
     }
     /**
      * Handles the action when the quit button is clicked.

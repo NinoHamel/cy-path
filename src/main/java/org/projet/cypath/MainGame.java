@@ -24,7 +24,7 @@ public class MainGame extends Application {
      * @throws IOException
      */
     @Override
-    public void start(Stage stage) throws InvalidSceneException, IOException {
+    public void start(Stage stage) throws InvalidSceneException {
         this.primaryStage = stage;
         showVideoScene();
     }
@@ -112,17 +112,23 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the EndScene, with its controller
+     *
+     * @return
      * @throws IOException
      */
-    public void showEndScene() throws IOException {
+    public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
         Parent root = loader.load();
         EndSceneController controller = loader.getController();
         controller.setMainGame(this);
+        controller.setGame(this.game);
         primaryStage.setTitle("Game Over");
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
         primaryStage.show();
+        return scene;
     }
+
     /**
      * Displays the Save and Load scene in the application.
      * @return The scene object for the Save and Load scene.
@@ -187,7 +193,15 @@ public class MainGame extends Application {
         this.numPlayers = numPlayers;
     }
 
+    /**
+     * Create a game instance in the MainGame
+     */
     private Game game;
+
+    /**
+     * Allow to bind a game instance from a controller to the MainGame
+     * @param ThisGame
+     */
 
     public void setThisGame(Game ThisGame){
         this.game = ThisGame;
