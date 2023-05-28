@@ -37,14 +37,21 @@ public class EndSceneController {
     @FXML
     private ImageView backButtonImageView;
 
-
+    /**
+     * Create an instance of mainGame to call later
+     * @param mainGame instance of the MainGame
+     */
     public void setMainGame(MainGame mainGame) {
         this.mainGame = mainGame;
     }
 
+    /**
+     * Needed to get the previous game winners list
+     * @param game Get the previous game instance
+     */
     public void setGame(Game game) {
         this.game = game;
-        populateEndScene();
+        initialize();
     }
 
     /**
@@ -68,13 +75,19 @@ public class EndSceneController {
         imageView.setEffect(null); // remove the glow effect
     }
 
+    /**
+     * A button to go back to the main menu
+     */
     @FXML
     public void handleButtonBack() throws IOException {
         System.out.println("Back button clicked");
         mainGame.switchScene(mainGame.showStartScene());
     }
 
-    private void populateEndScene() {
+    /**
+     * Load ressources for the end screen
+     */
+    private void initialize() {
         InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");
         assert is != null;
         Image image = new Image(is);
