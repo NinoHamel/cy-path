@@ -50,7 +50,7 @@ public class GameSceneController {
     /**
      * Represent the board of the game
      */
-    private GridPane gridPane;
+    GridPane gridPane;
     /**
      * Represents the number of players.
      */
@@ -624,14 +624,6 @@ public class GameSceneController {
         Rectangle coloredBox = (Rectangle) player_turn_hbox.getChildren().get(2);
         player_turn_text.setText(playerName);
         coloredBox.setFill(colorCurrentPlayer);
-        if (game.isGameOver()){
-            mainGame.setThisGame(game);
-            try {
-                mainGame.switchScene(mainGame.showEndScene());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     /**
