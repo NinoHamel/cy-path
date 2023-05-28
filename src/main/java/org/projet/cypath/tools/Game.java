@@ -289,7 +289,7 @@ public class Game {
         return false;
     }
     /**
-     *
+     * Determine if there is a path if a horizontal or vertical wall set on the box at currentRow,currentCol.
      * @param currentRow row of the fist wall
      * @param currentCol column of the first wall
      * @param  orientation is the orientation of the box, 0 for bottom and 1 for right
