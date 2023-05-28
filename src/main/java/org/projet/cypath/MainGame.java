@@ -20,8 +20,8 @@ public class MainGame extends Application {
 
     /**
      * Start the game on the StartScene
-     * @param stage
-     * @throws IOException
+     * @param stage the input stage
+     * @throws InvalidSceneException throw exception if the scene is invalid
      */
     @Override
     public void start(Stage stage) throws InvalidSceneException {
@@ -52,8 +52,8 @@ public class MainGame extends Application {
     /**
      * Get the fxml, launch the controller, and set properties to the stage (name / size)
      *
-     * @return
-     * @throws IOException
+     * @return the created scene
+     * @throws IOException input or output exception
      */
     public Scene showStartScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("start_scene.fxml"));
@@ -73,7 +73,8 @@ public class MainGame extends Application {
 
     /**
      * Get the fxml, and launch the GameScene, with its controller
-     * @throws InvalidSceneException
+     * @throws InvalidSceneException If no scene is defined.
+     * @throws OutOfBoardException the exception when a position is out of the board
      */
     public Scene showGameScene() throws InvalidSceneException, OutOfBoardException {
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -92,6 +93,12 @@ public class MainGame extends Application {
         return scene;
     }
 
+    /**
+     * Get the fxml, launch the controller, and set properties to the stage (name / size)
+     *
+     * @return the created scene
+     * @throws IOException input or output exception
+     */
     public Scene showGameScene(String filepath) throws InvalidSceneException, IOException, OutOfBoardException {
 
         GameSceneController gameController = new GameSceneController(numPlayers);
@@ -112,13 +119,11 @@ public class MainGame extends Application {
     }
 
 
-
-
     /**
      * Get the fxml, and launch the EndScene, with its controller
      *
-     * @return
-     * @throws IOException
+     * @return the created scene
+     * @throws IOException input or output exception
      */
     public Scene showEndScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("end_scene.fxml"));
@@ -156,8 +161,7 @@ public class MainGame extends Application {
         primaryStage.setMinHeight(850);
         primaryStage.setWidth(1400);
         primaryStage.setHeight(850);
-        Scene scene = new Scene(root);
-        return scene;
+        return new Scene(root);
     }
 
     /**
@@ -208,16 +212,15 @@ public class MainGame extends Application {
 
     /**
      * Allow to bind a game instance from a controller to the MainGame
-     * @param ThisGame
+     * @param ThisGame a game instance
      */
-
     public void setThisGame(Game ThisGame){
         this.game = ThisGame;
     }
 
     /**
      * Start the game.
-     * @param args
+     * @param args arguments of main method
      */
     public static void main(String[] args) {
         launch(args);
