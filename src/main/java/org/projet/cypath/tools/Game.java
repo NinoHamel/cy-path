@@ -25,9 +25,9 @@ public class Game {
         this.board=new Board(numberOfPlayers);
         if (numberOfPlayers==2){
             Box boxPlayer1 = board.getBox(0, 4);
-            Player player1 = new Player(1, ": ONE", "#FF0000", boxPlayer1, board);
+            Player player1 = new Player(1, "ONE", "#FF0000", boxPlayer1, board);
             Box boxPlayer2 = board.getBox(8, 4);
-            Player player2 = new Player(2, ": TWO", "#0000FF", boxPlayer2, board);
+            Player player2 = new Player(2, "TWO", "#0000FF", boxPlayer2, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);
@@ -35,11 +35,11 @@ public class Game {
         }
         else if (numberOfPlayers==3){
             Box boxPlayer1 = board.getBox(0, 4);
-            Player player1 = new Player(1, ": ONE", "#FF0000", boxPlayer1, board);
-            Box boxPlayer2 = board.getBox(8, 4);
-            Player player2 = new Player(2, ": TWO", "#0000FF", boxPlayer2, board);
-            Box boxPlayer3= board.getBox(4, 0);
-            Player player3 = new Player(3, ": THREE", "#FFFF00", boxPlayer3, board);
+            Player player1 = new Player(1, "ONE", "#FF0000", boxPlayer1, board);
+            Box boxPlayer2 = board.getBox(4, 8);
+            Player player2 = new Player(2, "TWO", "#0000FF", boxPlayer2, board);
+            Box boxPlayer3= board.getBox(8, 4);
+            Player player3 = new Player(3, "THREE", "#FFFF00", boxPlayer3, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);
@@ -48,13 +48,13 @@ public class Game {
         }
         else if (numberOfPlayers==4){
             Box boxPlayer1 = board.getBox(0, 4);
-            Player player1 = new Player(1, ": ONE", "#FF0000", boxPlayer1, board);
-            Box boxPlayer2 = board.getBox(8, 4);
-            Player player2 = new Player(2, ": TWO", "#0000FF", boxPlayer2, board);
-            Box boxPlayer3= board.getBox(4, 0);
-            Player player3 = new Player(3, ": THREE", "#FFFF00", boxPlayer3, board);
-            Box boxPlayer4= board.getBox(4, 8);
-            Player player4 = new Player(4, ": FOUR", "#008000", boxPlayer4, board);
+            Player player1 = new Player(1, "ONE", "#FF0000", boxPlayer1, board);
+            Box boxPlayer2 = board.getBox(4, 8);
+            Player player2 = new Player(2, "TWO", "#0000FF", boxPlayer2, board);
+            Box boxPlayer3= board.getBox(8, 4);
+            Player player3 = new Player(3, "THREE", "#FFFF00", boxPlayer3, board);
+            Box boxPlayer4= board.getBox(4, 0);
+            Player player4 = new Player(4, "FOUR", "#008000", boxPlayer4, board);
             listOnGoing = new ArrayList<>();
             listOnGoing.add(player1);
             listOnGoing.add(player2);

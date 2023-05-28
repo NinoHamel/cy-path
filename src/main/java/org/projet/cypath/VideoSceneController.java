@@ -35,8 +35,8 @@ public class VideoSceneController {
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
 
-        mediaView.setFitWidth(1720);
-        mediaView.setFitHeight(720);
+        mediaView.setFitWidth(1422);
+        mediaView.setFitHeight(800);
         mediaView.setPreserveRatio(true);
 
         root.getChildren().add(mediaView);
@@ -57,7 +57,7 @@ public class VideoSceneController {
             });
         });
 
-        Scene scene = new Scene(root, 1720, 720);
+        Scene scene = new Scene(root, 1422, 800);
         return scene;
     }
 }

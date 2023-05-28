@@ -56,7 +56,7 @@ public class EndSceneController {
 
         // For the rest of the players, create a color box and add it to the container
         for (int i = 1; i < listWinners.size(); i++) {
-            Rectangle colorBox = new Rectangle(20, 20);
+            Rectangle colorBox = new Rectangle(40, 40);
             colorBox.setFill(Color.valueOf(listWinners.get(i).getColor()));
             otherPlayersContainer.getChildren().add(colorBox);
         }

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import java.net.URL?>
-<?import javafx.scene.chart.StackedAreaChart?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.projet.cypath.SaveLoadSceneController">
-    <StackPane fx:id="loadScreen" visible="false" minWidth="1200" minHeight="800">
+    <StackPane fx:id="loadScreen" visible="false">
         <VBox alignment="CENTER" spacing="120">
             <Text text="Loading and Save" style="-fx-font-size: 100;"/>
             <HBox fx:id="buttonBox1" alignment="CENTER" spacing="100">
