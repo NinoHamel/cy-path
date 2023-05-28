@@ -1,7 +1,6 @@
 package org.projet.cypath;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -15,13 +14,6 @@ import java.util.List;
 public class EndSceneController {
     private MainGame mainGame;
     private Game game;
-
-    @FXML
-    private Label titleLabel;
-
-    @FXML
-    private Label winnerLabel;
-
     @FXML
     private Rectangle winnerColorBox;
 
