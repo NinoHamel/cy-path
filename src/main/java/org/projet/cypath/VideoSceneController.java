@@ -6,9 +6,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.util.Duration;
-import javafx.animation.FadeTransition;
-import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -57,7 +54,6 @@ public class VideoSceneController {
             });
         });
 
-        Scene scene = new Scene(root, 1422, 800);
-        return scene;
+        return new Scene(root, 1422, 800);
     }
 }
