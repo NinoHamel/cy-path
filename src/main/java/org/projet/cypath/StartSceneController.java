@@ -2,35 +2,22 @@ package org.projet.cypath;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import org.projet.cypath.exceptions.InvalidSaveException;
 import org.projet.cypath.exceptions.InvalidSceneException;
 import org.projet.cypath.exceptions.OutOfBoardException;
@@ -52,19 +39,7 @@ public class StartSceneController{
     @FXML
     private StackPane titleScreen;
     @FXML
-    private ImageView logoImage;
-    @FXML
-    private ImageView newGameButton;
-    @FXML
-    private ImageView loadGameButton;
-    @FXML
-    private ImageView settingsButton;
-    @FXML
-    private ImageView quitButton;
-    @FXML
     private ImageView newgameImageView;
-    @FXML
-    private ImageView startImageView;
     @FXML
     private ImageView loadImageView;
     @FXML
@@ -99,21 +74,12 @@ public class StartSceneController{
     private ImageView void1ImageView;
     @FXML
     private ImageView void2ImageView;
-    /**
-     * Getter for the number of players.
-     * @return the number of players
-     */
-    public int getNumPlayers() {
-        return numPlayers;
-    }
-
 
     /* IMAGES REGLES
     private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));*/
 
-    private Image muteImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/mute.png"));
-    private Image soundImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/sound.png"));
-    private Image voidImage = new Image(getClass().getResourceAsStream("/org/projet/cypath/void.png"));
+    private final Image muteImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/mute.png")));
+    private final Image soundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/sound.png")));
     private static boolean musicState = false;
     private static int rulesTextState = 0;
 
@@ -126,11 +92,10 @@ public class StartSceneController{
     }
     /**
      * Event handler for the start button action.
-     * @param event the mouse event
      * @throws InvalidSceneException if the scene is invalid
      */
     @FXML
-    private void handleStartButtonAction(MouseEvent event) throws InvalidSceneException, OutOfBoardException {
+    private void handleStartButtonAction() throws InvalidSceneException, OutOfBoardException {
         mainGame.setNumPlayers(numPlayers);
         mainGame.switchScene(mainGame.showGameScene());
     }
@@ -156,10 +121,9 @@ public class StartSceneController{
     }
     /**
      * Event handler for the new game button action.
-     * @param event the mouse event
      */
     @FXML
-    private void handleNewGameButtonAction(MouseEvent event) {
+    private void handleNewGameButtonAction() {
         System.out.println("New Game button clicked");
         fadingPanes(titleScreen,playerSelectionView);
 
@@ -167,49 +131,44 @@ public class StartSceneController{
     }
     /**
      * Event handler for the load button action.
-     * @param event the mouse event
      * @throws IOException if an I/O error occurs
      */
     @FXML
-    private void handleLoadButtonAction(MouseEvent event) throws IOException, InvalidSaveException {     //Open saves menu
+    private void handleLoadButtonAction() throws IOException, InvalidSaveException {     //Open saves menu
         System.out.println("Load button clicked");
         mainGame.switchScene(mainGame.showSaveLoadScene());
     }
     /**
      * Event handler for the settings button action.
-     * @param event the mouse event
      */
     @FXML
-    private void handleSettingsButtonAction(MouseEvent event) { //Open settings
+    private void handleSettingsButtonAction() { //Open settings
         System.out.println("Settings button clicked");
         fadingPanes(titleScreen,settingsView);
         changeBackground(settingsView);
     }
     /**
      * Event handler for the quit button action.
-     * @param event the mouse event
      */
     @FXML
-    private void handleQuitButtonAction(MouseEvent event) {     //Quit the game
+    private void handleQuitButtonAction() {     //Quit the game
         System.out.println("Quit button clicked");
         Platform.exit();
     }
     /**
      * Handles the button action for navigating back to the previous screen.
-     * @param mouseEvent The mouse event triggered by the button click.
      */
     @FXML
-    public void handleButtonBack(MouseEvent mouseEvent) {
+    public void handleButtonBack() {
         System.out.println("Back button clicked");
 
         fadingPanes(playerSelectionView,titleScreen);
     }
     /**
      * Handles the button action for increasing the number of players.
-     * @param event The mouse event triggered by the button click.
      */
     @FXML
-    private void handlePlusButtonAction(MouseEvent event) {
+    private void handlePlusButtonAction() {
         if (numPlayers < 4) {
             numPlayers++;
             numPlayersLabel.setText(String.valueOf(numPlayers));
@@ -217,10 +176,9 @@ public class StartSceneController{
     }
     /**
      * Handles the button action for decreasing the number of players.
-     * @param event The mouse event triggered by the button click.
      */
     @FXML
-    private void handleMinusButtonAction(MouseEvent event) {
+    private void handleMinusButtonAction() {
         if (numPlayers > 2) {
             numPlayers--;
             numPlayersLabel.setText(String.valueOf(numPlayers));
@@ -228,10 +186,9 @@ public class StartSceneController{
     }
     /**
      * Handles the button action for navigating back to the main menu from the settings menu.
-     * @param mouseEvent The mouse event triggered by the button click.
      */
     @FXML
-    public void handleButtonBackSettings(MouseEvent mouseEvent) {
+    public void handleButtonBackSettings() {
         System.out.println("Back button clicked");
 
         fadingPanes(settingsView,titleScreen);
@@ -240,10 +197,9 @@ public class StartSceneController{
     }
     /**
      * Handles the button action for toggling the music state.
-     * @param mouseEvent The mouse event triggered by the button click.
      */
     @FXML
-    public void handleButtonMusic(MouseEvent mouseEvent) {
+    public void handleButtonMusic() {
         System.out.println("Music button clicked");
 
         setMusicState();
@@ -260,10 +216,9 @@ public class StartSceneController{
     /**
      * Handles the click event of the "Previous" button.
      * Updates the rulesTextState variable and calls the setRulesText() method to update the rules text accordingly.
-     * @param mouseEvent The MouseEvent representing the button click.
      */
     @FXML
-    public void handleButtonPrevious(MouseEvent mouseEvent) {
+    public void handleButtonPrevious() {
         System.out.println("Previous button clicked");
 
         if(rulesTextState == 0){
@@ -279,10 +234,9 @@ public class StartSceneController{
     /**
      * Handles the click event of the "Next" button.
      * Updates the rulesTextState variable and calls the setRulesText() method to update the rules text accordingly.
-     * @param mouseEvent The MouseEvent representing the button click.
      */
     @FXML
-    public void handleButtonNext(MouseEvent mouseEvent) {
+    public void handleButtonNext() {
         System.out.println("Next button clicked");
 
         if(rulesTextState == 4){
@@ -351,33 +305,25 @@ public class StartSceneController{
      * @param rulesText The Text node to set the text for.
      */
     public static void setRulesText(Text rulesText){
-        switch (rulesTextState){
-            case 0:
-                rulesText.setText("Ce projet est un jeu de plateau compétitif pour 2 ou 4 joueurs. Le but est de faire traverser le plateau à son pion avant les autres joueurs.\n" +
-                        "La zone de jeu est constituée de 81 cases disposées en carré. Chaque case est séparée des autres par des lignes horizontales et verticales (quadrillage). Chaque joueur démarre sur la case milieu d'un des bords du plateau (pour 2 joueurs, les pions doivent être placés sur des bords opposés).");
-                break;
-
-            case 1:
-                rulesText.setText("Chaque joueur joue chacun son tour. A chaque tour de jeu, un joueur peut choisir de déplacer son pion d'une seule case horizontalement ou verticalement, dans n'importe quelle direction.\n" +
-                        "Il peut également choisir de positionner une barrière, horizontalement ou verticalement. Une barrière possède une longueur de 2 cases. Une barrière ne peut pas dépasser de la zone de jeu. Une barrière ne pas superposer une autre barrière. Une barrière est forcément placée pour avoir 2 cases adjacentes complètes. Les barrières sont au nombre de 20 au total.");
-                break;
-
-            case 2:
-                rulesText.setText("Les barrières ne peuvent pas être franchies par les pions des joueurs. Ces derniers devront donc trouver un autre chemin pour progresser en direction\n" +
-                        "du bord opposé.\n" +
-                        "Lorsqu'une barrière est posée, il est impossible de la déplacer pour le reste de la partie. Lorsqu'il n'y a plus de barrières à poser, les joueurs ne peuvent alors que déplacer leurs pions pour terminer la partie.\n" +
-                        "Si il n'est plus possible de poser de nouvelles barrières, alors la seule action possible pour un joueur est de déplacer son pion.\n" +
-                        "Lorsqu'un joueur pose une barrière, il doit s'assurer que le pion du joueur adverse dispose au moins d'un trajet possible. Il est interdit de bloquer définitivement l'adversaire : tout joueur doit avoir au moins 1 trajet possible.");
-                break;
-
-            case 3:
-                rulesText.setText("Le premier joueur à faire parvenir son pion sur n'importe quelle case qui se trouve sur le bord opposé à son point de départ est déclaré vainqueur. Lorsque 2 pions sont côte à côte, il est possible pour l'un de \"sauter\" par dessus l'autre pour passer de l'autre côté en un seul coup. Ceci n'est possible QUE SI la case d'arrivée n'est pas déjà occupée par un autre joueur (cas d'une partie à 4 joueurs par exemple), ou bien que la case à sauter et la case d'arrivée ne soient pas séparées par une barrière.\n" +
-                        "Dans l'une des ces deux situations, et seulement dans ce cas là, il est possible pour le joueur actif de se déplacer en diagonale à côté du joueur adverse.");
-                break;
-
-            case 4:
-                rulesText.setText("Dans ce cas précis, si l'une des cases diagonales est séparée de la case du joueur jaune par une barrière, alors le déplacement diagonale ne pourra pas se faire non plus. Il faut voir ce \"saut\" comme si le joueur bleu avançait sur la case du joueur jaune, puis se déplaçait sur la case d'arrivée. Il effectue donc 2 déplacements consécutifs, si et seulement si ces 2 déplacements sont possibles (non entravés par une barrière, ou un 3ème joueur).");
-                break;
+        switch (rulesTextState) {
+            case 0 ->
+                    rulesText.setText("Ce projet est un jeu de plateau compétitif pour 2 ou 4 joueurs. Le but est de faire traverser le plateau à son pion avant les autres joueurs.\n" +
+                            "La zone de jeu est constituée de 81 cases disposées en carré. Chaque case est séparée des autres par des lignes horizontales et verticales (quadrillage). Chaque joueur démarre sur la case milieu d'un des bords du plateau (pour 2 joueurs, les pions doivent être placés sur des bords opposés).");
+            case 1 ->
+                    rulesText.setText("Chaque joueur joue chacun son tour. A chaque tour de jeu, un joueur peut choisir de déplacer son pion d'une seule case horizontalement ou verticalement, dans n'importe quelle direction.\n" +
+                            "Il peut également choisir de positionner une barrière, horizontalement ou verticalement. Une barrière possède une longueur de 2 cases. Une barrière ne peut pas dépasser de la zone de jeu. Une barrière ne pas superposer une autre barrière. Une barrière est forcément placée pour avoir 2 cases adjacentes complètes. Les barrières sont au nombre de 20 au total.");
+            case 2 ->
+                    rulesText.setText("""
+                            Les barrières ne peuvent pas être franchies par les pions des joueurs. Ces derniers devront donc trouver un autre chemin pour progresser en direction
+                            du bord opposé.
+                            Lorsqu'une barrière est posée, il est impossible de la déplacer pour le reste de la partie. Lorsqu'il n'y a plus de barrières à poser, les joueurs ne peuvent alors que déplacer leurs pions pour terminer la partie.
+                            Si il n'est plus possible de poser de nouvelles barrières, alors la seule action possible pour un joueur est de déplacer son pion.
+                            Lorsqu'un joueur pose une barrière, il doit s'assurer que le pion du joueur adverse dispose au moins d'un trajet possible. Il est interdit de bloquer définitivement l'adversaire : tout joueur doit avoir au moins 1 trajet possible.""");
+            case 3 ->
+                    rulesText.setText("Le premier joueur à faire parvenir son pion sur n'importe quelle case qui se trouve sur le bord opposé à son point de départ est déclaré vainqueur. Lorsque 2 pions sont côte à côte, il est possible pour l'un de \"sauter\" par dessus l'autre pour passer de l'autre côté en un seul coup. Ceci n'est possible QUE SI la case d'arrivée n'est pas déjà occupée par un autre joueur (cas d'une partie à 4 joueurs par exemple), ou bien que la case à sauter et la case d'arrivée ne soient pas séparées par une barrière.\n" +
+                            "Dans l'une des ces deux situations, et seulement dans ce cas là, il est possible pour le joueur actif de se déplacer en diagonale à côté du joueur adverse.");
+            case 4 ->
+                    rulesText.setText("Dans ce cas précis, si l'une des cases diagonales est séparée de la case du joueur jaune par une barrière, alors le déplacement diagonale ne pourra pas se faire non plus. Il faut voir ce \"saut\" comme si le joueur bleu avançait sur la case du joueur jaune, puis se déplaçait sur la case d'arrivée. Il effectue donc 2 déplacements consécutifs, si et seulement si ces 2 déplacements sont possibles (non entravés par une barrière, ou un 3ème joueur).");
         }
 
     }
@@ -385,14 +331,7 @@ public class StartSceneController{
      * Toggles the music state (on/off).
      */
     public static void setMusicState(){
-
-        if(musicState == true){
-            musicState = false;
-        }
-        else{
-            musicState = true;
-        }
-
+        musicState = !musicState;
     }
 
     /**
