@@ -111,7 +111,7 @@ public class GameSceneController {
         player_turn_hbox.setAlignment(Pos.CENTER);
         player_turn_hbox.setSpacing(20);
 
-        initialize_player_turn_hbox(player_turn_hbox);
+        initialize_player_turn_hbox(player_turn_hbox,game.getListOnGoing());
         initialize_wall_remaining_hbox(wall_remaining_hbox);
 
 
@@ -155,7 +155,7 @@ public class GameSceneController {
 
         game.getSave(filepath);
 
-        initialize_player_turn_hbox(player_turn_hbox);
+        initialize_player_turn_hbox(player_turn_hbox,game.getListOnGoing());
         initialize_wall_remaining_hbox(wall_remaining_hbox);
 
 
@@ -180,20 +180,23 @@ public class GameSceneController {
      *
      * @param player_hbox The HBox container for the player's turn display.
      */
-    private void initialize_player_turn_hbox(HBox player_hbox) {
+    private void initialize_player_turn_hbox(HBox player_hbox,List<Player> listOnGoing) {
         ImageView player_turnImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/player.png")).toExternalForm());
         player_turnImageView.setFitHeight(80);
         player_turnImageView.setPreserveRatio(true);
         player_hbox.getChildren().add(player_turnImageView);
 
+        Player player=listOnGoing.get(0);
+        Color color= Color.valueOf(player.getColor());
+
         Text player_turn_text = new Text();
-        player_turn_text.setText(": ONE");
+        player_turn_text.setText(player.getName());
         player_turn_text.setStyle("-fx-font-size: 50");
         player_turn_text.setTextAlignment(TextAlignment.CENTER);
         player_hbox.getChildren().add(player_turn_text);
 
         Rectangle coloredBox = new Rectangle(60, 60);
-        coloredBox.setFill(Color.RED);
+        coloredBox.setFill(color);
         player_hbox.getChildren().add(coloredBox);
     }
 
@@ -265,7 +268,7 @@ public class GameSceneController {
                         savedBottomCellBorder, savedRightCellBorder,gridPane);
             }
         }
-        initializeRanking(gridPane,listOnGoing);
+        initializeRanking(gridPane,listOnGoing,listWinners);
         initializePlayers(gridPane, listOnGoing);
         initializeButtons(vbox_buttons, gridPane, actionMove, actionWall, horizontalWall, verticalWall,listOnGoing,index);
 
@@ -277,6 +280,8 @@ public class GameSceneController {
     public void load_walls() throws OutOfBoardException {
         if(game!=null) {
             Board board = game.getBoard();
+            List<Player> listOnGoing=game.getListOnGoing();
+            List<Player> listWinners=game.getListWinners();
             for (int row = 0; row < 9; row++) {
                 for (int col = 0; col < 9; col++) {
                     Box box = board.getBox(row, col);
@@ -285,17 +290,16 @@ public class GameSceneController {
                         Border currentBorder = cellPane.getBorder();
                         Border newBorder = addBottomBorder(currentBorder);
                         cellPane.setBorder(newBorder);
-                        System.out.println("row:" + row + ";col:" + col);
                     }
                     if (box.hasRightWall()) {
                         StackPane cellPane = getCellPane(gridPane, row, col);
                         Border currentBorder = cellPane.getBorder();
                         Border newBorder = addRightBorder(currentBorder);
                         cellPane.setBorder(newBorder);
-                        System.out.println("row:" + row + ";col:" + col);
                     }
                 }
             }
+            addWinners(listWinners);
         }
     }
 
@@ -306,9 +310,9 @@ public class GameSceneController {
      * @param gridPane     The GridPane in which the ranking cells will be initialized.
      * @param listOnGoing  The list of Player objects representing the ongoing players.
      */
-    private void initializeRanking(GridPane gridPane, List<Player> listOnGoing) {
+    private void initializeRanking(GridPane gridPane, List<Player> listOnGoing,List<Player> listWinners) {
         int rowIndex = 0; // Indice de ligne initial
-        for (int i = 1; i <= listOnGoing.size(); i++) {
+        for (int i = 1; i <= listOnGoing.size()+listWinners.size(); i++) {
             StackPane playerRanking = new StackPane();
             playerRanking.setPrefSize(100, 50);
             Rectangle rect = new Rectangle(50, 50);
@@ -663,7 +667,7 @@ public class GameSceneController {
                                 currentPlayer.setVictory(true);
                                 listWinners.add(currentPlayer);
                                 listOnGoing.remove(currentPlayer);
-                                addWinners(gridPane,listWinners);
+                                addWinners(listWinners);
                                 index.getAndDecrement();
                                 if (index.get() < 0) {
                                     index.set(listOnGoing.size() - 1);
@@ -730,10 +734,9 @@ public class GameSceneController {
     }
     /**
      * Colorizes the ranking cells in the grid pane based on the list of winners.
-     * @param gridPane    The GridPane containing the ranking cells.
      * @param listWinners The list of Player objects representing the winners.
      */
-    private void addWinners(GridPane gridPane, List<Player> listWinners) {
+    private void addWinners(List<Player> listWinners) {
         for (int i = 0; i < listWinners.size(); i++) {
             Player player = listWinners.get(i);
             Color color = Color.valueOf(player.getColor());
@@ -742,6 +745,7 @@ public class GameSceneController {
             Rectangle rankingRect = (Rectangle) hbox.getChildren().get(1);
             rankingRect.setFill(color);
         }
+
     }
     /**
      *Sets the mouse enter event handler for a cell pane.
