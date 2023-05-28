@@ -13,7 +13,7 @@ public class InvalidSaveException extends Exception{
      * Create an InvalidSaveException
      */
     public InvalidSaveException() {
-        System.out.println("New InvalidSceneException :");
+        System.out.println("New InvalidSaveException :");
         System.out.println("You can't save a menu :/");
     }
 }
