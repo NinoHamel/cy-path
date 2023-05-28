@@ -1,19 +1,30 @@
 package org.projet.cypath;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.projet.cypath.players.Player;
 import org.projet.cypath.tools.Game;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 public class EndSceneController {
+    public HBox winnerContainer;
+    public Label winnerLabel;
+    public Label titleLabel;
+    public VBox mainContainer;
     private MainGame mainGame;
     private Game game;
+
     @FXML
     private Rectangle winnerColorBox;
 
@@ -22,6 +33,9 @@ public class EndSceneController {
 
     @FXML
     private AnchorPane endScenePane;
+
+    @FXML
+    private ImageView backButtonImageView;
 
 
     public void setMainGame(MainGame mainGame) {
@@ -33,6 +47,33 @@ public class EndSceneController {
         populateEndScene();
     }
 
+    /**
+     * Event handler for button hover event.
+     * @param event the mouse event
+     */
+    @FXML
+    private void handleButtonHover(MouseEvent event) {
+        ImageView imageView = (ImageView) event.getSource();
+        Glow glow = new Glow();
+        glow.setLevel(0.5); // Set between 0.0 and 1.0
+        imageView.setEffect(glow);
+    }
+    /**
+     * Event handler for button exit event.
+     * @param event the mouse event
+     */
+    @FXML
+    private void handleButtonExit(MouseEvent event) {
+        ImageView imageView = (ImageView) event.getSource();
+        imageView.setEffect(null); // remove the glow effect
+    }
+
+    @FXML
+    public void handleButtonBack() throws IOException {
+        System.out.println("Back button clicked");
+        mainGame.switchScene(mainGame.showStartScene());
+    }
+
     private void populateEndScene() {
         InputStream is = getClass().getResourceAsStream("/org/projet/cypath/start_background_transparent.png");
         assert is != null;
@@ -40,6 +81,10 @@ public class EndSceneController {
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         Background background = new Background(backgroundImage);
         endScenePane.setBackground(background);
+
+        backButtonImageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/org/projet/cypath/back.png"))));
+        backButtonImageView.setFitHeight(80);
+        backButtonImageView.setPreserveRatio(true);
 
         List<Player> listWinners = game.getListWinners();
 
