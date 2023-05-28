@@ -46,14 +46,10 @@ public class GameSceneController {
     private Game game;
 
 
-    public Board getBoard() {
-        return board;
-    }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
+    /**
+     * Board of the game
+     */
     private Board board;
     /**
      * Represent the board of the game
@@ -69,7 +65,21 @@ public class GameSceneController {
      * Represents the Text element for displaying the remaining wall count.
      */
     private Text wall_remaining_hbox_text;
+    /**
+     * Getter of the board
+     * @return
+     */
+    public Board getBoard() {
+        return board;
+    }
 
+    /**
+     * Setter of the board
+     * @param board
+     */
+    public void setBoard(Board board) {
+        this.board = board;
+    }
     /**
      * Constructs a new GameSceneController with the specified number of players.
      * @param numPlayers The number of players in the game.
@@ -134,6 +144,14 @@ public class GameSceneController {
         return new Scene(rootPane, 1200, 800);
     }
 
+    /**
+     * Loads a game scene from the specified file path.
+     * @param filepath the path to the file containing the game data
+     * @return the loaded game scene
+     * @throws IOException          if an I/O error occurs while reading the file
+     * @throws OutOfBoardException  if the loaded game data contains invalid board positions
+     * @throws RuntimeException    if an exception occurs during the creation of the Game instance
+     */
     public Scene load(String filepath) throws IOException, OutOfBoardException {
         try {
             game = new Game(2);
@@ -210,7 +228,10 @@ public class GameSceneController {
         coloredBox.setFill(color);
         player_hbox.getChildren().add(coloredBox);
     }
-
+    /**
+     * Initializes the HBox for displaying the remaining wall count.
+     * @param wall_remaining_hbox the HBox to initialize
+     */
     private void initialize_wall_remaining_hbox(HBox wall_remaining_hbox){
         ImageView wall_remainingImageView = new ImageView(Objects.requireNonNull(getClass().getResource("/org/projet/cypath/wall_remaining.png")).toExternalForm());
         wall_remainingImageView.setFitHeight(80);
@@ -327,7 +348,14 @@ public class GameSceneController {
         return index;
     }
 
-
+    /**
+     * Loads the walls onto the grid pane based on the current state of the game's board.
+     * If the game is not null, it retrieves the board and list of winners from the game.
+     * It iterates over each box in the board and checks if it has a bottom or right wall.
+     * If a wall is present, it adds the corresponding border to the cell pane of the grid pane.
+     * Finally, it adds the winners to the display.
+     * @throws OutOfBoardException if an error occurs while accessing the board's boxes
+     */
     public void load_walls() throws OutOfBoardException {
         if(game!=null) {
             Board board = game.getBoard();
