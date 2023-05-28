@@ -6,9 +6,9 @@
 <?import javafx.scene.image.ImageView?>
 <AnchorPane fx:id="endScenePane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.projet.cypath.EndSceneController">
+            fx:controller="org.projet.cypath.EndSceneController" minWidth="1200" minHeight="850">
 
-    <VBox fx:id="mainContainer" alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+    <VBox fx:id="mainContainer" alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20" minWidth="1200" minHeight="850">
 
         <Label fx:id="titleLabel" text="The End !" style="-fx-font-size: 100px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);" />
 
