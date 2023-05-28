@@ -12,4 +12,7 @@ module org.projet.cypath {
 
     opens org.projet.cypath to javafx.fxml;
     exports org.projet.cypath;
+    exports org.projet.cypath.exceptions;
+    exports org.projet.cypath.players;
+    exports org.projet.cypath.tools;
 }
