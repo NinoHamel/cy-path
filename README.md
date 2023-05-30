@@ -26,3 +26,9 @@
 - [X] prévisualiser la pose d'une barrière, etc
 - [X] Affichage succès défaite / victoire
 - [X] Interface pour sauvegarder / charger une sauvegarde
+
+## Setup
+- Cloner le projet
+- Installer les dépendences ainsi que le jdk suggéré automatiquement
+- Naviguer dans src/main/java/org/projet/cypath/
+- Exécuter le ficher "MainGame.java"
