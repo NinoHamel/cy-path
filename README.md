@@ -1,34 +1,36 @@
-# Projet CY-PATH
-
+## Project CY-PATH
 ## Important
 
-- Commentaires propres (pour la doc)
-- Code écrit en anglais
-- Pas de crash (gestion des erreurs)
+-   Use clear comments (for documentation)
+-   Code written in English
+-   No crashes (error handling)
 
-## Liste des choses à faire (logique) (Louis / Lucas / Côme)
+## List of tasks (logic) (Louis / Lucas / Côme)
 
-- [X] Créer un tableau pour le jeu
-- [X] Gestion des pions
-- [X] Gestion du nombre de joueur
-- [X] Gestion des barrières
-- [X] Gestion du déplacement du pion (Recherche de chemins)(saut)
-- [X] Gestion du tour par tour
-- [X] Gestion de la victoire (test bon mur)
-- [X] Gestion des sauvegardes
+- [X] Create a board for the game
+- [X] Management of game pieces
+- [X] Management of the number of players
+- [X] Management of barriers
+- [X] Management of pawn movement (Pathfinding)(jump)
+- [X] Turn-based management
+- [X] Victory condition management (testing valid walls)
+- [X]   Save management
 
-## Liste des choses à faire (JFX) (Clément / Nino)
-- [X] Interface début jeu (choix nombre joueur) (choix couleur ?)
-- [X] Affichage du plateau et des barrières
-- [X] Affichage des pions avec leurs couleurs
-- [X] Affichage d'une interface pour savoir qui joue,
-- [X] Affichage des déplacements possibles, 
-- [X] prévisualiser la pose d'une barrière, etc
-- [X] Affichage succès défaite / victoire
-- [X] Interface pour sauvegarder / charger une sauvegarde
+## List of tasks (JavaFX) (Clément / Nino)
+
+- [X] Initial game interface (number of players selection) (color selection?)
+- [X] Display of the board and barriers
+- [X] Display of pawns with their colors
+- [X] Display of an interface to show whose turn it is,
+- [X] Display of possible moves,
+- [X] Preview the placement of a barrier, etc.
+- [X] Display success, defeat, or victory
+- [X] Interface for saving/loading a game
 
 ## Setup
-- Cloner le projet
-- Installer les dépendences ainsi que le jdk suggéré automatiquement
-- Naviguer dans src/main/java/org/projet/cypath/
-- Exécuter le ficher "MainGame.java"
+
+-  Clone the project
+-  Install the dependencies and the suggested JDK automatically
+-  Navigate to src/main/java/org/projet/cypath/
+-  Run the "MainGame.java" file
+
